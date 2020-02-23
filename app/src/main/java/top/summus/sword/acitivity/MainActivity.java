@@ -1,8 +1,10 @@
-package top.summus.sword;
+package top.summus.sword.acitivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import top.summus.sword.R;
 
 public class MainActivity extends AppCompatActivity {
 
