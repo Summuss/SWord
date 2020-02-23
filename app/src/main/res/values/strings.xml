@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">SWord-JetPack</string>
+
+
+    <string name="navigation_menu_book">单词本</string>
+    <string name="navigation_menu_test">已标记的单词</string>
+
+    <string name="nav_header_desc">Navigation Bar</string>
+    <string name="nav_header_title">Sword</string>
+    <string name="nav_header_subtitle">zongyang_liu@outlook.com</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
