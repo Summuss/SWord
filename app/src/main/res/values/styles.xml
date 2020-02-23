@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
     <!-- loading主题 -->
     <style name="LunchLoadingTheme" parent="Theme.AppCompat">
         <!--        <item name="windowActionBar">false</item>-->
@@ -18,6 +24,17 @@
         <!--<item name="android:navigationBarColor">@color/transparent</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/launch_loading_good_day</item>
+    </style>
+
+    <!-- floatButtonMenu 的主题 -->
+    <style name="menu_labels_style">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <!-- 输入框错误提示 -->
+    <style name="HintError" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#F30657</item>
     </style>
 
 </resources>
