@@ -70,4 +70,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.1'
     implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
 }
