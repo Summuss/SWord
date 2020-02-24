@@ -5,11 +5,14 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
 import top.summus.sword.R;
 import top.summus.sword.databinding.FragmentBaseWordlistBinding;
@@ -68,15 +71,20 @@ public class BaseWordListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_base_wordlist, container, false);
-        if (binding.addWordFbt == null) {
-            Log.i(TAG, "onCreateView: binding fail");
-        } else {
-            Log.i(TAG, "onCreateView: binging success");
-        }
+
+        initRecyclerView();
 
         return binding.getRoot();
     }
 
+    private void initRecyclerView() {
+        // swipe setting
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        binding.recyclerWordList.setLayoutManager(layoutManager);
+
+
+    }
 
     @Override
     public void onAttach(Context context) {
