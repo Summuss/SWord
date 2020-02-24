@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +40,8 @@ import top.summus.sword.fragment.BaseWordListFragment;
  */
 public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener {
     private ActivityStartBinding binding;
+    private NavController navController;
+    private AppBarConfiguration appBarConfiguration;
 
     /**
      * used to calculate whether to exit
@@ -50,11 +54,16 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
+
+        navController = Navigation.findNavController(this, R.id.fragment3);
+
+
+
         Log.i(TAG, "onCreate: " + binding);
         binding.navView.setNavigationItemSelectedListener(item -> {
+            Log.i(TAG, "onCreate: btn clicked");
             if (item.getItemId() == R.id.test_item) {
-                NavController controller = Navigation.findNavController(this, R.id.fragment3);
-                controller.navigate(R.id.action_baseWordListFragment_to_testFragment);
+                navController.navigate(R.id.action_baseWordListFragment_to_testFragment);
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
             }
             return true;
@@ -62,9 +71,24 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        navController = Navigation.findNavController(this, R.id.fragment3);
+//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
+//                .setDrawerLayout(binding.drawerLayout).build();
+//        NavigationUI.setupWithNavController(binding.toolbar,navController);
+
+//        NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar,
+//                navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(binding.toolbar,navController);
+
+//        NavigationUI.setupActionBarWithNavController(this,navController,binding.drawerLayout);
 
 
-/*
+    }
+
+    /*
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //如果按下返回键
