@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -55,38 +56,25 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
 
-        navController = Navigation.findNavController(this, R.id.fragment3);
+        navController = Navigation.findNavController(this, R.id.fragment2);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
+                .setDrawerLayout(binding.drawerLayout).build();
+
+        setSupportActionBar(binding.toolbar);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar, navController, appBarConfiguration);
 
 
 
-        Log.i(TAG, "onCreate: " + binding);
-        binding.navView.setNavigationItemSelectedListener(item -> {
-            Log.i(TAG, "onCreate: btn clicked");
-            if (item.getItemId() == R.id.test_item) {
-                navController.navigate(R.id.action_baseWordListFragment_to_testFragment);
-                binding.drawerLayout.closeDrawer(GravityCompat.START);
-            }
-            return true;
-        });
 
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        navController = Navigation.findNavController(this, R.id.fragment3);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
-//                .setDrawerLayout(binding.drawerLayout).build();
-//        NavigationUI.setupWithNavController(binding.toolbar,navController);
-
-//        NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar,
-//                navController, appBarConfiguration);
-//        NavigationUI.setupWithNavController(binding.toolbar,navController);
-
-//        NavigationUI.setupActionBarWithNavController(this,navController,binding.drawerLayout);
 
 
     }
+
+
 
     /*
     @Override
