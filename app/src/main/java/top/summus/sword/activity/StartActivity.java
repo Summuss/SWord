@@ -57,20 +57,24 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
 
         navController = Navigation.findNavController(this, R.id.fragment2);
+        initAppBar();
+
+    }
+
+    /**
+     * appbar setting to make top bar have proper action.
+     * waring: the sequence of method calling matters very much.
+     */
+    private void initAppBar() {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
                 .setDrawerLayout(binding.drawerLayout).build();
 
         setSupportActionBar(binding.toolbar);
+        // relate supportActionBar with navController
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         NavigationUI.setupWithNavController(binding.navView, navController);
         NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar, navController, appBarConfiguration);
-
-
-
-
-
-
 
     }
 
