@@ -14,18 +14,23 @@
             android:id="@+id/action_baseWordListFragment_to_testFragment"
             app:destination="@id/testFragment"
             app:enterAnim="@anim/fragment_fade_enter" />
+        <action
+            android:id="@+id/action_baseWordListFragment_to_bookNodeFragment"
+            app:destination="@id/bookNodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
         android:name="top.summus.sword.fragment.TestFragment"
         android:label="fragment_test"
         tools:layout="@layout/fragment_test">
-        <action
-            android:id="@+id/action_testFragment_to_baseWordListFragment"
-            app:destination="@id/baseWordListFragment" />
         <argument
             android:name="name"
             android:defaultValue="test"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/bookNodeFragment"
+        android:name="top.summus.sword.fragment.BookNodeFragment"
+        android:label="fragment_booknode"
+        tools:layout="@layout/fragment_booknode" />
 </navigation>

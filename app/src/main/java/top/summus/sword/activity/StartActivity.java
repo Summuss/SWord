@@ -56,7 +56,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
 
-        navController = Navigation.findNavController(this, R.id.fragment2);
+        navController = Navigation.findNavController(this, R.id.fragment);
         initAppBar();
 
     }

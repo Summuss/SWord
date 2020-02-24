@@ -1,0 +1,143 @@
+package top.summus.sword.fragment;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.yanzhenjie.recyclerview.SwipeMenu;
+import com.yanzhenjie.recyclerview.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.SwipeMenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import top.summus.sword.R;
+import top.summus.sword.databinding.FragmentBaseWordlistBinding;
+import top.summus.sword.databinding.FragmentBooknodeBinding;
+import top.summus.sword.entity.BookNode;
+
+/**
+ * A fragment representing a list of Items.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * interface.
+ */
+public class BookNodeFragment extends Fragment {
+
+    private static final String TAG = "BookNodeFragment";
+    private OnListFragmentInteractionListener mListener;
+    private FragmentBooknodeBinding binding;
+    private Activity parentActivity;
+    private List<BookNode> bookNodeList;
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public BookNodeFragment() {
+    }
+
+    public static BookNodeFragment newInstance(int columnCount) {
+        BookNodeFragment fragment = new BookNodeFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            //todo
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booknode, container, false);
+        parentActivity = getActivity();
+        initRecyclerView();
+        return binding.getRoot();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
+        } else {
+            Log.w(TAG, "onAttach: not setting callback listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    private void initRecyclerView() {
+        bookNodeList = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            bookNodeList.add(BookNode.builder().nodeName("test").nodePath("/").nodeTag(0).build());
+
+        }
+        SwipeMenuCreator swipeMenuCreator =
+                (leftMenu, rightMenu, position) -> {
+
+                    SwipeMenuItem editItem =
+                            new SwipeMenuItem(parentActivity)
+                                    .setHeight(android.app.ActionBar.LayoutParams.MATCH_PARENT)
+                                    .setWidth(150)
+                                    .setText("edit")
+                                    .setBackgroundColor(Color.parseColor("#23Df8B"));
+                    rightMenu.addMenuItem(editItem);
+
+                    SwipeMenuItem deleteItem =
+                            new SwipeMenuItem(parentActivity)
+                                    .setHeight(android.app.ActionBar.LayoutParams.MATCH_PARENT)
+                                    .setWidth(150)
+                                    .setBackgroundColor(Color.parseColor("#FF0000"))
+                                    .setText("delete");
+
+                    rightMenu.addMenuItem(deleteItem);
+                };
+        binding.bookNodeRecycler.setSwipeMenuCreator(swipeMenuCreator);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
+        binding.bookNodeRecycler.setLayoutManager(layoutManager);
+        BookNodeRecyclerViewAdapter adapter = new BookNodeRecyclerViewAdapter(bookNodeList);
+//        binding.recyclerWordList.setOnLongClickListener(this);
+        binding.bookNodeRecycler.setAdapter(adapter);
+        binding.bookNodeRecycler.hasFixedSize();
+    }
+
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnListFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(BookNode item);
+    }
+}
