@@ -1,16 +1,24 @@
 package top.summus.sword.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import top.summus.sword.R;
 import top.summus.sword.databinding.ActivityStartBinding;
@@ -35,24 +43,28 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
      * used to calculate whether to exit
      */
     private long exitTime = 0;
+    private static final String TAG = "StartActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
-        replaceFragment(new BaseWordListFragment());
+        Log.i(TAG, "onCreate: " + binding);
+        binding.navView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.test_item) {
+                NavController controller = Navigation.findNavController(this, R.id.fragment3);
+                controller.navigate(R.id.action_baseWordListFragment_to_testFragment);
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+            }
+            return true;
+        });
 
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.right_layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
+
+/*
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //如果按下返回键
@@ -73,4 +85,5 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         return true;
 
     }
+*/
 }

@@ -18,4 +18,11 @@ public class LaunchLoadingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+        finish();
+    }
 }

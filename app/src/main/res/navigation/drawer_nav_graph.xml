@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_nav_graph"
+    app:startDestination="@id/baseWordListFragment">
 
+    <fragment
+        android:id="@+id/baseWordListFragment"
+        android:name="top.summus.sword.fragment.BaseWordListFragment"
+        android:label="fragment_base_wordlist"
+        tools:layout="@layout/fragment_base_wordlist">
+        <action
+            android:id="@+id/action_baseWordListFragment_to_testFragment"
+            app:destination="@id/testFragment"
+            app:enterAnim="@anim/fragment_fade_enter" />
+    </fragment>
+    <fragment
+        android:id="@+id/testFragment"
+        android:name="top.summus.sword.fragment.TestFragment"
+        android:label="fragment_test"
+        tools:layout="@layout/fragment_test">
+        <action
+            android:id="@+id/action_testFragment_to_baseWordListFragment"
+            app:destination="@id/baseWordListFragment" />
+        <argument
+            android:name="name"
+            android:defaultValue="test"
+            app:argType="string" />
+    </fragment>
 </navigation>

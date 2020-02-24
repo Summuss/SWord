@@ -3,7 +3,7 @@
 
 
     <string name="navigation_menu_book">单词本</string>
-    <string name="navigation_menu_test">已标记的单词</string>
+    <string name="navigation_menu_test">测试</string>
 
     <string name="nav_header_desc">Navigation Bar</string>
     <string name="nav_header_title">Sword</string>
