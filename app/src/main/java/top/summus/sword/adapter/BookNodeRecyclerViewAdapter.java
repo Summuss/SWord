@@ -1,4 +1,4 @@
-package top.summus.sword.fragment;
+package top.summus.sword.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import lombok.Getter;
 import top.summus.sword.R;
 import top.summus.sword.entity.BookNode;
 import top.summus.sword.fragment.BookNodeFragment.OnListFragmentInteractionListener;
@@ -26,6 +27,7 @@ import static top.summus.sword.SWordApplication.getContext;
  */
 public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRecyclerViewAdapter.ViewHolder> {
 
+    @Getter
     private final List<BookNode> bookNodeList;
 //    private final OnListFragmentInteractionListener mListener;
 
@@ -79,6 +81,15 @@ public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRe
 
         @Override
         public void onClick(View v) {
+            if (v.getId() == R.id.book_node_outer_layout) {
+                BookNode bookNode = bookNodeList.get(getAdapterPosition());
+                if (bookNode.getNodeTag() == 0) {
+                    //todo
+
+                } else {
+                    //todo
+                }
+            }
 
         }
     }

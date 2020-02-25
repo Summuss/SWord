@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -25,8 +27,10 @@ import java.util.List;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
+import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
 import top.summus.sword.databinding.FragmentBooknodeBinding;
 import top.summus.sword.entity.BookNode;
+import top.summus.sword.viewmodel.BookNodeViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -40,8 +44,10 @@ public class BookNodeFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private FragmentBooknodeBinding binding;
     private AppCompatActivity parentActivity;
-    private List<BookNode> bookNodeList;
     private NavController navController;
+    private BookNodeViewModel bookNodeViewModel;
+    BookNodeRecyclerViewAdapter adapter;
+    
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -72,9 +78,15 @@ public class BookNodeFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booknode, container, false);
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
-
-        initTopBar();
         initRecyclerView();
+
+        bookNodeViewModel = ViewModelProviders.of(parentActivity).get(BookNodeViewModel.class);
+        bookNodeViewModel.getBookNodesShowed().observe(parentActivity, bookNodes -> {
+            adapter.getBookNodeList().clear();
+            adapter.getBookNodeList().addAll(bookNodes);
+            adapter.notifyDataSetChanged();
+        });
+
 
         return binding.getRoot();
     }
@@ -112,11 +124,7 @@ public class BookNodeFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        bookNodeList = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            bookNodeList.add(BookNode.builder().nodeName("test" + i).nodePath("/").nodeTag(0).build());
 
-        }
         SwipeMenuCreator swipeMenuCreator =
                 (leftMenu, rightMenu, position) -> {
 
@@ -141,7 +149,7 @@ public class BookNodeFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
         binding.bookNodeRecycler.setLayoutManager(layoutManager);
-        BookNodeRecyclerViewAdapter adapter = new BookNodeRecyclerViewAdapter(bookNodeList);
+        adapter = new BookNodeRecyclerViewAdapter(new ArrayList<>());
 //        binding.recyclerWordList.setOnLongClickListener(this);
         binding.bookNodeRecycler.setAdapter(adapter);
         binding.bookNodeRecycler.hasFixedSize();

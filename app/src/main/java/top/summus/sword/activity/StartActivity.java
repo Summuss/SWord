@@ -4,19 +4,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
+
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
+import top.summus.sword.SWordDatabase;
+import top.summus.sword.dao.BookNodeDao;
 import top.summus.sword.databinding.ActivityStartBinding;
+import top.summus.sword.entity.BookNode;
 import top.summus.sword.fragment.BaseWordListFragment;
 
 /**
@@ -53,6 +64,43 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> currentFragmentId = destination.getId());
 
+//        initDatabase();
+//        if (SWordDatabase.getInstance().getBookNodeDao().getAll()== null) {
+//            Log.i(TAG, "onCreate: null");
+//        }else {
+//            Log.i(TAG, "onCreate: not null");
+//        }
+
+    }
+
+    private void initDatabase() {
+        SWordDatabase database = SWordDatabase.getInstance();
+        BookNodeDao bookNodeDao = database.getBookNodeDao();
+        BookNode bookNode = BookNode.builder().nodeName("testNode").build();
+        bookNodeDao.insert(bookNode)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "onComplete: ");
+                        List<BookNode> bookNodes = bookNodeDao.getAll1();
+                        List<BookNode> bookNodes1 = bookNodeDao.getAll().getValue();
+                        Log.i(TAG, "onComplete: " + bookNodes.size());
+                        Log.i(TAG, "onComplete: " + (bookNodes1 == null));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "onError: ");
+
+                    }
+                });
     }
 
 
@@ -76,7 +124,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
             } else {
                 if ((System.currentTimeMillis() - exitTime) > 2000) {
                     // 弹出提示，可以有多种方式
-                    Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(binding.getRoot(), "再按一次退出程序", Snackbar.LENGTH_SHORT).show();
                     exitTime = System.currentTimeMillis();
                 } else {
                     finish();
