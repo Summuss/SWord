@@ -19,8 +19,6 @@ public interface BookNodeDao {
     @Query("SELECT * FROM book_node")
     LiveData<List<BookNode>> getAll();
 
-    @Query("SELECT * FROM book_node")
-    List<BookNode> getAll1();
 
     @Query("SELECT * FROM book_node WHERE node_path = :path")
     LiveData<List<BookNode>> selectByPath(String path);
