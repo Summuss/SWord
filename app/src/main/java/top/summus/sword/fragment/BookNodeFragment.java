@@ -1,14 +1,11 @@
 package top.summus.sword.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -20,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.yanzhenjie.recyclerview.SwipeMenu;
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 
@@ -29,8 +25,6 @@ import java.util.List;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
-import top.summus.sword.activity.StartActivity;
-import top.summus.sword.databinding.FragmentBaseWordlistBinding;
 import top.summus.sword.databinding.FragmentBooknodeBinding;
 import top.summus.sword.entity.BookNode;
 
