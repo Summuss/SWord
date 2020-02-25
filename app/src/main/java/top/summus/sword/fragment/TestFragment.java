@@ -32,8 +32,7 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        binding.testRecycler.setLayoutManager(layoutManager);
+
 
         // Inflate the layout for this fragment
         return binding.getRoot();
@@ -42,7 +41,7 @@ public class TestFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
+
+
 }

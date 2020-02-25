@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -14,6 +15,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +24,13 @@ import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
+import top.summus.sword.component.InputPopupWindow;
 import top.summus.sword.databinding.FragmentBooknodeBinding;
 import top.summus.sword.entity.BookNode;
 import top.summus.sword.viewmodel.BookNodeViewModel;
@@ -37,7 +41,7 @@ import top.summus.sword.viewmodel.BookNodeViewModel;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class BookNodeFragment extends Fragment {
+public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAdapter.OnBookNodeItemClicked {
 
     private static final String TAG = "BookNodeFragment";
     private OnListFragmentInteractionListener mListener;
@@ -75,12 +79,59 @@ public class BookNodeFragment extends Fragment {
         initTopBar();
 
         bookNodeViewModel = ViewModelProviders.of(parentActivity).get(BookNodeViewModel.class);
-        bookNodeViewModel.getBookNodesShowed().observe(parentActivity, bookNodes -> {
-            adapter.getBookNodeList().clear();
-            adapter.getBookNodeList().addAll(bookNodes);
-            adapter.notifyDataSetChanged();
+
+        bookNodeViewModel.getCurrentPath().observe(parentActivity, s -> {
+            Log.i(TAG, "onCreateView: currentPath:" + s);
+            if ("/".equals(s)) {
+                binding.backFolder.setVisibility(View.GONE);
+            } else {
+                binding.backFolder.setVisibility(View.VISIBLE);
+            }
+            bookNodeViewModel.updateShowed();
+            bookNodeViewModel.getBookNodesShowed().observe(parentActivity, bookNodes -> {
+                Log.i(TAG, "onCreateView: observe");
+                adapter.getBookNodeList().clear();
+                adapter.getBookNodeList().addAll(bookNodes);
+                adapter.notifyDataSetChanged();
+            });
+
         });
 
+        View.OnClickListener onClickListener = v -> {
+            binding.floatBtnMenu.collapse();
+            InputPopupWindow inputPopupWindow = new InputPopupWindow(parentActivity);
+            inputPopupWindow.focusWindow();
+            inputPopupWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, 0);
+            if (v.getId() == R.id.add_folder_fbt) {
+                inputPopupWindow.setHint("请输入文件夹名称");
+            } else {
+                inputPopupWindow.setHint("请输入单词本名称");
+            }
+            inputPopupWindow.setConfirmBtnOnClickListener(v1 -> {
+                int tag = v.getId() == R.id.add_folder_fbt ? 0 : 1;
+                BookNode bookNode = BookNode.builder().nodeName(inputPopupWindow.getInputText())
+                        .nodePath(bookNodeViewModel.getCurrentPath().getValue())
+                        .nodeTag(tag).nodeChangedDate(new Date()).build();
+                Log.i(TAG, "onCreateView: insert " + bookNode);
+                bookNodeViewModel.insert(bookNode);
+                inputPopupWindow.dismiss();
+            });
+
+        };
+
+        binding.addFolderFbt.setOnClickListener(onClickListener);
+        binding.addPageFbt.setOnClickListener(onClickListener);
+
+
+        binding.backFolder.setOnClickListener(v -> {
+            String path = "";
+            String[] nodes = bookNodeViewModel.getCurrentPath().getValue().split("/");
+            for (int i = 0; i < nodes.length - 1; i++) {
+                path += nodes[i] + "/";
+            }
+            bookNodeViewModel.getCurrentPath().setValue(path);
+            Log.i(TAG, "onCreateView: back to" + path);
+        });
 
         return binding.getRoot();
     }
@@ -143,15 +194,24 @@ public class BookNodeFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
         binding.bookNodeRecycler.setLayoutManager(layoutManager);
-        adapter = new BookNodeRecyclerViewAdapter(new ArrayList<>());
-//        binding.recyclerWordList.setOnLongClickListener(this);
+        adapter = new BookNodeRecyclerViewAdapter(this, new ArrayList<>());
         binding.bookNodeRecycler.setAdapter(adapter);
         binding.bookNodeRecycler.hasFixedSize();
     }
 
+    @Override
+    public void onBookNodeItemClicked(int position, BookNode target) {
+        Log.i(TAG, "onBookNodeItemClicked: " + target.getNodeName());
+        if (target.getNodeTag() == 0) {
+            bookNodeViewModel.getCurrentPath().setValue(target.getNodePath() + target.getNodeName() + "/");
+        } else {
+            //todo
+        }
+
+    }
+
 
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(BookNode item);
     }
 }

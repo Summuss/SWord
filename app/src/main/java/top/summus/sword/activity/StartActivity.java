@@ -87,11 +87,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
                     @Override
                     public void onComplete() {
-                        Log.i(TAG, "onComplete: ");
-                        List<BookNode> bookNodes = bookNodeDao.getAll1();
-                        List<BookNode> bookNodes1 = bookNodeDao.getAll().getValue();
-                        Log.i(TAG, "onComplete: " + bookNodes.size());
-                        Log.i(TAG, "onComplete: " + (bookNodes1 == null));
+
                     }
 
                     @Override

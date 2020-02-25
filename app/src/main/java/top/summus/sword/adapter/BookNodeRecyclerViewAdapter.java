@@ -2,6 +2,7 @@ package top.summus.sword.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +21,17 @@ import java.util.List;
 
 import static top.summus.sword.SWordApplication.getContext;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link BookNode} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRecyclerViewAdapter.ViewHolder> {
 
     @Getter
     private final List<BookNode> bookNodeList;
+    private final OnBookNodeItemClicked clickedCallback;
 //    private final OnListFragmentInteractionListener mListener;
 
-    public BookNodeRecyclerViewAdapter(List<BookNode> items) {
+    public BookNodeRecyclerViewAdapter(OnBookNodeItemClicked clickedCallback, List<BookNode> items) {
         bookNodeList = items;
+        this.clickedCallback = clickedCallback;
     }
 
     @Override
@@ -51,6 +50,7 @@ public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRe
         } else {
             Glide.with(getContext()).load(R.drawable.ic_page).into(holder.iconView);
         }
+
     }
 
     @Override
@@ -81,16 +81,15 @@ public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRe
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.book_node_outer_layout) {
-                BookNode bookNode = bookNodeList.get(getAdapterPosition());
-                if (bookNode.getNodeTag() == 0) {
-                    //todo
 
-                } else {
-                    //todo
-                }
+            if (v.getId() == R.id.book_node_outer_layout) {
+                clickedCallback.onBookNodeItemClicked(getAdapterPosition(), bookNodeList.get(getAdapterPosition()));
             }
 
         }
+    }
+
+    public interface OnBookNodeItemClicked {
+        void onBookNodeItemClicked(int position, BookNode target);
     }
 }

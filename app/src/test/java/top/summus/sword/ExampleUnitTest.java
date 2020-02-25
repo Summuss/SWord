@@ -2,6 +2,8 @@ package top.summus.sword;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -16,8 +18,15 @@ public class ExampleUnitTest {
     }
 
     public static void main(String[] args) {
-        String s = new ExampleUnitTest().test();
+        String currentPath = "/hello/sdfsd/";
 
+        String path = "";
+        String[] nodes = currentPath.split("/");
+        System.out.println(Arrays.toString(nodes));
+        for (int i = 0; i < nodes.length - 1; i++) {
+            path += nodes[i] + "/";
+        }
+        System.out.println(path);
 
     }
 }
