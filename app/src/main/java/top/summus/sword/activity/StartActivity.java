@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -22,6 +23,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
 
 import top.summus.sword.R;
 import top.summus.sword.databinding.ActivityStartBinding;
@@ -39,10 +42,9 @@ import top.summus.sword.fragment.BaseWordListFragment;
  *
  * @author Summus
  */
-public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener {
+public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener, AppbarConfigurationSupplier {
     private ActivityStartBinding binding;
     private NavController navController;
-    private AppBarConfiguration appBarConfiguration;
 
     /**
      * used to calculate whether to exit
@@ -59,6 +61,17 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         navController = Navigation.findNavController(this, R.id.fragment);
         initAppBar();
 
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            NavHostFragment hostFragment = (NavHostFragment) getSupportFragmentManager().getFragments().get(0);
+
+            List<Fragment> fragments = hostFragment.getChildFragmentManager().getFragments();
+            Log.i(TAG, "onCreate: " + fragments.size());
+            if (!fragments.isEmpty()) {
+                Log.i(TAG, "onCreate: " + fragments.get(0).getClass());
+            }
+
+        });
+
     }
 
     /**
@@ -66,16 +79,21 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
      * waring: the sequence of method calling matters very much.
      */
     private void initAppBar() {
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
-                .setDrawerLayout(binding.drawerLayout).build();
 
-        setSupportActionBar(binding.toolbar);
+
+//        setSupportActionBar(binding.toolbar);
         // relate supportActionBar with navController
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         NavigationUI.setupWithNavController(binding.navView, navController);
-        NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(binding.collapsingToolbar, binding.toolbar, navController, appBarConfiguration);
 
+    }
+
+    @Override
+    public AppBarConfiguration getAppBarConfiguration() {
+        return new AppBarConfiguration.Builder(navController.getGraph())
+                .setDrawerLayout(binding.drawerLayout).build();
     }
 
 

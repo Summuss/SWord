@@ -5,8 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -22,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import top.summus.sword.R;
+import top.summus.sword.activity.AppbarConfigurationSupplier;
+import top.summus.sword.activity.StartActivity;
 import top.summus.sword.databinding.FragmentBaseWordlistBinding;
 import top.summus.sword.databinding.FragmentBooknodeBinding;
 import top.summus.sword.entity.BookNode;
@@ -37,8 +45,9 @@ public class BookNodeFragment extends Fragment {
     private static final String TAG = "BookNodeFragment";
     private OnListFragmentInteractionListener mListener;
     private FragmentBooknodeBinding binding;
-    private Activity parentActivity;
+    private AppCompatActivity parentActivity;
     private List<BookNode> bookNodeList;
+    private NavController navController;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,8 +76,12 @@ public class BookNodeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booknode, container, false);
-        parentActivity = getActivity();
+        parentActivity = (AppCompatActivity) getActivity();
+        navController = NavHostFragment.findNavController(this);
+
+        initTopBar();
         initRecyclerView();
+
         return binding.getRoot();
     }
 
@@ -89,10 +102,25 @@ public class BookNodeFragment extends Fragment {
         mListener = null;
     }
 
+    private void initTopBar() {
+        parentActivity.setSupportActionBar(binding.toolbar);
+        NavigationUI.setupActionBarWithNavController(parentActivity, navController);
+        setHasOptionsMenu(true);
+        if (parentActivity instanceof AppbarConfigurationSupplier) {
+            NavigationUI.setupWithNavController(binding.collapsingToolbar,
+                    binding.toolbar, navController,
+                    ((AppbarConfigurationSupplier) parentActivity).getAppBarConfiguration());
+
+        } else {
+            throw new RuntimeException("parentActivity not implement AppbarConfigurationSupplier");
+        }
+
+    }
+
     private void initRecyclerView() {
         bookNodeList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            bookNodeList.add(BookNode.builder().nodeName("test").nodePath("/").nodeTag(0).build());
+            bookNodeList.add(BookNode.builder().nodeName("test" + i).nodePath("/").nodeTag(0).build());
 
         }
         SwipeMenuCreator swipeMenuCreator =

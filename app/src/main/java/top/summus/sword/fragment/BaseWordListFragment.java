@@ -4,8 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -15,9 +22,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+
 
 import top.summus.sword.R;
+import top.summus.sword.activity.AppbarConfigurationSupplier;
+import top.summus.sword.activity.StartActivity;
 import top.summus.sword.databinding.FragmentBaseWordlistBinding;
 
 /**
@@ -29,17 +38,16 @@ import top.summus.sword.databinding.FragmentBaseWordlistBinding;
  * create an instance of this fragment.
  */
 public class BaseWordListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private static final String TAG = "BaseWordListFragment";
 
     private FragmentBaseWordlistBinding binding;
+    private AppCompatActivity parentActivity;
+    private NavController navController;
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,7 +59,6 @@ public class BaseWordListFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment BaseWordListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static BaseWordListFragment newInstance(String param1, String param2) {
         BaseWordListFragment fragment = new BaseWordListFragment();
         Bundle args = new Bundle();
@@ -77,10 +84,30 @@ public class BaseWordListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_base_wordlist, container, false);
+        parentActivity = (AppCompatActivity) getActivity();
+        navController = NavHostFragment.findNavController(this);
 
         initRecyclerView();
 
+        initTopBar();
+
+
         return binding.getRoot();
+    }
+
+    private void initTopBar() {
+        parentActivity.setSupportActionBar(binding.toolbar);
+        NavigationUI.setupActionBarWithNavController(parentActivity, navController);
+        setHasOptionsMenu(true);
+        if (parentActivity instanceof AppbarConfigurationSupplier) {
+            NavigationUI.setupWithNavController(binding.collapsingToolbar,
+                    binding.toolbar, navController,
+                    ((AppbarConfigurationSupplier) parentActivity).getAppBarConfiguration());
+
+        } else {
+            throw new RuntimeException("parentActivity not implement AppbarConfigurationSupplier");
+        }
+
     }
 
     private void initRecyclerView() {
@@ -88,8 +115,6 @@ public class BaseWordListFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         binding.recyclerWordList.setLayoutManager(layoutManager);
-
-
     }
 
     @Override
@@ -111,7 +136,6 @@ public class BaseWordListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu,inflater);
         menu.clear();
         inflater.inflate(R.menu.base_word_list_fragment_menu, menu);
     }
