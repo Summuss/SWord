@@ -1,5 +1,6 @@
 package top.summus.sword.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -15,7 +16,10 @@ import androidx.room.RoomDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -42,7 +46,7 @@ import top.summus.sword.fragment.BaseWordListFragment;
  *
  * @author Summus
  */
-public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener, AppbarConfigurationSupplier {
+public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener, AppbarConfigurationSupplier, NavigationView.OnNavigationItemSelectedListener {
     private ActivityStartBinding binding;
     private NavController navController;
     private int currentFragmentId;
@@ -64,40 +68,12 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> currentFragmentId = destination.getId());
 
-//        initDatabase();
-//        if (SWordDatabase.getInstance().getBookNodeDao().getAll()== null) {
-//            Log.i(TAG, "onCreate: null");
-//        }else {
-//            Log.i(TAG, "onCreate: not null");
-//        }
+        binding.navView.setNavigationItemSelectedListener(this);
+
 
     }
 
-    private void initDatabase() {
-        SWordDatabase database = SWordDatabase.getInstance();
-        BookNodeDao bookNodeDao = database.getBookNodeDao();
-        BookNode bookNode = BookNode.builder().nodeName("testNode").build();
-        bookNodeDao.insert(bookNode)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Log.i(TAG, "onError: ");
-
-                    }
-                });
-    }
 
 
     @Override
@@ -129,5 +105,17 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         }
         return true;
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        if (item.getItemId() == R.id.bookNodeFragment_item) {
+            navController.navigate(R.id.action_baseWordListFragment_to_bookNodeFragment);
+        }
+        return true;
     }
 }

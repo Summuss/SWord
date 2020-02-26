@@ -19,6 +19,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
@@ -50,7 +53,6 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private NavController navController;
     private BookNodeViewModel bookNodeViewModel;
     BookNodeRecyclerViewAdapter adapter;
-    
 
 
     public static BookNodeFragment newInstance(int columnCount) {
@@ -81,15 +83,18 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         bookNodeViewModel = ViewModelProviders.of(parentActivity).get(BookNodeViewModel.class);
 
         bookNodeViewModel.getCurrentPath().observe(parentActivity, s -> {
-            Log.i(TAG, "onCreateView: currentPath:" + s);
+            Log.i(TAG, " switch path to:" + s);
             if ("/".equals(s)) {
                 binding.backFolder.setVisibility(View.GONE);
             } else {
                 binding.backFolder.setVisibility(View.VISIBLE);
             }
+
+            //cancel last liveData's observer,because liveData's reference has changed.
+            bookNodeViewModel.getBookNodesShowed().removeObservers(parentActivity);
             bookNodeViewModel.updateShowed();
             bookNodeViewModel.getBookNodesShowed().observe(parentActivity, bookNodes -> {
-                Log.i(TAG, "onCreateView: observe");
+                Log.i(TAG, "begin observe path :" + s);
                 adapter.getBookNodeList().clear();
                 adapter.getBookNodeList().addAll(bookNodes);
                 adapter.notifyDataSetChanged();
@@ -192,9 +197,17 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
                 };
         binding.bookNodeRecycler.setSwipeMenuCreator(swipeMenuCreator);
 
+        Animation animation = AnimationUtils.loadAnimation(parentActivity, R.anim.list_item_load);
+        LayoutAnimationController animationController = new LayoutAnimationController(animation);
+        animationController.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        animationController.setDelay(0.2f);
+        binding.bookNodeRecycler.setLayoutAnimation(animationController);
+
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
         binding.bookNodeRecycler.setLayoutManager(layoutManager);
         adapter = new BookNodeRecyclerViewAdapter(this, new ArrayList<>());
+
         binding.bookNodeRecycler.setAdapter(adapter);
         binding.bookNodeRecycler.hasFixedSize();
     }

@@ -16,7 +16,9 @@
             app:enterAnim="@anim/fragment_fade_enter" />
         <action
             android:id="@+id/action_baseWordListFragment_to_bookNodeFragment"
-            app:destination="@id/bookNodeFragment" />
+            app:destination="@id/bookNodeFragment"
+            app:enterAnim="@anim/fragment_enter_zoon"
+            app:popExitAnim="@anim/fragment_exit_zoon" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
