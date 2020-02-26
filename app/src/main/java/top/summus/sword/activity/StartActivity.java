@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.room.Room;
@@ -76,6 +79,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
 
 
+
     @Override
     public AppBarConfiguration getAppBarConfiguration() {
         return new AppBarConfiguration.Builder(navController.getGraph())
@@ -85,6 +89,9 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        List<Fragment> fragments = navHostFragment.getChildFragmentManager().getFragments();
 
         //如果按下返回键
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -107,6 +114,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
 
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -115,7 +123,10 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
         }
         if (item.getItemId() == R.id.bookNodeFragment_item) {
             navController.navigate(R.id.action_baseWordListFragment_to_bookNodeFragment);
+        } else if (item.getItemId() == R.id.testFragment) {
+            navController.navigate(R.id.action_baseWordListFragment_to_testFragment);
         }
         return true;
     }
+
 }

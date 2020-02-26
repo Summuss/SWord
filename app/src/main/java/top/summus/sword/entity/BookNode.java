@@ -21,11 +21,11 @@ import java.util.Date;
 
 public class BookNode implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "node_no", defaultValue = "-1")
     @Builder.Default
-    private int nodeNo = -1;
+    private long nodeNo = -1;
 
     @ColumnInfo(name = "node_name")
     private String nodeName;
@@ -45,8 +45,6 @@ public class BookNode implements Serializable {
     @ColumnInfo(name = "sync_status", defaultValue = "1")
     @Builder.Default
     private int syncStatus = 1;
-
-    private int test;
 
 }
 

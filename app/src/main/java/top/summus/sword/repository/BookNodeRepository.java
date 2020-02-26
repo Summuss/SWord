@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import io.reactivex.schedulers.Schedulers;
@@ -19,21 +20,27 @@ public class BookNodeRepository {
     private static BookNodeDao bookNodeDao = SWordDatabase.getInstance().getBookNodeDao();
 
 
-    public static void insert(BookNode... bookNodes) {
-        bookNodeDao.insert(bookNodes).subscribeOn(Schedulers.io())
-                .subscribe(
-                        () -> {
-                            Log.i(TAG, "insert: successfully");
-                        },
-                        (throwable -> {
-                            throwable.printStackTrace();
+//    public static void insert(BookNode... bookNodes) {
+//        bookNodeDao.insert(bookNodes).subscribeOn(Schedulers.io())
+//                .subscribe(
+//                        () -> {
+//                            Log.i(TAG, "insert: successfully");
+//                        },
+//                        (throwable -> {
+//                            throwable.printStackTrace();
+//
+//                            Log.i(TAG, "insert: error");
+//                        }));
+//    }
 
-                            Log.i(TAG, "insert: error");
-                        }));
-    }
-
-    public static LiveData<List<BookNode>> selectByPath(String path) {
-        return bookNodeDao.selectByPath(path);
+    public static List<BookNode> selectByPath(String path) {
+//        List<BookNode> result=null;
+//        bookNodeDao.selectByPath(path).subscribeOn(Schedulers.io())
+//                .subscribe(bookNodes -> {
+//                   bookNodes
+//                })
+//        return bookNodeDao.selectByPath(path);
+        return null;
 
     }
 

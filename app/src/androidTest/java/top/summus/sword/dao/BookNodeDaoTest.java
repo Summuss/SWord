@@ -44,22 +44,21 @@ public class BookNodeDaoTest {
     public void insert() {
         BookNode bookNode = BookNode.builder().nodeName("test").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
                 .build();
-//        bookNodeDao.insert(bookNode).subscribeOn(Schedulers.io())
-//                .subscribe(() -> {
-//                    System.out.println("success");
-//                });
-//        bookNodeDao.insert(BookNode.builder().id(1).build()).subscribe(() -> System.out.println("success"));
-        bookNodeDao.insert1(bookNode);
-        bookNode.setNodeName("34");
-        bookNodeDao.insert1(bookNode);
-        List<BookNode> bookNodes = bookNodeDao.getAll1();
+        BookNode bookNode1 = BookNode.builder().nodeName("test").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
+                .build();
 
-
-//        bookNodeDao.getAll().observe(ApplicationProvider.getApplicationContext(),bookNodes -> {
-//            System.out.println("lived : "+bookNodes);
+//        bookNodeDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {
+//            System.out.println(longs);
+//            if (throwable!=null){
+//
+//                throwable.printStackTrace();
+//            }
 //        });
-        bookNode.setNodeName("yy");
-        bookNodeDao.insert1(bookNode);
+
+        List<BookNode> bookNodes = bookNodeDao.getAll1();
+        System.out.println(bookNodes.size());
+
+
 
 
         if (bookNodes == null) {

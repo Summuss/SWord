@@ -15,7 +15,7 @@ import top.summus.sword.util.RoomConventer;
 
 import static top.summus.sword.SWordApplication.getContext;
 
-@Database(entities = {BookNode.class}, version = 2, exportSchema = false)
+@Database(entities = {BookNode.class}, version = 3, exportSchema = false)
 @TypeConverters({RoomConventer.class})
 public abstract class SWordDatabase extends RoomDatabase {
     private static SWordDatabase database;
