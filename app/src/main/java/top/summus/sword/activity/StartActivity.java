@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
@@ -36,6 +37,7 @@ import top.summus.sword.dao.BookNodeDao;
 import top.summus.sword.databinding.ActivityStartBinding;
 import top.summus.sword.entity.BookNode;
 import top.summus.sword.fragment.BaseWordListFragment;
+import top.summus.sword.util.BackPressedHandle;
 
 /**
  * Launched after {@link LaunchLoadingActivity} finished
@@ -77,9 +79,6 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
     }
 
 
-
-
-
     @Override
     public AppBarConfiguration getAppBarConfiguration() {
         return new AppBarConfiguration.Builder(navController.getGraph())
@@ -91,7 +90,7 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
-        List<Fragment> fragments = navHostFragment.getChildFragmentManager().getFragments();
+        Fragment fragment = Objects.requireNonNull(navHostFragment).getChildFragmentManager().getFragments().get(0);
 
         //如果按下返回键
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -99,7 +98,9 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
             } else if (navController.getGraph().getStartDestination() != currentFragmentId) {
-                onBackPressed();
+                if (fragment instanceof BackPressedHandle) {
+                    ((BackPressedHandle) fragment).onBackPressed();
+                }
             } else {
                 if ((System.currentTimeMillis() - exitTime) > 2000) {
                     // 弹出提示，可以有多种方式

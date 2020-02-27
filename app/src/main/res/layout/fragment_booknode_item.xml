@@ -15,7 +15,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/folder_icon"
 
-        android:src="@drawable/ic_folder_black_24dp" />
+        android:src="@drawable/ic_folder_color_primary" />
 
     <TextView
         android:id="@+id/node_name_view"

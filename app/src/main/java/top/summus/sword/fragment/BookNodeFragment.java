@@ -181,7 +181,12 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
      * {@link BookNodeViewModel.DataChangedListener}
      **/
     @Override
-    public void onDataLoadingFinished() {
+    public void onPathSwished(String destinationPath) {
+        if ("/".equals(destinationPath)) {
+            binding.backToPrevious.setVisibility(View.GONE);
+        } else {
+            binding.backToPrevious.setVisibility(View.VISIBLE);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -230,5 +235,10 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     @Override
     public void onBackPressed() {
         Log.i(TAG, "onBackPressed");
+        if (bookNodeViewModel.getCurrentPath().getValue().equals("/")) {
+            parentActivity.onBackPressed();
+        } else {
+            onBackToPreviousClick(null);
+        }
     }
 }

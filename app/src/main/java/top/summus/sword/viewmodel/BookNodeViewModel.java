@@ -54,7 +54,7 @@ public class BookNodeViewModel extends ViewModel {
                         if (bookNodes != null) {
                             bookNodesShowed.clear();
                             bookNodesShowed.addAll(bookNodes);
-                            callback.onDataLoadingFinished();
+                            callback.onPathSwished(s);
                         }
                         if (throwable != null) {
                             throwable.printStackTrace();
@@ -137,7 +137,7 @@ public class BookNodeViewModel extends ViewModel {
         /**
          * callback when {@code currentPath} is changed
          */
-        void onDataLoadingFinished();
+        void onPathSwished(String destinationPath);
 
         /**
          * callback when {@code insert()} is called

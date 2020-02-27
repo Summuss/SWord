@@ -2,7 +2,6 @@ package top.summus.sword.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,7 @@ public class BookNodeRecyclerViewAdapter extends RecyclerView.Adapter<BookNodeRe
         BookNode bookNode = bookNodeList.get(position);
         holder.folderNameView.setText(bookNode.getNodeName());
         if (bookNode.getNodeTag() == 0) {
-            Glide.with(getContext()).load(R.drawable.ic_folder_black_24dp).into(holder.iconView);
+            Glide.with(getContext()).load(R.drawable.ic_folder_color_primary).into(holder.iconView);
         } else {
             Glide.with(getContext()).load(R.drawable.ic_page).into(holder.iconView);
         }
