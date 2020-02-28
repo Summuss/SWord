@@ -69,27 +69,7 @@ public class BookNodeViewModel extends ViewModel implements TimeHttpService.Time
     /**
      * set the observer of {@link #currentPath}. when it is changed, get booNodes from database
      */
-//    public void loadData(AppCompatActivity activity) {
-//        currentPath.observe(activity, s -> {
-//            Log.i(TAG, "[loadData]  switch path to:" + s);
-//            bookNodeRoomDao.selectByPath(s).subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe((bookNodes, throwable) -> {
-//                        if (bookNodes != null) {
-//                            Log.i(TAG, "[loadData] get bookNodes from " + s + " successfully");
-//                            bookNodesShowed.clear();
-//                            bookNodesShowed.addAll(bookNodes);
-//                            callback.onPathSwished(s);
-//                        }
-//                        if (throwable != null) {
-//                            Log.e(TAG, "[loadData] get bookNodes from " + s + " fail", throwable);
-//                        }
-//                    });
-//        });
-//        currentPath.setValue("/");
-//        bookNodeHttpService.downloadUnSynced();
-//    }
-    public void loadData(AppCompatActivity activity) {
+    private void loadData(AppCompatActivity activity) {
         currentPath.observe(activity, s -> {
             bookNodeRoomService.selectByPath(s, bookNodes -> {
                 bookNodesShowed.clear();
@@ -114,60 +94,43 @@ public class BookNodeViewModel extends ViewModel implements TimeHttpService.Time
      * </ol>
      * </p>
      */
+
+    private int findPositionInBookNodes(BookNode target, List<BookNode> bookNodeList) {
+
+        for (int i = 0; i < bookNodeList.size(); i++) {
+            BookNode bookNode = bookNodeList.get(i);
+            boolean condition1 = bookNode.getNodeTag() > target.getNodeTag();
+            boolean condition2 = bookNode.getNodeName().compareTo(target.getNodeName()) > 0;
+            if (condition1 || condition2) {
+                return i;
+            }
+        }
+        return bookNodeList.size();
+    }
+
     public void insert(BookNode bookNode) {
-        bookNodeRoomDao.insert(bookNode).subscribeOn(Schedulers.io())
-                .map(longs -> {
+        bookNodeRoomService.insert(bookNode, new BookNodeRoomService.InsertCallback() {
+            @Override
+            public void onInsertFinishedSuccess(BookNode bookNode) {
+                Log.i(TAG, "onInsertFinishedSuccess: " + bookNode);
+                int positionInBookNodes = findPositionInBookNodes(bookNode, bookNodesShowed);
+                bookNodesShowed.add(positionInBookNodes, bookNode);
+                callback.onInsertFinished(positionInBookNodes);
+            }
 
-                    long key = longs.get(0);
-                    List<BookNode> bookNodes = bookNodeRoomDao.selectByPathBySync(currentPath.getValue());
-                    long postion = -1;
-                    for (int i = 0; i < bookNodes.size(); i++) {
-                        if (key == bookNodes.get(i).getId()) {
-                            postion = i;
-                        }
-                    }
-                    List<Long> result = new ArrayList<>();
-                    result.add(key);
-                    result.add(postion);
-                    return result;
-                }).observeOn(AndroidSchedulers.mainThread())
-                .subscribe((longs, throwable) -> {
-
-                    if (longs != null) {
-                        Log.i(TAG, "[insert]   insert successfully  " + bookNode);
-                        long key = longs.get(0);
-
-                        int position = longs.get(1).intValue();
-                        Log.i(TAG, "[insert]  key= " + key);
-                        Log.i(TAG, "[insert]  position= " + position);
-
-                        bookNode.setId(key);
-                        bookNodesShowed.add(position, bookNode);
-                        callback.onInsertFinished(position);
-                    }
-                    if (throwable != null) {
-                        Log.e(TAG, "[insert] insert failed  " + bookNode, throwable);
-                    }
-                });
-
-
+            @Override
+            public void onInsertFinishedError(BookNode bookNode, Throwable throwable) {
+                Log.e(TAG, "onInsertFinishedError: ", throwable);
+            }
+        });
     }
 
 
-    public void delete(BookNode bookNode, int position) {
-        bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        () -> {
-                            Log.i(TAG, "[delete] delete successfully " + bookNode);
-                            bookNodesShowed.remove(position);
-                            callback.onDeleteFinished(position);
-
-                        },
-                        throwable -> Log.e(TAG, "[delete]  delete failed  " + bookNode, throwable)
-                )
-        ;
-
+    public void delete(BookNode target, int position) {
+        bookNodeRoomService.delete(target, bookNode -> {
+            Log.i(TAG, "delete: successfully  " + target);
+            callback.onDeleteFinished(position);
+        });
     }
 
 
