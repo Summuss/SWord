@@ -1,16 +1,16 @@
 
-Isquid:S1168+"+Return an empty collection instead of null.(¥¹ï8•êêˆ.
-nsquid:CommentedOutCodeLine%"<This block of commented-out lines of code should be removed.(Æä¯­üÿÿÿÿ8Ë•êˆ.
-Isquid:S1172$"+Remove this unused method parameter "path".(àüÄƒ8•êêˆ.
-nsquid:CommentedOutCodeLine'"<This block of commented-out lines of code should be removed.(×—Çÿÿÿÿÿ8Ë•êˆ.
-_squid:UselessImportCheck"4Remove this unused import 'android.content.Context'.(©Ê‰è8…”íØ‡.
-isquid:CommentedOutCodeLine*"<This block of commented-out lines of code should be removed.(Úí¯¬8Ë•êˆ.
-nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ö¤Íµüÿÿÿÿ8¯ØÀ†ˆ.
-hsquid:UselessImportCheck"8Remove this unused import 'androidx.lifecycle.LiveData'.(ß„İŞşÿÿÿÿ8ú±Öˆ.
-Wsquid:S1118":Add a private constructor to hide the implicit public one.(é‚„8áÁ«Ú‡.
-Esquid:S1068"'Remove this unused "TAG" private field.(Ê²ß8¯ØÀ†ˆ.
-Msquid:S1068"/Remove this unused "bookNodeDao" private field.(¥²›Â8¯ØÀ†ˆ.
-isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(üãÇĞ8¯ØÀ†ˆ.
-isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éÉ™Ò8¯ØÀ†ˆ.
-_squid:UselessImportCheck	"4Remove this unused import 'java.lang.reflect.Array'.(‡¡É˜8Ë•êˆ.
-nsquid:CommentedOutCodeLine "<This block of commented-out lines of code should be removed.(—†Ôšùÿÿÿÿ8¯ØÀ†ˆ.
+nsquid:CommentedOutCodeLine	"<This block of commented-out lines of code should be removed.(Èµ«–úÿÿÿÿ8ì‚£Îˆ.
+nsquid:CommentedOutCodeLine0"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8ì‚£Îˆ.
+nsquid:CommentedOutCodeLine'"<This block of commented-out lines of code should be removed.(èÀ†Öøÿÿÿÿ8Ë•êˆ.
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(˜â‘„8ì‚£Îˆ.
+nsquid:CommentedOutCodeLine$"<This block of commented-out lines of code should be removed.(ñÌÀıÿÿÿÿ8ì‚£Îˆ.
+nsquid:CommentedOutCodeLine-"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8ì‚£Îˆ.
+8squid:S1220""Move this file to a named package.8ì‚£Îˆ.
+isquid:CommentedOutCodeLine "<This block of commented-out lines of code should be removed.(©ùüé8¯ØÀ†ˆ.
+nsquid:CommentedOutCodeLine*"<This block of commented-out lines of code should be removed.(ší›×úÿÿÿÿ8Ë•êˆ.
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ç´¿Îúÿÿÿÿ8ì‚£Îˆ.
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ˆÒ÷›ùÿÿÿÿ8ì‚£Îˆ.
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Àƒş8ì‚£Îˆ.
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(„ƒ½ø8¯ØÀ†ˆ.
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(úÓô»8¯ØÀ†ˆ.
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(£Ê¹Ù8¯ØÀ†ˆ.

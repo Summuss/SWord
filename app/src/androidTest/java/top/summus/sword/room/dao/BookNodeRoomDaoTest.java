@@ -1,7 +1,6 @@
-package top.summus.sword.dao;
+package top.summus.sword.room.dao;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -13,26 +12,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
-import java.util.List;
 
-import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.SWordDatabase;
 import top.summus.sword.entity.BookNode;
 
-import static org.junit.Assert.*;
-
 @RunWith(AndroidJUnit4.class)
-public class BookNodeDaoTest {
+public class BookNodeRoomDaoTest {
 
-    private static final String TAG = "BookNodeDaoTest";
-    private BookNodeDao bookNodeDao;
+    private static final String TAG = "BookNodeRoomDaoTest";
+    private BookNodeRoomDao bookNodeRoomDao;
     private SWordDatabase database;
 
     @Before
     public void setUp() throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         database = Room.inMemoryDatabaseBuilder(context, SWordDatabase.class).build();
-        bookNodeDao = database.getBookNodeDao();
+        bookNodeRoomDao = database.getBookNodeDao();
     }
 
     @After
@@ -44,10 +39,15 @@ public class BookNodeDaoTest {
     public void insert() {
         BookNode bookNode = BookNode.builder().nodeName("test").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
                 .build();
-        BookNode bookNode1 = BookNode.builder().nodeName("test").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
-                .build();
+        BookNode bookNode1 = BookNode.builder().nodeName("test3").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
 
-//        bookNodeDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {
+                .build();
+        bookNodeRoomDao.insertSynced(bookNode, bookNode1);
+
+        long num = bookNodeRoomDao.selectCountByNoSynced(4);
+
+
+//        bookNodeRoomDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {
 //            System.out.println(longs);
 //            if (throwable!=null){
 //
@@ -55,19 +55,11 @@ public class BookNodeDaoTest {
 //            }
 //        });
 
-        List<BookNode> bookNodes = bookNodeDao.getAll1();
-        System.out.println(bookNodes.size());
 
 
 
 
-        if (bookNodes == null) {
-//            System.out.println("null");
-            Log.i(TAG, "insert: null");
 
-        } else {
-            System.out.println(bookNodes);
-        }
 
     }
 

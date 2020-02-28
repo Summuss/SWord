@@ -1,6 +1,10 @@
 
-@squid:S1643¡"Use a StringBuilder instead.(¸ ¸ëøÿÿÿÿ8•ÃÁ‘ˆ.
-jsquid:S00112S"FDefine and throw a dedicated exception instead of using a generic one.(ÇÁ¾¥øÿÿÿÿ8£Öì§ˆ.
-Lsquid:S1172"(Remove this unused method parameter "v".(†•Ãğıÿÿÿÿ8¹Òß¢ˆ.
-Isquid:S00108®")Either remove or fill this block of code.(å¥‡8•ÃÁ‘ˆ.
-Vsquid:S1135ä"2Complete the task associated to this TODO comment.(ñ•Ôøÿÿÿÿ8•ÃÁ‘ˆ.
+Lsquid:S1172¥"(Remove this unused method parameter "v".(†•Ãğıÿÿÿÿ8Î°ôÏˆ.
+nsquid:UselessImportCheck%">Remove this unused import 'top.summus.sword.SWordApplication'.(ıµë…øÿÿÿÿ8»Ş‰Îˆ.
+fsquid:UselessImportCheck&";Remove this unused import 'top.summus.sword.SWordDatabase'.(ËÉú¿8ÒïîÍˆ.
+Vsquid:S1135ğ"2Complete the task associated to this TODO comment.(ñ•Ôøÿÿÿÿ8•ÃÁ‘ˆ.
+@squid:S1643©"Use a StringBuilder instead.(¸ ¸ëøÿÿÿÿ8•ÃÁ‘ˆ.
+[squid:UselessImportCheck!"0Remove this unused import 'javax.inject.Inject'.(ì–íÔ8ÒïîÍˆ.
+Isquid:S00108¶")Either remove or fill this block of code.(å¥‡8•ÃÁ‘ˆ.
+Ysquid:UselessImportCheck".Remove this unused import 'java.util.Objects'.(¼¸õ›8 ÍîÍˆ.
+jsquid:S00112["FDefine and throw a dedicated exception instead of using a generic one.(ÇÁ¾¥øÿÿÿÿ8£Öì§ˆ.

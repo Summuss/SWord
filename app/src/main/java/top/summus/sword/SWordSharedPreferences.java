@@ -7,7 +7,6 @@ import android.util.Log;
 import java.util.Date;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class SWordSharedPreferences {
     private static final String TAG = "SingletonInit";
@@ -15,19 +14,19 @@ public class SWordSharedPreferences {
     private SharedPreferences sharedPreferences;
 
     @Getter
-    private Date lastSyncTime;
+    private Date bookNodeLastPullTime;
 
     @Getter
     private long timeGap;
 
     public SWordSharedPreferences(Context context) {
         sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-        if (sharedPreferences.contains("lastSyncTime")) {
-            long mills = sharedPreferences.getLong("lastSyncTime", 0);
-            lastSyncTime = new Date(mills);
+        if (sharedPreferences.contains("bookNodeLastPullTime")) {
+            long mills = sharedPreferences.getLong("bookNodeLastPullTime", 0);
+            bookNodeLastPullTime = new Date(mills);
         } else {
-            lastSyncTime = new Date();
-            setLastSyncTime(lastSyncTime);
+            bookNodeLastPullTime = new Date();
+            setBookNodeLastPullTime(bookNodeLastPullTime);
         }
         if (sharedPreferences.contains("timeGap")) {
             timeGap = sharedPreferences.getLong("timeGap", 0);
@@ -40,10 +39,10 @@ public class SWordSharedPreferences {
     }
 
 
-    public void setLastSyncTime(Date date) {
-        lastSyncTime = date;
+    public void setBookNodeLastPullTime(Date date) {
+        bookNodeLastPullTime = date;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("lastSyncTime", date.getTime());
+        editor.putLong("bookNodeLastPullTime", date.getTime());
         editor.apply();
     }
 

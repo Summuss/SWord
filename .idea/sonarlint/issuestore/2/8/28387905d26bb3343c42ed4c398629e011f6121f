@@ -1,15 +1,2 @@
 
-_squid:UselessImportCheck"/Remove this unused import 'androidx.room.Room'.(ı½‘‹ÿÿÿÿÿ8çğÜ‡.
-ksquid:UselessImportCheck#"@Remove this unused import 'io.reactivex.disposables.Disposable'.(¶µ¾®8¶ éù‡.
-hsquid:UselessImportCheck"8Remove this unused import 'androidx.lifecycle.LiveData'.(ß„İŞşÿÿÿÿ8§†£İ‡.
-gsquid:UselessImportCheck"7Remove this unused import 'androidx.room.RoomDatabase'.(´§¹ğøÿÿÿÿ8”ı´Ô‡.
-hsquid:UselessImportCheck""=Remove this unused import 'io.reactivex.CompletableObserver'.(€Ô¿8¶ éù‡.
-osquid:UselessImportCheck$"?Remove this unused import 'io.reactivex.schedulers.Schedulers'.(š‰¢úÿÿÿÿ8¶ éù‡.
-rsquid:UselessImportCheck
-"BRemove this unused import 'androidx.fragment.app.FragmentManager'.(¯­ë‹ıÿÿÿÿ8İ«ÿ‘ˆ.
-msquid:UselessImportCheck)"=Remove this unused import 'top.summus.sword.entity.BookNode'.(°çµşÿÿÿÿÿ8×·éù‡.
-fsquid:UselessImportCheck&";Remove this unused import 'top.summus.sword.SWordDatabase'.(ËÉú¿8×·éù‡.
-]squid:UselessImportCheck"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8ÚÒıªˆ.
-msquid:UselessImportCheck'"=Remove this unused import 'top.summus.sword.dao.BookNodeDao'.(Ç¦ÿûıÿÿÿÿ8×·éù‡.
-Esquid:S1068G"'Remove this unused "TAG" private field.(ã’Œ†8ÚÒıªˆ.
-†squid:S3252{"hUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_SHORT".(ÈöîÊ8¼±Ö«ˆ.
+†squid:S3252v"hUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_SHORT".(ÈöîÊ8¼±Ö«ˆ.

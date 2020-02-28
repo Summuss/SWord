@@ -7,42 +7,28 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
 import top.summus.sword.SWordApplication;
-import top.summus.sword.SWordDatabase;
-import top.summus.sword.SWordSharedPreferences;
-import top.summus.sword.dao.BookNodeDao;
+import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.databinding.ActivityStartBinding;
-import top.summus.sword.entity.BookNode;
 import top.summus.sword.fragment.BaseWordListFragment;
 import top.summus.sword.util.BackPressedHandle;
 
@@ -75,7 +61,7 @@ public class StartActivity extends AppCompatActivity
     private static final String TAG = "StartActivity";
 
     @Inject
-    SWordSharedPreferences sWordSharedPreferences;
+    TimeApi timeApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +71,7 @@ public class StartActivity extends AppCompatActivity
         binding.navView.setNavigationItemSelectedListener(this);
 
         SWordApplication.getAppComponent().inject(this);
-        Log.i(TAG, "onCreate: " + sWordSharedPreferences.hashCode());
+        Log.i(TAG, "onCreate: " + timeApi.hashCode());
 
     }
 

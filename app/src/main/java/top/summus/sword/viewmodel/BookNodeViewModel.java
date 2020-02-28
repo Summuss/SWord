@@ -4,50 +4,46 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
-import okhttp3.OkHttpClient;
 import top.summus.sword.SWordApplication;
-import top.summus.sword.SWordDatabase;
-import top.summus.sword.SWordSharedPreferences;
-import top.summus.sword.api.BookNodeApi;
-import top.summus.sword.api.TimeApi;
-import top.summus.sword.dao.BookNodeDao;
+import top.summus.sword.network.api.BookNodeApi;
+import top.summus.sword.network.service.BookNodeHttpService;
+import top.summus.sword.room.dao.BookNodeRoomDao;
 import top.summus.sword.entity.BookNode;
-import top.summus.sword.util.DateFormatUtil;
+import top.summus.sword.network.service.TimeHttpService;
+import top.summus.sword.room.service.BookNodeRoomService;
 
 @SuppressLint("CheckResult")
 
-public class BookNodeViewModel extends ViewModel {
+public class BookNodeViewModel extends ViewModel implements TimeHttpService.TimeCallback, BookNodeHttpService.BookNodeHttpServiceCallback {
 
 
     private static final String TAG = "BookNodeViewModel";
 
     @Inject
-    BookNodeDao bookNodeDao;
+    BookNodeRoomDao bookNodeRoomDao;
 
     @Inject
     BookNodeApi bookNodeApi;
 
     @Inject
-    TimeApi timeApi;
+    BookNodeRoomService bookNodeRoomService;
 
-    @Inject
-    SWordSharedPreferences sharedPreferences;
+    private TimeHttpService timeHttpService = new TimeHttpService(this);
+
+    private BookNodeHttpService bookNodeHttpService = new BookNodeHttpService(this);
+
 
     private DataChangedListener callback;
 
@@ -67,33 +63,43 @@ public class BookNodeViewModel extends ViewModel {
 
     private void dependencyInject() {
         SWordApplication.getAppComponent().inject(this);
-        Objects.requireNonNull(bookNodeDao, "inject bookNodeDao failed");
-        Log.i(TAG, "dependencyInject: " + sharedPreferences.hashCode());
     }
 
 
     /**
      * set the observer of {@link #currentPath}. when it is changed, get booNodes from database
      */
+//    public void loadData(AppCompatActivity activity) {
+//        currentPath.observe(activity, s -> {
+//            Log.i(TAG, "[loadData]  switch path to:" + s);
+//            bookNodeRoomDao.selectByPath(s).subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe((bookNodes, throwable) -> {
+//                        if (bookNodes != null) {
+//                            Log.i(TAG, "[loadData] get bookNodes from " + s + " successfully");
+//                            bookNodesShowed.clear();
+//                            bookNodesShowed.addAll(bookNodes);
+//                            callback.onPathSwished(s);
+//                        }
+//                        if (throwable != null) {
+//                            Log.e(TAG, "[loadData] get bookNodes from " + s + " fail", throwable);
+//                        }
+//                    });
+//        });
+//        currentPath.setValue("/");
+//        bookNodeHttpService.downloadUnSynced();
+//    }
     public void loadData(AppCompatActivity activity) {
         currentPath.observe(activity, s -> {
-            Log.i(TAG, "[loadData]  switch path to:" + s);
-            bookNodeDao.selectByPath(s).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((bookNodes, throwable) -> {
-                        if (bookNodes != null) {
-                            Log.i(TAG, "[loadData] get bookNodes from " + s + " successfully");
-                            bookNodesShowed.clear();
-                            bookNodesShowed.addAll(bookNodes);
-                            callback.onPathSwished(s);
-                        }
-                        if (throwable != null) {
-                            Log.e(TAG, "[loadData] get bookNodes from " + s + " fail", throwable);
-                        }
-                    });
+            bookNodeRoomService.selectByPath(s, bookNodes -> {
+                bookNodesShowed.clear();
+                bookNodesShowed.addAll(bookNodes);
+                callback.onPathSwished(s);
+            });
         });
         currentPath.setValue("/");
-        timeCorrect();
+
+
     }
 
     /**
@@ -101,7 +107,7 @@ public class BookNodeViewModel extends ViewModel {
      *
      * <p>
      * <ol>
-     * <li> get primary key from {@link BookNodeDao#insert(BookNode...)}.</li>
+     * <li> get primary key from {@link BookNodeRoomDao#insert(BookNode...)}.</li>
      * <li> get list of bookNode whose path equal inserted items'.</li>
      * <li> find the position which inserted item at  from list.</li>
      * <li> return a @{List} which contains primary key and position of inserted item.</li>
@@ -109,11 +115,11 @@ public class BookNodeViewModel extends ViewModel {
      * </p>
      */
     public void insert(BookNode bookNode) {
-        bookNodeDao.insert(bookNode).subscribeOn(Schedulers.io())
+        bookNodeRoomDao.insert(bookNode).subscribeOn(Schedulers.io())
                 .map(longs -> {
 
                     long key = longs.get(0);
-                    List<BookNode> bookNodes = bookNodeDao.selectByPathBySync(currentPath.getValue());
+                    List<BookNode> bookNodes = bookNodeRoomDao.selectByPathBySync(currentPath.getValue());
                     long postion = -1;
                     for (int i = 0; i < bookNodes.size(); i++) {
                         if (key == bookNodes.get(i).getId()) {
@@ -149,7 +155,7 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void delete(BookNode bookNode, int position) {
-        bookNodeDao.delete(bookNode).subscribeOn(Schedulers.io())
+        bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
@@ -166,37 +172,17 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void timeCorrect() {
-        final OkHttpClient client = new OkHttpClient.Builder().
-                readTimeout(100, TimeUnit.MILLISECONDS)
-                .build();
 
-        final long mills = System.currentTimeMillis();
+    }
 
-        timeApi.getTime().subscribeOn(Schedulers.io())
-                .subscribe(
-                        voidResponse -> {
-                            long currentMills = System.currentTimeMillis();
-                            long delay = currentMills - mills;
-                            Log.i(TAG, "[timeCorrect]  " + "delay " + delay);
-                            if (voidResponse.isSuccessful()) {
-                                Log.i(TAG, "[timeCorrect]  " + "get right response statusCode");
-                                Log.i(TAG, "[timeCorrect]  " + "get server time: " + DateFormatUtil.parseDateToString(voidResponse.headers().getDate("Date")));
-                                ;
-                                long serverMills = voidResponse.headers().getDate("Date").getTime();
-                                long gap = serverMills - delay - currentMills;
+    @Override
+    public void onTimeCorrectFinished() {
+        Log.i(TAG, "onTimeCorrectFinished: ");
+    }
 
-                                Log.i(TAG, "[timeCorrect]  " + "last gap is" + sharedPreferences.getTimeGap());
-                                Log.i(TAG, "[timeCorrect]  " + "calculated gap is " + gap);
-                                Log.i(TAG, "[timeCorrect]  " + "minus last gap is " + (gap - sharedPreferences.getTimeGap()));
-
-                                sharedPreferences.setTimeGap(gap);
-                                Log.i(TAG, "[timeCorrect]  " + "write gap to local file ");
-                            } else {
-                                Log.i(TAG, "[timeCorrect]  " + " get wrong response statusCode");
-                            }
-                        },
-                        throwable -> Log.e(TAG, "[timeCorrect]  error!!", throwable)
-                );
+    @Override
+    public void onDownLoadBookNodesFinished() {
+        Log.i(TAG, "onDownLoadBookNodesFinished: ");
     }
 
     public interface DataChangedListener {

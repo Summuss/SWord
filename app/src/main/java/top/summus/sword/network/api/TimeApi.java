@@ -1,4 +1,4 @@
-package top.summus.sword.api;
+package top.summus.sword.network.api;
 
 import io.reactivex.Observable;
 import retrofit2.Response;

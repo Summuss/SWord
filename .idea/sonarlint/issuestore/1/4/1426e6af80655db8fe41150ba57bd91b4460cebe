@@ -1,6 +1,0 @@
-
-psquid:UselessImportCheck
-"ERemove this unused import 'androidx.sqlite.db.SupportSQLiteDatabase'.(›ú¥8°ã½Ü‡.
-csquid:UselessImportCheck"8Remove this unused import 'androidx.room.TypeConverter'.(ïèÃˆ8ÐÿÏÔ‡.
-isquid:UselessImportCheck	">Remove this unused import 'androidx.room.migration.Migration'.(”²÷­8°ã½Ü‡.
-csquid:UselessImportCheck"8Remove this unused import 'androidx.annotation.NonNull'.(ˆÛúÜ8°ã½Ü‡.
