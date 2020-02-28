@@ -33,6 +33,5 @@
     <fragment
         android:id="@+id/bookNodeFragment"
         android:name="top.summus.sword.fragment.BookNodeFragment"
-        android:label="fragment_booknode"
         tools:layout="@layout/fragment_booknode" />
 </navigation>

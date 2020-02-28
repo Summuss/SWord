@@ -31,11 +31,15 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
+import top.summus.sword.SWordApplication;
 import top.summus.sword.SWordDatabase;
+import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.dao.BookNodeDao;
 import top.summus.sword.databinding.ActivityStartBinding;
 import top.summus.sword.entity.BookNode;
@@ -70,6 +74,8 @@ public class StartActivity extends AppCompatActivity
     private long exitTime = 0;
     private static final String TAG = "StartActivity";
 
+    @Inject
+    SWordSharedPreferences sWordSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,9 @@ public class StartActivity extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
         initNavController();
         binding.navView.setNavigationItemSelectedListener(this);
+
+        SWordApplication.getAppComponent().inject(this);
+        Log.i(TAG, "onCreate: " + sWordSharedPreferences.hashCode());
 
     }
 

@@ -9,8 +9,7 @@ import top.summus.sword.entity.BookNode;
 import java.util.List;
 
 public interface BookNodeApi {
-    @GET("time")
-    Observable<Response<Void>> getTime();
+
 
     @GET("time")
     Call<Void> time();

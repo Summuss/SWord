@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,10 +27,15 @@ import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 
 import java.util.Date;
+import java.util.Objects;
 
+
+import javax.inject.Inject;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import top.summus.sword.R;
+import top.summus.sword.SWordApplication;
+import top.summus.sword.SWordDatabase;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
 import top.summus.sword.component.InputPopupWindow;
@@ -47,6 +53,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private NavController navController;
     private BookNodeViewModel bookNodeViewModel;
     private BookNodeRecyclerViewAdapter adapter;
+
 
     private void initMember() {
         parentActivity = (AppCompatActivity) getActivity();
@@ -73,6 +80,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private void initTopBar() {
         parentActivity.setSupportActionBar(binding.toolbar);
         NavigationUI.setupActionBarWithNavController(parentActivity, navController);
+        binding.toolbar.setTitle("");
         setHasOptionsMenu(true);
         if (parentActivity instanceof AppbarConfigurationSupplier) {
             NavigationUI.setupWithNavController(binding.collapsingToolbar,
@@ -188,6 +196,10 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
             binding.backToPrevious.setVisibility(View.VISIBLE);
         }
         adapter.notifyDataSetChanged();
+        binding.pathTitle.setText(bookNodeViewModel.getCurrentPath().getValue());
+        binding.pathTitle.setMovementMethod(ScrollingMovementMethod.getInstance());
+        int length = binding.pathTitle.getText().length();
+        binding.pathTitle.setSelection(length, length);
     }
 
     /**
