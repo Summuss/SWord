@@ -27,7 +27,7 @@ public interface BookNodeRoomDao {
     List<BookNode> getAllBySync();
 
     @Update
-    void updateSynced(BookNode... bookNodes);
+    void updateSync(BookNode... bookNodes);
 
     @Delete
     Completable delete(BookNode... bookNodes);
@@ -39,9 +39,15 @@ public interface BookNodeRoomDao {
     @Query("SELECT * FROM book_node WHERE node_path = :path ORDER BY node_tag,node_name")
     List<BookNode> selectByPathBySync(String path);
 
+
     @Query("SELECT COUNT(*) FROM book_node WHERE node_no= :no")
-    long selectCountByNoSynced(long no);
+    long selectCountByNoSync(long no);
+
 
     @Query("SELECT * FROM book_node WHERE node_no=:no ")
-    List<BookNode> selectByNoSynced(long no);
+    Single<List<BookNode>> selectByNo(long no);
+
+    @Query("SELECT * FROM book_node WHERE node_no=:no ")
+    List<BookNode> selectByNoSync(long no);
+
 }

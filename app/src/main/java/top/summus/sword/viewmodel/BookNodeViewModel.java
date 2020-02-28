@@ -26,24 +26,16 @@ import top.summus.sword.room.service.BookNodeRoomService;
 
 @SuppressLint("CheckResult")
 
-public class BookNodeViewModel extends ViewModel implements TimeHttpService.TimeCallback, BookNodeHttpService.BookNodeHttpServiceCallback {
+public class BookNodeViewModel extends ViewModel {
 
 
     private static final String TAG = "BookNodeViewModel";
 
     @Inject
-    BookNodeRoomDao bookNodeRoomDao;
-
-    @Inject
-    BookNodeApi bookNodeApi;
-
-    @Inject
     BookNodeRoomService bookNodeRoomService;
 
-    private TimeHttpService timeHttpService = new TimeHttpService(this);
-
-    private BookNodeHttpService bookNodeHttpService = new BookNodeHttpService(this);
-
+    @Inject
+    BookNodeHttpService bookNodeHttpService;
 
     private DataChangedListener callback;
 
@@ -78,6 +70,18 @@ public class BookNodeViewModel extends ViewModel implements TimeHttpService.Time
             });
         });
         currentPath.setValue("/");
+        bookNodeHttpService.downloadBookNodes(new BookNodeHttpService.DownloadFinishedSuccessCallback() {
+            @Override
+            public void onDownloadSucceeded() {
+                Log.i(TAG, "onDownloadSucceeded: ");
+            }
+
+            @Override
+            public void onDownloadErrored(Throwable throwable) {
+                Log.e(TAG, "onDownloadErrored: ", throwable);
+
+            }
+        });
 
 
     }
@@ -134,19 +138,6 @@ public class BookNodeViewModel extends ViewModel implements TimeHttpService.Time
     }
 
 
-    public void timeCorrect() {
-
-    }
-
-    @Override
-    public void onTimeCorrectFinished() {
-        Log.i(TAG, "onTimeCorrectFinished: ");
-    }
-
-    @Override
-    public void onDownLoadBookNodesFinished() {
-        Log.i(TAG, "onDownLoadBookNodesFinished: ");
-    }
 
     public interface DataChangedListener {
         /**

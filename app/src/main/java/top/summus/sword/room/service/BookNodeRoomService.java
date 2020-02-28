@@ -44,6 +44,15 @@ public class BookNodeRoomService {
                 });
     }
 
+    public long insert(BookNode bookNode) {
+        List<Long> longs = bookNodeRoomDao.insertSynced(bookNode);
+        if (longs != null) {
+            return longs.get(0);
+
+        }
+        return 0;
+    }
+
     public void delete(BookNode bookNode, DeleteCallback callback) {
         bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
                 .subscribe(
@@ -71,6 +80,34 @@ public class BookNodeRoomService {
                 });
     }
 
+    public void selectByNo(long no, SelectByNoCallback callback) {
+        bookNodeRoomDao.selectByNo(no).subscribeOn(Schedulers.io())
+                .subscribe((bookNodeList, throwable) -> {
+                    if (bookNodeList != null) {
+                        Log.i(TAG, "selectByNo: success  " + bookNodeList);
+                        callback.selectByNoSucceeded(bookNodeList);
+                    }
+                    if (throwable != null) {
+                        Log.e(TAG, "selectByNo: error!!", throwable);
+                        callback.selectByNoErrored(throwable);
+                    }
+                });
+    }
+
+    public List<BookNode> selectByNo(long no) {
+        return bookNodeRoomDao.selectByNoSync(no);
+    }
+
+    public void update(BookNode bookNode) {
+        bookNodeRoomDao.updateSync(bookNode);
+    }
+
+    public interface SelectByNoCallback {
+
+        void selectByNoSucceeded(List<BookNode> bookNodeList);
+
+        void selectByNoErrored(Throwable throwable);
+    }
 
     public interface InsertCallback {
         void onInsertFinishedSuccess(BookNode bookNode);

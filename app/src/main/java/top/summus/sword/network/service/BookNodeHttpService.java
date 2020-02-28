@@ -3,93 +3,95 @@ package top.summus.sword.network.service;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import okhttp3.Headers;
-import top.summus.sword.SWordApplication;
 import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.entity.BookNode;
 import top.summus.sword.network.api.BookNodeApi;
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.service.BookNodeRoomService;
 
 import static top.summus.sword.util.DateFormatUtil.parseDateToString;
 
-@NoArgsConstructor
+@AllArgsConstructor
 @SuppressLint("CheckResult")
 public class BookNodeHttpService {
 
     private static final String TAG = "BookNodeHttpService";
 
-    private BookNodeHttpServiceCallback callback;
 
     @Inject
     BookNodeApi bookNodeApi;
 
     @Inject
-    BookNodeRoomDao bookNodeRoomDao;
+    BookNodeRoomService bookNodeRoomService;
 
     @Inject
     SWordSharedPreferences sharedPreferences;
 
-    public BookNodeHttpService(BookNodeHttpServiceCallback callback) {
-        this.callback = callback;
-        SWordApplication.getAppComponent().inject(this);
-    }
-
-    public void downloadUnSynced() {
+    public void downloadBookNodes(DownloadFinishedSuccessCallback callback) {
         Log.i(TAG, "[download]  start download unsynced");
 //        String lastSycnedDate = parseDateToString(new Date(119,2,16,12,59,58));
         String lastSycnedDate = parseDateToString(sharedPreferences.getBookNodeLastPullTime());
         Log.i(TAG, "[download]  lastSyncTime:" + lastSycnedDate);
         bookNodeApi.downLoadUnSynced(lastSycnedDate)
                 .subscribeOn(Schedulers.io())
-                .subscribe(
-                        listResponse -> {
-                            if (listResponse.isSuccessful()) {
-                                Log.i(TAG, "[download]  response statusCode is ok");
-                                List<BookNode> bookNodes = listResponse.body();
-                                for (BookNode bookNode : bookNodes) {
-                                    List<BookNode> localNodes = bookNodeRoomDao.selectByNoSynced(bookNode.getNodeNo());
+                .doOnNext(listResponse -> {
+                    if (listResponse.isSuccessful()) {
+                        Log.i(TAG, "[download]  response statusCode is ok");
+                        List<BookNode> bookNodes = listResponse.body();
+                        for (BookNode bookNode : bookNodes) {
+                            List<BookNode> localNodes = bookNodeRoomService.selectByNo(bookNode.getNodeNo());
+                            if (!localNodes.isEmpty()) {
+                                Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + " exist in local");
+                                BookNode selected = localNodes.get(0);
+                                if (bookNode.getNodeChangedDate().getTime() > selected.getNodeChangedDate().getTime()) {
+                                    Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  latter than local, updateSync");
+                                    bookNode.setId(selected.getId());
                                     bookNode.setSyncStatus(0);
-
-                                    if (!localNodes.isEmpty()) {
-                                        Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + " exist in local");
-                                        BookNode selected = localNodes.get(0);
-                                        if (bookNode.getNodeChangedDate().getTime() > selected.getNodeChangedDate().getTime()) {
-                                            Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  latter than local, updateSynced");
-                                            bookNode.setId(selected.getId());
-                                            bookNodeRoomDao.updateSynced(bookNode);
-                                        } else {
-                                            Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  not latter than local, no operation");
-                                        }
-                                    } else {
-                                        Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
-                                        bookNodeRoomDao.insertSynced(bookNode);
-                                    }
-                                }
-                                Log.i(TAG, "[download] finished");
-                                Headers headers = listResponse.headers();
-                                System.out.println(listResponse.raw());
-                                sharedPreferences.setBookNodeLastPullTime(headers.getDate("BookNodePullTime"));
-                                if (callback != null) {
-                                    callback.onDownLoadBookNodesFinished();
+                                    bookNodeRoomService.update(bookNode);
+                                } else {
+                                    Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  not latter than local, no operation");
                                 }
                             } else {
-                                Log.e(TAG, "[download]  " + "response statusCode is error");
+                                Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
+                                bookNode.setSyncStatus(0);
+                                bookNodeRoomService.insert(bookNode);
                             }
-                        },
-                        throwable -> Log.e(TAG, "[download]  " + "fatal error", throwable)
+
+                        }
+                        Log.i(TAG, "[download] finished");
+                        Headers headers = listResponse.headers();
+                        System.out.println(listResponse.raw());
+                        sharedPreferences.setBookNodeLastPullTime(headers.getDate("BookNodePullTime"));
+                        if (callback != null) {
+                            callback.onDownloadSucceeded();
+                        }
+                    } else {
+                        Log.e(TAG, "[download]  " + "response statusCode is error,statusCode=" + listResponse.code());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        listResponse -> callback.onDownloadSucceeded(),
+                        throwable -> {
+                            Log.e(TAG, "[download]  " + "fatal error", throwable);
+                            callback.onDownloadErrored(throwable);
+                        }
                 );
-
     }
 
-    public interface BookNodeHttpServiceCallback {
-        void onDownLoadBookNodesFinished();
 
+    public interface DownloadFinishedSuccessCallback {
+        void onDownloadSucceeded();
+
+        void onDownloadErrored(Throwable throwable);
     }
+
+
 }

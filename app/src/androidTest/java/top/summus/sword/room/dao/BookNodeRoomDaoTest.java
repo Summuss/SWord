@@ -44,7 +44,7 @@ public class BookNodeRoomDaoTest {
                 .build();
         bookNodeRoomDao.insertSynced(bookNode, bookNode1);
 
-        long num = bookNodeRoomDao.selectCountByNoSynced(4);
+        long num = bookNodeRoomDao.selectCountByNoSync(4);
 
 
 //        bookNodeRoomDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {

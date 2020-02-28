@@ -13,8 +13,11 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.network.api.BookNodeApi;
 import top.summus.sword.network.api.TimeApi;
+import top.summus.sword.network.service.BookNodeHttpService;
+import top.summus.sword.room.service.BookNodeRoomService;
 
 @Module
 public class HttpModule {
@@ -46,6 +49,12 @@ public class HttpModule {
     @Provides
     public TimeApi provideTimeApi(Retrofit retrofit) {
         return retrofit.create(TimeApi.class);
+    }
+
+    @Singleton
+    @Provides
+    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences) {
+        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences);
     }
 
 }
