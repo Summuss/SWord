@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="activity"
+            type="top.summus.sword.activity.StartActivity" />
+
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -24,7 +28,9 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/drawer_nav_graph" />
 
+
         <com.google.android.material.navigation.NavigationView
+
             android:id="@+id/nav_view"
             android:layout_width="330dp"
             android:layout_height="match_parent"

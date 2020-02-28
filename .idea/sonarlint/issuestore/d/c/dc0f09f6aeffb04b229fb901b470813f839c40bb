@@ -1,0 +1,24 @@
+
+~squid:UselessImportCheck "SRemove this unused import 'jp.wasabeef.recyclerview.animators.SlideInLeftAnimator'.(ŒüŠ8Ûğô€ˆ.
+†squid:UselessImportCheck"VRemove this unused import 'jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter'.(ÇÜ“Õùÿÿÿÿ8Ûğô€ˆ.
+hsquid:UselessImportCheck"=Remove this unused import 'android.view.animation.Animation'.(õò©²8Ôí÷€ˆ.
+[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ÄŒá¤ˆ.
+†squid:UselessImportCheck"[Remove this unused import 'jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter'.(µîá 8Ôí÷€ˆ.
+squid:UselessImportCheck"VRemove this unused import 'jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter'.(â¼¥à8ÄŒá¤ˆ.
+}squid:UselessImportCheck"MRemove this unused import 'android.view.animation.LayoutAnimationController'.(Ÿíè¬şÿÿÿÿ8óÇ÷€ˆ.
+hsquid:UselessImportCheck"8Remove this unused import 'android.widget.LinearLayout'.(çîšçúÿÿÿÿ8Ûğô€ˆ.
+squid:UselessImportCheck!"TRemove this unused import 'jp.wasabeef.recyclerview.animators.SlideInRightAnimator'.(ºæ›’8¡‹ø€ˆ.
+[squid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8ÄŒá¤ˆ.
+}squid:UselessImportCheck"MRemove this unused import 'androidx.recyclerview.widget.LinearLayoutManager'.(ôœ¹ºıÿÿÿÿ8ÄŒá¤ˆ.
+tsquid:S1450,"VRemove the "binding" field and declare it as a local variable in the relevant methods.(âÌù½8ÄŒá¤ˆ.
+}squid:UselessImportCheck"MRemove this unused import 'androidx.recyclerview.widget.DefaultItemAnimator'.(Á‰ƒ ûÿÿÿÿ8¡‹ø€ˆ.
+dsquid:UselessImportCheck"9Remove this unused import 'androidx.annotation.Nullable'.(¾Èêš8ÄŒá¤ˆ.
+rsquid:UselessImportCheck	"BRemove this unused import 'androidx.fragment.app.FragmentManager'.(¯­ë‹ıÿÿÿÿ8áÅæ¤ˆ.
+vsquid:UselessImportCheck
+"FRemove this unused import 'androidx.fragment.app.FragmentTransaction'.(¦İÚ¿şÿÿÿÿ8áÅæ¤ˆ.
+‡squid:UselessImportCheck"\Remove this unused import 'jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter'.(êíÜ§8Ôí÷€ˆ.
+ysquid:UselessImportCheck"IRemove this unused import 'android.view.animation.OvershootInterpolator'.(²‡Œçüÿÿÿÿ8ÄŒá¤ˆ.
+msquid:UselessImportCheck%"=Remove this unused import 'top.summus.sword.entity.BookNode'.(°çµşÿÿÿÿÿ8ÄŒá¤ˆ.
+dsquid:UselessImportCheck"4Remove this unused import 'android.widget.TextView'.(„Ë‚ˆÿÿÿÿÿ8Ûğô€ˆ.
+msquid:UselessImportCheck"BRemove this unused import 'android.view.animation.AnimationUtils'.(µ¬8óÇ÷€ˆ.
+ysquid:UselessImportCheck"ORemove this unused import 'jp.wasabeef.recyclerview.adapters.AnimationAdapter'.(ô®ç`8ÄŒá¤ˆ.

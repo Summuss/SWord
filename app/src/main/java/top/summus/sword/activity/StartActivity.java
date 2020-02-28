@@ -1,6 +1,7 @@
 package top.summus.sword.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,6 +24,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -51,7 +54,12 @@ import top.summus.sword.util.BackPressedHandle;
  *
  * @author Summus
  */
-public class StartActivity extends AppCompatActivity implements BaseWordListFragment.OnFragmentInteractionListener, AppbarConfigurationSupplier, NavigationView.OnNavigationItemSelectedListener {
+public class StartActivity extends AppCompatActivity
+        implements
+        BaseWordListFragment.OnFragmentInteractionListener,
+        AppbarConfigurationSupplier,
+        NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
+
     private ActivityStartBinding binding;
     private NavController navController;
     private int currentFragmentId;
@@ -67,19 +75,24 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_start);
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
-        navController = Objects.requireNonNull(navHostFragment).getNavController();
-        NavigationUI.setupWithNavController(binding.navView, navController);
-
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> currentFragmentId = destination.getId());
-
+        initNavController();
         binding.navView.setNavigationItemSelectedListener(this);
-
 
     }
 
 
+    private void initNavController() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        navController = Objects.requireNonNull(navHostFragment).getNavController();
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        navController.addOnDestinationChangedListener(this);
+    }
+
+
+    /**
+     * @see AppbarConfigurationSupplier
+     */
     @Override
     public AppBarConfiguration getAppBarConfiguration() {
         return new AppBarConfiguration.Builder(navController.getGraph())
@@ -101,6 +114,8 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
             } else if (navController.getGraph().getStartDestination() != currentFragmentId) {
                 if (fragment instanceof BackPressedHandle) {
                     ((BackPressedHandle) fragment).onBackPressed();
+                } else {
+                    onBackPressed();
                 }
             } else {
                 if ((System.currentTimeMillis() - exitTime) > 2000) {
@@ -117,9 +132,11 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
     }
 
 
+    /**
+     * @see NavigationView.OnNavigationItemSelectedListener
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         }
@@ -129,6 +146,21 @@ public class StartActivity extends AppCompatActivity implements BaseWordListFrag
             navController.navigate(R.id.action_baseWordListFragment_to_testFragment);
         }
         return true;
+
     }
 
+
+    /**
+     * @see NavController.OnDestinationChangedListener
+     */
+    @Override
+    public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+        currentFragmentId = destination.getId();
+        if (navController.getGraph().getStartDestination() != currentFragmentId) {
+            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+    }
 }
+

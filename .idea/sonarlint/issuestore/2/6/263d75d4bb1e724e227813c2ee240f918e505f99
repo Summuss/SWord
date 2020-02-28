@@ -1,0 +1,4 @@
+
+asquid:UselessImportCheck"6Remove this unused import 'androidx.annotation.IdRes'.(ŸµÞù8µ™Å£ˆ.
+dsquid:UselessImportCheck"9Remove this unused import 'androidx.annotation.Nullable'.(¾Èêš8ŸÐÅ£ˆ.
+Xsquid:S1118":Add a private constructor to hide the implicit public one.(š¨¨¹8Žöµ£ˆ.
