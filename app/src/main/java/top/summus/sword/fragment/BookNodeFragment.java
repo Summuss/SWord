@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import android.view.animation.OvershootInterpolator;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -56,6 +57,18 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private NavController navController;
     private BookNodeViewModel bookNodeViewModel;
     private BookNodeRecyclerViewAdapter adapter;
+    public OnRefreshListener refreshListener = refreshLayout -> {
+        Log.i(TAG, "onRefresh: ");
+        try {
+            bookNodeViewModel.sync(() -> {
+                Log.i(TAG, "onRefresh: ok");
+                refreshLayout.finishRefresh();
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    };
 
 
     private void initMember() {
@@ -75,26 +88,25 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         initRecyclerView();
         binding.refreshLayout.setRefreshHeader(new BezierRadarHeader(getActivity()).setEnableHorizontalDrag(true));
 
-        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                Log.i(TAG, "onRefresh: ");
-                try {
-                    bookNodeViewModel.sync(() -> {
-                        Log.i(TAG, "onRefresh: ok");
-//                        refreshlayout.finishRefresh(100,true,false);
-                        refreshlayout.finishRefresh(/*,false*/);//传入false表示刷新失败
-
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
+//        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                Log.i(TAG, "onRefresh: ");
+//                try {
+//                    bookNodeViewModel.sync(() -> {
+//                        Log.i(TAG, "onRefresh: ok");
+////                        refreshlayout.finishRefresh(100,true,false);
+//                        refreshlayout.finishRefresh(/*,false*/);//传入false表示刷新失败
+//
+//                    });
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        });
         return binding.getRoot();
     }
-
 
 
     private void initTopBar() {
@@ -264,11 +276,29 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         binding.bookNodeRecycler.smoothCloseMenu();
     }
 
+//    public OnRefreshListener refreshListener() {
+//
+//        return refreshLayout -> {
+//            Log.i(TAG, "onRefresh: ");
+//            try {
+//                bookNodeViewModel.sync(() -> {
+//                    Log.i(TAG, "onRefresh: ok");
+//                    refreshLayout.finishRefresh();
+//
+//                });
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        };
+//
+//    }
 
     @Override
     public void onBackPressed() {
         Log.i(TAG, "onBackPressed");
-        if ("/".equals(bookNodeViewModel.getCurrentPath())) {
+        if (binding.floatBtnMenu.isExpanded()) {
+            binding.floatBtnMenu.collapse();
+        } else if ("/".equals(bookNodeViewModel.getCurrentPath())) {
             parentActivity.onBackPressed();
         } else {
             onBackToPreviousClick(null);

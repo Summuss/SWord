@@ -11,10 +11,10 @@ import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
 
 
-public class LoadImageBindingAdapter {
-    @BindingAdapter("app:imageId")
-    public static void loadImage(ImageView view, @RawRes @DrawableRes int id) {
-        Glide.with(view).load(id).into(view);
-
-    }
-}
+//public class LoadImageBindingAdapter {
+//    @BindingAdapter("app:imageId")
+//    public static void loadImage(ImageView view, @RawRes @DrawableRes int id) {
+//        Glide.with(view).load(id).into(view);
+//
+//    }
+//}
