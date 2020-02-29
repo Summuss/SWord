@@ -10,7 +10,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.functions.BiConsumer;
 import lombok.NoArgsConstructor;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.entity.BookNode;
@@ -29,19 +31,18 @@ public class BookNodeRoomService {
     }
 
 
-    public void insert(BookNode bookNode, InsertCallback callback) {
+    public void insert(BookNode bookNode, BiConsumer<BookNode, Throwable> onCallback) {
         bookNodeRoomDao.insert(bookNode).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((longs, throwable) -> {
                     if (longs != null) {
                         bookNode.setId(longs.get(0));
                         Log.i(TAG, "insert: insert successfully  " + bookNode);
-                        callback.onInsertFinishedSuccess(bookNode);
                     }
                     if (throwable != null) {
                         Log.e(TAG, "insert: insert failed  " + bookNode, throwable);
-                        callback.onInsertFinishedError(bookNode, throwable);
                     }
+                    onCallback.accept(bookNode, throwable);
                 });
     }
 
@@ -54,46 +55,43 @@ public class BookNodeRoomService {
         return 0;
     }
 
-    public void delete(BookNode bookNode, DeleteCallback callback) {
+    public void delete(BookNode bookNode, Action onDeleteComplete) {
         bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
                             Log.i(TAG, "delete: delete successfully  " + bookNode);
-                            callback.onDeleteFinished(bookNode);
+                            onDeleteComplete.run();
                         },
                         throwable -> Log.e(TAG, "delete", throwable)
                 );
     }
 
-    public void selectByPath(String path, SelectByPathCallback callback) {
+    public void selectByPath(String path, BiConsumer<List<BookNode>, Throwable> callback) {
         bookNodeRoomDao.selectByPath(path).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((bookNodes, throwable) -> {
                     if (bookNodes != null) {
                         Log.i(TAG, "selectByPath: success");
-                        if (callback != null) {
-                            callback.onSelectByPathFinished(bookNodes);
-                        }
                     }
                     if (throwable != null) {
                         Log.e(TAG, "selectByPath", throwable);
                     }
+                    callback.accept(bookNodes, throwable);
                 });
     }
 
-    public void selectByNo(long no, SelectByNoCallback callback) {
+    public void selectByNo(long no, BiConsumer<List<BookNode>, Throwable> callback) {
         bookNodeRoomDao.selectByNo(no).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((bookNodeList, throwable) -> {
                     if (bookNodeList != null) {
                         Log.i(TAG, "selectByNo: success  " + bookNodeList);
-                        callback.selectByNoSucceeded(bookNodeList);
                     }
                     if (throwable != null) {
                         Log.e(TAG, "selectByNo: error!!", throwable);
-                        callback.selectByNoErrored(throwable);
                     }
+                    callback.accept(bookNodeList, throwable);
                 });
     }
 
@@ -112,19 +110,6 @@ public class BookNodeRoomService {
         void selectByNoErrored(Throwable throwable);
     }
 
-    public interface InsertCallback {
-        void onInsertFinishedSuccess(BookNode bookNode);
 
-        void onInsertFinishedError(BookNode bookNode, Throwable throwable);
-    }
 
-    public interface DeleteCallback {
-
-        void onDeleteFinished(BookNode bookNode);
-    }
-
-    public interface SelectByPathCallback {
-
-        void onSelectByPathFinished(List<BookNode> bookNodes);
-    }
 }

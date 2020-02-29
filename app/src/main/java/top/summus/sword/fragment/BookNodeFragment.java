@@ -69,8 +69,6 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         binding.setFragment(this);
         initMember();
         initTopBar();
-        bookNodeViewModel.getCurrentPath().setValue("/");
-
         initRecyclerView();
 
         return binding.getRoot();
@@ -153,7 +151,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         inputPopupWindow.setConfirmBtnOnClickListener(v1 -> {
             int tag = v.getId() == R.id.add_folder_fbt ? 0 : 1;
             BookNode bookNode = BookNode.builder().nodeName(inputPopupWindow.getInputText())
-                    .nodePath(bookNodeViewModel.getCurrentPath().getValue())
+                    .nodePath(bookNodeViewModel.getCurrentPath())
                     .nodeTag(tag).nodeChangedDate(new Date()).build();
             Log.i(TAG, "onCreateView: insert " + bookNode);
             bookNodeViewModel.insert(bookNode);
@@ -165,11 +163,11 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
 
     public void onBackToPreviousClick(View v) {
         String path = "";
-        String[] nodes = bookNodeViewModel.getCurrentPath().getValue().split("/");
+        String[] nodes = bookNodeViewModel.getCurrentPath().split("/");
         for (int i = 0; i < nodes.length - 1; i++) {
             path += nodes[i] + "/";
         }
-        bookNodeViewModel.getCurrentPath().setValue(path);
+        bookNodeViewModel.switchPath(path);
     }
 
     /**
@@ -179,7 +177,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     public void onBookNodeItemClicked(int position, BookNode target) {
         Log.i(TAG, "onBookNodeItemClicked: " + target.getNodeName());
         if (target.getNodeTag() == 0) {
-            bookNodeViewModel.getCurrentPath().setValue(target.getNodePath() + target.getNodeName() + "/");
+            bookNodeViewModel.switchPath(target.getNodePath() + target.getNodeName() + "/");
         } else {
 
         }
@@ -197,7 +195,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
             binding.backToPrevious.setVisibility(View.VISIBLE);
         }
         adapter.notifyDataSetChanged();
-        binding.pathTitle.setText(bookNodeViewModel.getCurrentPath().getValue());
+        binding.pathTitle.setText(bookNodeViewModel.getCurrentPath());
         binding.pathTitle.setMovementMethod(ScrollingMovementMethod.getInstance());
         int length = binding.pathTitle.getText().length();
         binding.pathTitle.setSelection(length, length);
@@ -218,6 +216,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
      **/
     @Override
     public void onDeleteFinished(int position) {
+        Log.i(TAG, "onDeleteFinished: delete position " + position);
         adapter.notifyItemRemoved(position);
     }
 
@@ -248,7 +247,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     @Override
     public void onBackPressed() {
         Log.i(TAG, "onBackPressed");
-        if (bookNodeViewModel.getCurrentPath().getValue().equals("/")) {
+        if ("/".equals(bookNodeViewModel.getCurrentPath())) {
             parentActivity.onBackPressed();
         } else {
             onBackToPreviousClick(null);

@@ -98,6 +98,7 @@ public class StartActivity extends AppCompatActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
+
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         Fragment fragment = Objects.requireNonNull(navHostFragment).getChildFragmentManager().getFragments().get(0);
 
@@ -121,8 +122,11 @@ public class StartActivity extends AppCompatActivity
                     finish();
                 }
             }
+            return true;
+
+        } else {
+            return super.onKeyDown(keyCode, event);
         }
-        return true;
 
     }
 

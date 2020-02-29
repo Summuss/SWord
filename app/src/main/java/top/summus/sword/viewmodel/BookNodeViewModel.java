@@ -10,12 +10,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
+import lombok.Setter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.api.BookNodeApi;
 import top.summus.sword.network.api.TimeApi;
@@ -43,36 +46,63 @@ public class BookNodeViewModel extends ViewModel {
 
     private DataChangedListener callback;
 
-    public static BookNodeViewModel getInstance(AppCompatActivity activity, DataChangedListener callback) {
-        BookNodeViewModel bookNodeViewModel = new ViewModelProvider(activity).get(BookNodeViewModel.class);
-        bookNodeViewModel.dependencyInject();
-        bookNodeViewModel.callback = callback;
-        bookNodeViewModel.currentPath.observe(activity, s -> {
-            bookNodeViewModel.bookNodeRoomService.selectByPath(s, bookNodes -> {
-                bookNodeViewModel.bookNodesShowed.clear();
-                bookNodeViewModel.bookNodesShowed.addAll(bookNodes);
-                callback.onPathSwished(s);
-            });
-        });
-        return bookNodeViewModel;
-    }
-
-    public void loadData(String path) {
-        currentPath.setValue(path);
-//        timeHttpService.timeCorrect(() -> );
-    }
-
     @Getter
-    private MutableLiveData<String> currentPath = new MutableLiveData<>();
+    @Setter
+    private String currentPath = "/";
 
     @Getter
     private List<BookNode> bookNodesShowed = new ArrayList<>();
 
-    private void dependencyInject() {
-        SWordApplication.getAppComponent().inject(this);
+    public static BookNodeViewModel getInstance(AppCompatActivity activity, DataChangedListener callback) {
+        BookNodeViewModel bookNodeViewModel = new ViewModelProvider(activity).get(BookNodeViewModel.class);
+        bookNodeViewModel.dependencyInject();
+        bookNodeViewModel.callback = callback;
+        bookNodeViewModel.switchPath("/");
+        return bookNodeViewModel;
     }
 
 
+    public void sync(Action callback) throws Exception {
+        Semaphore semaphore = new Semaphore(-1, true);
+        timeHttpService.timeCorrect(throwable -> {
+            semaphore.release();
+            if (throwable != null) {
+                Log.e(TAG, "sync: time correct failed", throwable);
+            } else {
+                Log.i(TAG, "sync: time correct succeeded");
+            }
+        });
+        bookNodeHttpService.downloadBookNodes(throwable -> {
+            semaphore.release();
+            if (throwable != null) {
+                Log.e(TAG, "sync: download bookNodes failed", throwable);
+            } else {
+                Log.i(TAG, "sync: time download bookNodes succeeded");
+            }
+        });
+        semaphore.acquire();
+        callback.run();
+    }
+
+    public void switchPath(String path) {
+        Log.i(TAG, "switchPath: " + path);
+        currentPath = path;
+        bookNodeRoomService.selectByPath(path, (bookNodeList, throwable) -> {
+            if (bookNodeList != null) {
+                bookNodesShowed.clear();
+                bookNodesShowed.addAll(bookNodeList);
+                callback.onPathSwished(path);
+            }
+            if (throwable != null) {
+                Log.e(TAG, "switchPath", throwable);
+            }
+        });
+    }
+
+
+    private void dependencyInject() {
+        SWordApplication.getAppComponent().inject(this);
+    }
 
 
     /**
@@ -101,27 +131,26 @@ public class BookNodeViewModel extends ViewModel {
         return bookNodeList.size();
     }
 
-    public void insert(BookNode bookNode) {
-        bookNodeRoomService.insert(bookNode, new BookNodeRoomService.InsertCallback() {
-            @Override
-            public void onInsertFinishedSuccess(BookNode bookNode) {
+
+    public void insert(BookNode target) {
+        bookNodeRoomService.insert(target, (bookNode, throwable) -> {
+            if (bookNode != null) {
                 Log.i(TAG, "onInsertFinishedSuccess: " + bookNode);
                 int positionInBookNodes = findPositionInBookNodes(bookNode, bookNodesShowed);
                 bookNodesShowed.add(positionInBookNodes, bookNode);
                 callback.onInsertFinished(positionInBookNodes);
             }
+            if (throwable != null) {
+                Log.e(TAG, "onInsertFinishedError: " + target, throwable);
 
-            @Override
-            public void onInsertFinishedError(BookNode bookNode, Throwable throwable) {
-                Log.e(TAG, "onInsertFinishedError: ", throwable);
             }
         });
     }
 
-
     public void delete(BookNode target, int position) {
-        bookNodeRoomService.delete(target, bookNode -> {
-            Log.i(TAG, "delete: successfully  " + target);
+        bookNodeRoomService.delete(target, () -> {
+            Log.i(TAG, "delete: successfully  position=" + position + "  " + target);
+            bookNodesShowed.remove(position);
             callback.onDeleteFinished(position);
         });
     }
@@ -129,7 +158,7 @@ public class BookNodeViewModel extends ViewModel {
 
     public interface DataChangedListener {
         /**
-         * callback when {@link #loadData(AppCompatActivity)} is changed
+         *
          */
         void onPathSwished(String destinationPath);
 

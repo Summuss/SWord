@@ -3,16 +3,11 @@ package top.summus.sword.network.service;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import okhttp3.OkHttpClient;
-import top.summus.sword.SWordApplication;
+
 import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.util.DateFormatUtil;
@@ -28,7 +23,7 @@ public class TimeHttpService {
     SWordSharedPreferences sharedPreferences;
 
     @SuppressLint("CheckResult")
-    public void timeCorrect(TimeCallback callback) {
+    public void timeCorrect(Consumer<Throwable> callback) {
 
         final long mills = System.currentTimeMillis();
 
@@ -59,16 +54,19 @@ public class TimeHttpService {
                 .subscribe(
                         voidResponse -> {
                             if (callback != null) {
-                                callback.onTimeCorrectFinished();
+                                callback.accept(null);
                             }
                         },
-                        throwable -> Log.e(TAG, "[timeCorrect]  error!!", throwable)
+                        throwable -> {
+                            Log.e(TAG, "[timeCorrect]  error!!", throwable);
+                            if (callback != null) {
+                                callback.accept(throwable);
+                            }
+
+                        }
                 );
 
     }
 
-    public interface TimeCallback {
-        void onTimeCorrectFinished();
-    }
 }
 

@@ -8,7 +8,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.functions.BiConsumer;
 import lombok.AllArgsConstructor;
 import okhttp3.Headers;
 import top.summus.sword.SWordSharedPreferences;
@@ -34,7 +36,7 @@ public class BookNodeHttpService {
     @Inject
     SWordSharedPreferences sharedPreferences;
 
-    public void downloadBookNodes(DownloadFinishedSuccessCallback callback) {
+    public void downloadBookNodes(Consumer<Throwable> callback) {
         Log.i(TAG, "[download]  start download unsynced");
 //        String lastSycnedDate = parseDateToString(new Date(119,2,16,12,59,58));
         String lastSycnedDate = parseDateToString(sharedPreferences.getBookNodeLastPullTime());
@@ -69,28 +71,19 @@ public class BookNodeHttpService {
                         Headers headers = listResponse.headers();
                         System.out.println(listResponse.raw());
                         sharedPreferences.setBookNodeLastPullTime(headers.getDate("BookNodePullTime"));
-                        if (callback != null) {
-                            callback.onDownloadSucceeded();
-                        }
+
                     } else {
                         Log.e(TAG, "[download]  " + "response statusCode is error,statusCode=" + listResponse.code());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        listResponse -> callback.onDownloadSucceeded(),
+                        listResponse -> callback.accept(null),
                         throwable -> {
                             Log.e(TAG, "[download]  " + "fatal error", throwable);
-                            callback.onDownloadErrored(throwable);
+                            callback.accept(throwable);
                         }
                 );
-    }
-
-
-    public interface DownloadFinishedSuccessCallback {
-        void onDownloadSucceeded();
-
-        void onDownloadErrored(Throwable throwable);
     }
 
 
