@@ -69,6 +69,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         binding.setFragment(this);
         initMember();
         initTopBar();
+        bookNodeViewModel.getCurrentPath().setValue("/");
 
         initRecyclerView();
 

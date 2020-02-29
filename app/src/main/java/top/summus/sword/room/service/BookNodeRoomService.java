@@ -31,6 +31,7 @@ public class BookNodeRoomService {
 
     public void insert(BookNode bookNode, InsertCallback callback) {
         bookNodeRoomDao.insert(bookNode).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((longs, throwable) -> {
                     if (longs != null) {
                         bookNode.setId(longs.get(0));
@@ -55,6 +56,7 @@ public class BookNodeRoomService {
 
     public void delete(BookNode bookNode, DeleteCallback callback) {
         bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
                             Log.i(TAG, "delete: delete successfully  " + bookNode);
@@ -82,6 +84,7 @@ public class BookNodeRoomService {
 
     public void selectByNo(long no, SelectByNoCallback callback) {
         bookNodeRoomDao.selectByNo(no).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((bookNodeList, throwable) -> {
                     if (bookNodeList != null) {
                         Log.i(TAG, "selectByNo: success  " + bookNodeList);

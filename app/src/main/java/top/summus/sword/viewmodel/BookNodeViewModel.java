@@ -18,6 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.api.BookNodeApi;
+import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.room.dao.BookNodeRoomDao;
 import top.summus.sword.entity.BookNode;
@@ -37,14 +38,28 @@ public class BookNodeViewModel extends ViewModel {
     @Inject
     BookNodeHttpService bookNodeHttpService;
 
+    @Inject
+    TimeHttpService timeHttpService;
+
     private DataChangedListener callback;
 
     public static BookNodeViewModel getInstance(AppCompatActivity activity, DataChangedListener callback) {
         BookNodeViewModel bookNodeViewModel = new ViewModelProvider(activity).get(BookNodeViewModel.class);
         bookNodeViewModel.dependencyInject();
         bookNodeViewModel.callback = callback;
-        bookNodeViewModel.loadData(activity);
+        bookNodeViewModel.currentPath.observe(activity, s -> {
+            bookNodeViewModel.bookNodeRoomService.selectByPath(s, bookNodes -> {
+                bookNodeViewModel.bookNodesShowed.clear();
+                bookNodeViewModel.bookNodesShowed.addAll(bookNodes);
+                callback.onPathSwished(s);
+            });
+        });
         return bookNodeViewModel;
+    }
+
+    public void loadData(String path) {
+        currentPath.setValue(path);
+//        timeHttpService.timeCorrect(() -> );
     }
 
     @Getter
@@ -58,33 +73,7 @@ public class BookNodeViewModel extends ViewModel {
     }
 
 
-    /**
-     * set the observer of {@link #currentPath}. when it is changed, get booNodes from database
-     */
-    private void loadData(AppCompatActivity activity) {
-        currentPath.observe(activity, s -> {
-            bookNodeRoomService.selectByPath(s, bookNodes -> {
-                bookNodesShowed.clear();
-                bookNodesShowed.addAll(bookNodes);
-                callback.onPathSwished(s);
-            });
-        });
-        currentPath.setValue("/");
-        bookNodeHttpService.downloadBookNodes(new BookNodeHttpService.DownloadFinishedSuccessCallback() {
-            @Override
-            public void onDownloadSucceeded() {
-                Log.i(TAG, "onDownloadSucceeded: ");
-            }
 
-            @Override
-            public void onDownloadErrored(Throwable throwable) {
-                Log.e(TAG, "onDownloadErrored: ", throwable);
-
-            }
-        });
-
-
-    }
 
     /**
      * insert bookNode into local database and callback {@link #insert(BookNode)} to refresh change
@@ -136,7 +125,6 @@ public class BookNodeViewModel extends ViewModel {
             callback.onDeleteFinished(position);
         });
     }
-
 
 
     public interface DataChangedListener {

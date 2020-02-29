@@ -1,5 +1,7 @@
 package top.summus.sword.network;
 
+import androidx.room.PrimaryKey;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,6 +19,7 @@ import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.network.api.BookNodeApi;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.network.service.BookNodeHttpService;
+import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
 
 @Module
@@ -49,6 +52,13 @@ public class HttpModule {
     @Provides
     public TimeApi provideTimeApi(Retrofit retrofit) {
         return retrofit.create(TimeApi.class);
+    }
+
+
+    @Singleton
+    @Provides
+    public TimeHttpService provideTimeHttpService(TimeApi timeApi, SWordSharedPreferences sWordSharedPreferences) {
+        return new TimeHttpService(timeApi, sWordSharedPreferences);
     }
 
     @Singleton
