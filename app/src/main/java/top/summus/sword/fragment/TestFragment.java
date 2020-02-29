@@ -22,6 +22,13 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,12 +62,29 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
-        binding.pathTitle.setMovementMethod(ScrollingMovementMethod.getInstance());
-        int length = binding.pathTitle.getText().length();
-        binding.pathTitle.setSelection(length, length);
+
+//        BezierRadarHeader header = new BezierRadarHeader(getActivity()).setEnableHorizontalDrag(true);
+//        header.setPrimaryColor(R.color.colorPrimary);
+
+//        binding. refreshLayout.setRefreshHeader(header);
+
+
+//        binding.refreshLayout.setRefreshFooter(new ClassicsFooter(getActivity()));
+//        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+//            }
+//        });
+//        binding.refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(RefreshLayout refreshlayout) {
+//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+//            }
+//        });
+
 
         return binding.getRoot();
-
 
 
     }

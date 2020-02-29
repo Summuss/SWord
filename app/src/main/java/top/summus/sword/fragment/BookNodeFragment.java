@@ -21,6 +21,9 @@ import android.view.ViewGroup;
 
 import android.view.animation.OvershootInterpolator;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
@@ -70,7 +73,25 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         initMember();
         initTopBar();
         initRecyclerView();
+        binding.refreshLayout.setRefreshHeader(new BezierRadarHeader(getActivity()).setEnableHorizontalDrag(true));
 
+        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                Log.i(TAG, "onRefresh: ");
+                try {
+                    bookNodeViewModel.sync(() -> {
+                        Log.i(TAG, "onRefresh: ok");
+//                        refreshlayout.finishRefresh(100,true,false);
+                        refreshlayout.finishRefresh(/*,false*/);//传入false表示刷新失败
+
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
         return binding.getRoot();
     }
 

@@ -61,10 +61,16 @@ public class HttpModule {
         return new TimeHttpService(timeApi, sWordSharedPreferences);
     }
 
+//    @Singleton
+//    @Provides
+//    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences) {
+//        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences);
+//    }
+
     @Singleton
     @Provides
-    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences) {
-        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences);
+    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences, TimeHttpService timeHttpService) {
+        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences, timeHttpService);
     }
 
 }

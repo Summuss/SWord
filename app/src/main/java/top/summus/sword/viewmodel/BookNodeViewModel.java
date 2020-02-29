@@ -63,25 +63,33 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void sync(Action callback) throws Exception {
-        Semaphore semaphore = new Semaphore(-1, true);
-        timeHttpService.timeCorrect(throwable -> {
-            semaphore.release();
+//        Semaphore semaphore = new Semaphore(-1, true);
+//        timeHttpService.timeCorrect(throwable -> {
+//            Log.i(TAG, "sync: time avil"+semaphore.availablePermits());
+//            if (throwable != null) {
+//                Log.e(TAG, "sync: time correct failed", throwable);
+//            } else {
+//                Log.i(TAG, "sync: time correct succeeded");
+//            }
+//        },semaphore);
+//        bookNodeHttpService.downloadBookNodes(throwable -> {
+//            if (throwable != null) {
+//                Log.e(TAG, "sync: download bookNodes failed", throwable);
+//            } else {
+//                Log.i(TAG, "sync: time download bookNodes succeeded");
+//            }
+//        },semaphore);
+//        Log.i(TAG, "sync: wait");
+//        semaphore.acquire();
+//        switchPath(currentPath);
+//        callback.run();
+        bookNodeHttpService.syncBookNodes(throwable -> {
             if (throwable != null) {
-                Log.e(TAG, "sync: time correct failed", throwable);
-            } else {
-                Log.i(TAG, "sync: time correct succeeded");
+                Log.e(TAG, "sync: ", throwable);
             }
+            callback.run();
         });
-        bookNodeHttpService.downloadBookNodes(throwable -> {
-            semaphore.release();
-            if (throwable != null) {
-                Log.e(TAG, "sync: download bookNodes failed", throwable);
-            } else {
-                Log.i(TAG, "sync: time download bookNodes succeeded");
-            }
-        });
-        semaphore.acquire();
-        callback.run();
+
     }
 
     public void switchPath(String path) {
