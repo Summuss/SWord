@@ -1,6 +1,7 @@
 package top.summus.sword.network.api;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.*;
@@ -22,10 +23,10 @@ public interface BookNodeApi {
     Observable<Response<List<BookNode>>> getAll();
 
     @POST("bookNodes")
-    Observable<Response<Integer>> postBookNode(@Body BookNode bookNode);
+    Single<Response<Integer>> postBookNode(@Body BookNode bookNode);
 
     @PATCH("bookNodes")
-    Observable<Response<Integer>> patchBookNode(@Body BookNode bookNode);
+    Single<Response<Integer>> patchBookNode(@Body BookNode bookNode);
 
 
 }

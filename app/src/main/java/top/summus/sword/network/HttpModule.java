@@ -28,7 +28,7 @@ public class HttpModule {
     @Provides
     public Retrofit provideRetrofit() {
         final OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(100, TimeUnit.MILLISECONDS)
+                .connectTimeout(200, TimeUnit.MILLISECONDS)
                 .build();
         String baseUrl = "http://192.168.1.13:8080/SwordBackend_war/";
         Gson gson = new GsonBuilder().setLenient()

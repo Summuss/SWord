@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,10 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.AnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
@@ -49,10 +53,14 @@ import top.summus.sword.entity.BookNode;
  */
 public class TestFragment extends Fragment {
 
+    private static final String TAG = "TestFragment";
     private FragmentTestBinding binding;
     int count = 5;
     BookNodeRecyclerViewAdapter adapter;
-
+    public Observable<Integer> func(){
+        return Observable.just(1,2,3)
+                .subscribeOn(Schedulers.io());
+    }
     public TestFragment() {
         // Required empty public constructor
     }
@@ -62,26 +70,6 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
-
-//        BezierRadarHeader header = new BezierRadarHeader(getActivity()).setEnableHorizontalDrag(true);
-//        header.setPrimaryColor(R.color.colorPrimary);
-
-//        binding. refreshLayout.setRefreshHeader(header);
-
-
-//        binding.refreshLayout.setRefreshFooter(new ClassicsFooter(getActivity()));
-//        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//            @Override
-//            public void onRefresh(RefreshLayout refreshlayout) {
-//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-//            }
-//        });
-//        binding.refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(RefreshLayout refreshlayout) {
-//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-//            }
-//        });
 
 
         return binding.getRoot();

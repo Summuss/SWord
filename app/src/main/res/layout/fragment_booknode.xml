@@ -13,12 +13,13 @@
 
     </data>
 
+
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         app:srlAccentColor="@color/colorAccent"
         app:srlPrimaryColor="@color/colorPrimary"
         app:srlEnablePreviewInEditMode="true"
-        android:onRefreshListener="@{fragment.refreshListener}"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

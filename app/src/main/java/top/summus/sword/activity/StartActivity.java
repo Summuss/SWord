@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,6 +26,10 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.api.TimeApi;
@@ -63,6 +68,7 @@ public class StartActivity extends AppCompatActivity
     @Inject
     TimeApi timeApi;
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +78,16 @@ public class StartActivity extends AppCompatActivity
 
         SWordApplication.getAppComponent().inject(this);
         Log.i(TAG, "onCreate: " + timeApi.hashCode());
+
+
+//        Observable.just(1,2,3)
+//                .subscribeOn(Schedulers.io())
+//                .doOnSubscribe(disposable -> Log.i(TAG, "onCreate: doOnSubscribe"))
+//                .doFinally(() -> {
+//                    Log.i(TAG, "onCreate: finally");
+//                })
+//                .subscribe();
+        
 
     }
 

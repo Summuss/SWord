@@ -1,10 +1,0 @@
-
-jsquid:S00112j"FDefine and throw a dedicated exception instead of using a generic one.(ÇÁ¾¥øÿÿÿÿ8¥Â‹Ò‡.
-Isquid:S1068("+Remove this unused "mParam2" private field.(¡ˆ€ 8ê„¤¨ˆ.
-Jsquid:S1602X",Remove useless curly braces around statement(®™Èˆ8ê„¤¨ˆ.
-Esquid:S1068)"'Remove this unused "TAG" private field.(Ëˆ¥…8ê„¤¨ˆ.
-Psquid:S1068/"-Remove this unused "mListener" private field.(ÏÙå¯úÿÿÿÿ8ê„¤¨ˆ.
-Isquid:S1068'"+Remove this unused "mParam1" private field.(•Íï‘8ê„¤¨ˆ.
-esquid:S00112|"FDefine and throw a dedicated exception instead of using a generic one.(ÝŒÜ±8Ï¢öÑ‡.
-tsquid:S1450("VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 8ê„¤¨ˆ.
-tsquid:S1450'"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘8ê„¤¨ˆ.

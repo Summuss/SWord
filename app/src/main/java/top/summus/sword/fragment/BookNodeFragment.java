@@ -57,18 +57,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private NavController navController;
     private BookNodeViewModel bookNodeViewModel;
     private BookNodeRecyclerViewAdapter adapter;
-    public OnRefreshListener refreshListener = refreshLayout -> {
-        Log.i(TAG, "onRefresh: ");
-        try {
-            bookNodeViewModel.sync(() -> {
-                Log.i(TAG, "onRefresh: ok");
-                refreshLayout.finishRefresh();
 
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
 
 
     private void initMember() {
@@ -87,6 +76,18 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         initTopBar();
         initRecyclerView();
         binding.refreshLayout.setRefreshHeader(new BezierRadarHeader(getActivity()).setEnableHorizontalDrag(true));
+        binding.refreshLayout.setOnRefreshListener(refreshLayout -> {
+            Log.i(TAG, "onRefresh: ");
+            try {
+                bookNodeViewModel.sync(() -> {
+                    Log.i(TAG, "onRefresh: ok");
+                    refreshLayout.finishRefresh();
+
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
 //        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
 //            @Override

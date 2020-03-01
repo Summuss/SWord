@@ -12,13 +12,18 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.functions.BiConsumer;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.Headers;
+import retrofit2.Response;
 import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.entity.BookNode;
 import top.summus.sword.network.api.BookNodeApi;
@@ -72,7 +77,7 @@ public class BookNodeHttpService {
                             } else {
                                 Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
                                 bookNode.setSyncStatus(0);
-                                bookNodeRoomService.insert(bookNode);
+                                bookNodeRoomService.insert(bookNode).subscribe();
                             }
 
                         }
@@ -122,7 +127,8 @@ public class BookNodeHttpService {
                             } else {
                                 Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
                                 bookNode.setSyncStatus(0);
-                                bookNodeRoomService.insert(bookNode);
+                                bookNodeRoomService.insert(bookNode).subscribe();
+
                             }
 
                         }
@@ -153,6 +159,28 @@ public class BookNodeHttpService {
                             }
                         }
                 );
+    }
+
+    public void uploadBookNodes(Consumer<Throwable> callback, Semaphore semaphore) {
+        Semaphore localSema=new Semaphore(-1,true);
+        Single.create((SingleOnSubscribe<List<BookNode>>) emitter -> {
+            List<BookNode> insertBookNodes = bookNodeRoomService.selectToBePosted();
+            emitter.onSuccess(insertBookNodes);
+        }).subscribeOn(Schedulers.io())
+                .subscribe((insertBookNodes, throwable) -> {
+                    if (insertBookNodes != null) {
+                        Observable.fromIterable(insertBookNodes)
+                                .map(bookNode -> bookNodeApi.postBookNode(bookNode));
+//                                .zipWith(Observable.fromIterable(insertBookNodes), new BiFunction<Single<Response<Integer>>, BookNode, Object>() {
+//                                });
+
+                    }
+                    if (throwable != null) {
+                        Log.e(TAG, "selectToBePosted ",throwable );
+                        localSema.release();
+                    }
+                });
+
     }
 
     public void syncBookNodes(Consumer<Throwable> callback) {

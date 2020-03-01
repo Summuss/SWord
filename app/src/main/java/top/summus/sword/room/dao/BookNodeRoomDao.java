@@ -18,7 +18,7 @@ public interface BookNodeRoomDao {
 
 
     @Insert
-    Single<List<Long>> insert(BookNode... bookNodes);
+    Single<Long> insert(BookNode bookNodes);
 
     @Insert
     List<Long> insertSynced(BookNode... bookNodes);
@@ -43,11 +43,23 @@ public interface BookNodeRoomDao {
     @Query("SELECT COUNT(*) FROM book_node WHERE node_no= :no")
     long selectCountByNoSync(long no);
 
+    @Query("SELECT * FROM book_node WHERE id=:id")
+    BookNode selectByPrimary(long id);
+
+    @Query("UPDATE book_node SET node_no=:no WHERE id=:primaryKey")
+    void setNodeNoByPrimary(long primaryKey,long no);
+
 
     @Query("SELECT * FROM book_node WHERE node_no=:no ")
     Single<List<BookNode>> selectByNo(long no);
 
     @Query("SELECT * FROM book_node WHERE node_no=:no ")
     List<BookNode> selectByNoSync(long no);
+
+    @Query("SELECT * FROM book_node WHERE node_no!=-1 AND sync_status=1")
+    List<BookNode> selectToBePatchedSynced();
+
+    @Query("SELECT * FROM book_node WHERE node_no=-1")
+    List<BookNode> selectToBePostedSynced();
 
 }

@@ -14,6 +14,7 @@ import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
@@ -76,7 +77,7 @@ public class BookNodeViewModel extends ViewModel {
     public void switchPath(String path) {
         Log.i(TAG, "switchPath: " + path);
         currentPath = path;
-        bookNodeRoomService.selectByPath(path, (bookNodeList, throwable) -> {
+        bookNodeRoomService.selectByPath(path).subscribe((bookNodeList, throwable) -> {
             if (bookNodeList != null) {
                 bookNodesShowed.clear();
                 bookNodesShowed.addAll(bookNodeList);
@@ -99,7 +100,7 @@ public class BookNodeViewModel extends ViewModel {
      *
      * <p>
      * <ol>
-     * <li> get primary key from {@link BookNodeRoomDao#insert(BookNode...)}.</li>
+     * <li> get primary key from {@link BookNodeRoomDao#insert(BookNode)}.</li>
      * <li> get list of bookNode whose path equal inserted items'.</li>
      * <li> find the position which inserted item at  from list.</li>
      * <li> return a @{List} which contains primary key and position of inserted item.</li>
@@ -122,11 +123,11 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void insert(BookNode target) {
-        bookNodeRoomService.insert(target, (bookNode, throwable) -> {
-            if (bookNode != null) {
-                Log.i(TAG, "onInsertFinishedSuccess: " + bookNode);
-                int positionInBookNodes = findPositionInBookNodes(bookNode, bookNodesShowed);
-                bookNodesShowed.add(positionInBookNodes, bookNode);
+        bookNodeRoomService.insert(target).subscribe((aLong, throwable) -> {
+            if (aLong != null) {
+                Log.i(TAG, "onInsertFinishedSuccess: " + target);
+                int positionInBookNodes = findPositionInBookNodes(target, bookNodesShowed);
+                bookNodesShowed.add(positionInBookNodes, target);
                 callback.onInsertFinished(positionInBookNodes);
             }
             if (throwable != null) {
@@ -137,7 +138,7 @@ public class BookNodeViewModel extends ViewModel {
     }
 
     public void delete(BookNode target, int position) {
-        bookNodeRoomService.delete(target, () -> {
+        bookNodeRoomService.delete(target).subscribe(() -> {
             Log.i(TAG, "delete: successfully  position=" + position + "  " + target);
             bookNodesShowed.remove(position);
             callback.onDeleteFinished(position);
