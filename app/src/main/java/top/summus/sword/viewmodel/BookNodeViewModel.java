@@ -64,13 +64,20 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void sync(Action callback) throws Exception {
-        bookNodeHttpService.syncBookNodes(throwable -> {
-            if (throwable != null) {
-                Log.e(TAG, "sync: ", throwable);
-            }
+//        bookNodeHttpService.syncBookNodes(throwable -> {
+//            if (throwable != null) {
+//                Log.e(TAG, "sync: ", throwable);
+//            }
+//            switchPath(currentPath);
+//            callback.run();
+//        });
+        bookNodeHttpService.downloadBookNodes().doFinally(() -> {
+
+            Log.i(TAG, "sync: "+Thread.currentThread());
             switchPath(currentPath);
             callback.run();
-        });
+        }).subscribe(bookNode -> {},throwable -> {});
+
 
     }
 
