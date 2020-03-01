@@ -9,6 +9,8 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import top.summus.sword.entity.BookNode;
@@ -21,7 +23,8 @@ public interface BookNodeRoomDao {
     Single<Long> insert(BookNode bookNodes);
 
     @Insert
-    List<Long> insertSynced(BookNode... bookNodes);
+    long insertSync(BookNode bookNode);
+
 
     @Query("SELECT * FROM book_node")
     List<BookNode> getAllBySync();

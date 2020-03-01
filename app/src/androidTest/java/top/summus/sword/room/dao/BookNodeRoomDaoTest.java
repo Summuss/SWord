@@ -42,7 +42,7 @@ public class BookNodeRoomDaoTest {
         BookNode bookNode1 = BookNode.builder().nodeName("test3").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
 
                 .build();
-        bookNodeRoomDao.insertSynced(bookNode, bookNode1);
+//        bookNodeRoomDao.insertSynced(bookNode, bookNode1);
 
         long num = bookNodeRoomDao.selectCountByNoSync(4);
 

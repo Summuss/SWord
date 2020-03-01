@@ -38,6 +38,9 @@ public class BookNodeRoomService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public long insertSync(BookNode bookNode){
+        return bookNodeRoomDao.insertSync(bookNode);
+    }
 
     public Completable delete(BookNode bookNode) {
         return bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())

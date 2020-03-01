@@ -11,9 +11,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
-import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -48,61 +47,11 @@ public class BookNodeHttpService {
     @Inject
     TimeHttpService timeHttpService;
 
-    public void downloadBookNodes(Consumer<Throwable> callback) {
-        Log.i(TAG, "[download]  start download unsynced");
-//        String lastSycnedDate = parseDateToString(new Date(119,2,16,12,59,58));
-        String lastSycnedDate = parseDateToString(sharedPreferences.getBookNodeLastPullTime());
-        Log.i(TAG, "[download]  lastSyncTime:" + lastSycnedDate);
-        bookNodeApi.downLoadUnSynced(lastSycnedDate)
-                .subscribeOn(Schedulers.io())
-                .doOnNext(listResponse -> {
-                    if (listResponse.isSuccessful()) {
-                        Log.i(TAG, "[download]  response statusCode is ok");
-                        List<BookNode> bookNodes = listResponse.body();
-                        for (BookNode bookNode : bookNodes) {
-                            List<BookNode> localNodes = bookNodeRoomService.selectByNo(bookNode.getNodeNo());
-                            if (!localNodes.isEmpty()) {
-                                Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + " exist in local");
-                                BookNode selected = localNodes.get(0);
-                                if (bookNode.getNodeChangedDate().getTime() > selected.getNodeChangedDate().getTime()) {
-                                    Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  latter than local, updateSync");
-                                    bookNode.setId(selected.getId());
-                                    bookNode.setSyncStatus(0);
-                                    bookNodeRoomService.update(bookNode);
-                                } else {
-                                    Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  not latter than local, no operation");
-                                }
-                            } else {
-                                Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
-                                bookNode.setSyncStatus(0);
-                                bookNodeRoomService.insert(bookNode).subscribe();
-                            }
-
-                        }
-                        Log.i(TAG, "[download] finished");
-                        Headers headers = listResponse.headers();
-                        System.out.println(listResponse.raw());
-                        sharedPreferences.setBookNodeLastPullTime(headers.getDate("BookNodePullTime"));
-
-                    } else {
-                        Log.e(TAG, "[download]  " + "response statusCode is error,statusCode=" + listResponse.code());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        listResponse -> callback.accept(null),
-                        throwable -> {
-                            Log.e(TAG, "[download]  " + "fatal error", throwable);
-                            callback.accept(throwable);
-                        }
-                );
-    }
-
 
     public Observable<BookNode> downloadBookNodes() {
 
         Log.i(TAG, "[download]  start download unsynced");
-        String lastSycnedDate = parseDateToString(new Date(119,2,16,12,59,58));
+        String lastSycnedDate = parseDateToString(new Date(119, 2, 16, 12, 59, 58));
 //        String lastSycnedDate = parseDateToString(sharedPreferences.getBookNodeLastPullTime());
         Log.i(TAG, "[download]  lastSyncTime:" + lastSycnedDate);
         return bookNodeApi.downLoadUnSynced(lastSycnedDate).subscribeOn(Schedulers.io())
@@ -132,11 +81,11 @@ public class BookNodeHttpService {
                     } else {
                         Log.i(TAG, "[download] nodeNo" + bookNode.getNodeNo() + "  don't exist in local, insert");
                         bookNode.setSyncStatus(0);
-                        bookNodeRoomService.insert(bookNode).subscribe();
+                        bookNodeRoomService.insertSync(bookNode);
                     }
 
                 })
-                .doOnError(throwable -> Log.e(TAG, "downloadBookNodes: ",throwable ))
+                .doOnError(throwable -> Log.e(TAG, "downloadBookNodes: ", throwable))
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -201,25 +150,71 @@ public class BookNodeHttpService {
                 );
     }
 
-    public void uploadBookNodes(Consumer<Throwable> callback, Semaphore semaphore) {
-        Semaphore localSema = new Semaphore(-1, true);
-        Single.create((SingleOnSubscribe<List<BookNode>>) emitter -> {
-            List<BookNode> insertBookNodes = bookNodeRoomService.selectToBePosted();
-            emitter.onSuccess(insertBookNodes);
-        }).subscribeOn(Schedulers.io())
-                .subscribe((insertBookNodes, throwable) -> {
-                    if (insertBookNodes != null) {
-                        Observable.fromIterable(insertBookNodes)
-                                .map(bookNode -> bookNodeApi.postBookNode(bookNode));
-//                                .zipWith(Observable.fromIterable(insertBookNodes), new BiFunction<Single<Response<Integer>>, BookNode, Object>() {
-//                                });
+    public Observable<BookNode> uploadBookNodes() {
 
-                    }
-                    if (throwable != null) {
-                        Log.e(TAG, "selectToBePosted ", throwable);
-                        localSema.release();
-                    }
+        Observable<BookNode> postBookNodesObservable = Observable.create((ObservableOnSubscribe<List<BookNode>>) emitter -> {
+            List<BookNode> insertBookNodes = bookNodeRoomService.selectToBePosted();
+            emitter.onNext(insertBookNodes);
+            emitter.onComplete();
+        }).subscribeOn(Schedulers.io())
+                .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
+                .doOnNext(bookNode -> {
+                    bookNodeApi.postBookNode(bookNode).subscribe((integerResponse, throwable) -> {
+                        if (integerResponse != null) {
+
+                            if (integerResponse.isSuccessful()) {
+                                Log.i(TAG, "[post]  " + "nodeId" + bookNode.getId() + " get right response statusCode");
+                                bookNode.setNodeNo(integerResponse.body());
+                                bookNode.setSyncStatus(0);
+                                bookNodeRoomService.update(bookNode);
+                                Log.i(TAG, "[post]  " + "post nodeId" + bookNode.getId() + "  finished, get no" + integerResponse.body());
+
+                            } else {
+                                Log.e(TAG, "[post]  " + "nodeId" + bookNode.getId() + " get error response statusCode"
+                                        , new WrongStatusCodeException(integerResponse.code() + ""));
+
+                            }
+
+                        }
+                        if (throwable != null) {
+                            Log.e(TAG, "[post]  ", throwable);
+                        }
+
+                    });
                 });
+
+        Observable<BookNode> patchBookNodesObservable = Observable.create((ObservableOnSubscribe<List<BookNode>>) emitter -> {
+            List<BookNode> patchedBookNode = bookNodeRoomService.selectToBePatched();
+            emitter.onNext(patchedBookNode);
+            emitter.onComplete();
+        }).observeOn(Schedulers.io())
+                .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
+                .doOnNext(bookNode -> {
+                    bookNodeApi.patchBookNode(bookNode).subscribe((integerResponse, throwable) -> {
+                        if (integerResponse != null) {
+                            if (integerResponse.isSuccessful()) {
+                                Log.i(TAG, "[patch]  " + "nodeNo" + bookNode.getNodeNo() + "  get right response statusCode");
+                                Log.i(TAG, "[patch]  " + "nodeNo" + bookNode.getNodeNo() + " server's response is " + integerResponse.body());
+                                if (integerResponse.body() > 0) {
+                                    bookNode.setNodeNo(integerResponse.body());
+                                }
+                                bookNode.setSyncStatus(0);
+                                bookNodeRoomService.update(bookNode);
+
+                            } else {
+                                Log.e(TAG, "[patch]  " + "nodeNo" + bookNode.getNodeNo() + " get error response statusCode"
+                                        , new WrongStatusCodeException(integerResponse.code() + ""));
+                            }
+                        }
+                        if (throwable != null) {
+                            Log.e(TAG, "[patch]  ", throwable);
+
+                        }
+                    });
+                });
+
+        return Observable.concat(postBookNodesObservable,patchBookNodesObservable).observeOn(AndroidSchedulers.mainThread());
+
 
     }
 
