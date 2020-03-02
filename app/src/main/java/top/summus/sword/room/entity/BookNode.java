@@ -1,4 +1,4 @@
-package top.summus.sword.entity;
+package top.summus.sword.room.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

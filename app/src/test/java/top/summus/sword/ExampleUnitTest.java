@@ -14,8 +14,10 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
+import top.summus.sword.room.dao.DeleteRecordDao;
 
 import static org.junit.Assert.*;
+import static top.summus.sword.room.dao.DeleteRecordDao.*;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -35,10 +37,6 @@ public class ExampleUnitTest {
     }
 
     public static void main(String[] args) {
-        new ExampleUnitTest().func().subscribe(integer -> {
-            System.out.println(Thread.currentThread());
-            System.out.println(integer);
-        });
     }
 
 

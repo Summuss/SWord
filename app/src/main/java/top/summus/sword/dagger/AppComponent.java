@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import top.summus.sword.activity.StartActivity;
+import top.summus.sword.fragment.TestFragment;
 import top.summus.sword.network.HttpModule;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.TimeHttpService;
@@ -25,4 +26,6 @@ public interface AppComponent {
 
 
     void inject(BookNodeRoomService bookNodeRoomService);
+
+    void inject(TestFragment testFragment);
 }

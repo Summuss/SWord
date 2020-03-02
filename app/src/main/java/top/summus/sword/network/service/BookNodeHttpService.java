@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import okhttp3.Headers;
 import retrofit2.Response;
 import top.summus.sword.SWordSharedPreferences;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.exception.WrongStatusCodeException;
 import top.summus.sword.network.api.BookNodeApi;
 import top.summus.sword.room.service.BookNodeRoomService;
@@ -66,7 +66,7 @@ public class BookNodeHttpService {
                 })
                 .doOnNext(bookNode -> {
 
-                    List<BookNode> localNodes = bookNodeRoomService.selectByNo(bookNode.getNodeNo());
+                    List<BookNode> localNodes = bookNodeRoomService.selectByNoSync(bookNode.getNodeNo());
                     if (!localNodes.isEmpty()) {
                         Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + " exist in local");
                         BookNode selected = localNodes.get(0);
@@ -74,7 +74,7 @@ public class BookNodeHttpService {
                             Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  latter than local, updateSync");
                             bookNode.setId(selected.getId());
                             bookNode.setSyncStatus(0);
-                            bookNodeRoomService.update(bookNode);
+                            bookNodeRoomService.updateSync(bookNode);
                         } else {
                             Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  not latter than local, no operation");
                         }
@@ -86,7 +86,7 @@ public class BookNodeHttpService {
 
                 })
                 .doOnError(throwable -> Log.e(TAG, "downloadBookNodes: ", throwable))
-                .observeOn(AndroidSchedulers.mainThread());
+                ;
     }
 
     public void downloadBookNodes(Consumer<Throwable> callback, Semaphore semaphore) {
@@ -101,7 +101,7 @@ public class BookNodeHttpService {
                         Log.i(TAG, "[download]  response statusCode is ok");
                         List<BookNode> bookNodes = listResponse.body();
                         for (BookNode bookNode : bookNodes) {
-                            List<BookNode> localNodes = bookNodeRoomService.selectByNo(bookNode.getNodeNo());
+                            List<BookNode> localNodes = bookNodeRoomService.selectByNoSync(bookNode.getNodeNo());
                             if (!localNodes.isEmpty()) {
                                 Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + " exist in local");
                                 BookNode selected = localNodes.get(0);
@@ -109,7 +109,7 @@ public class BookNodeHttpService {
                                     Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  latter than local, updateSync");
                                     bookNode.setId(selected.getId());
                                     bookNode.setSyncStatus(0);
-                                    bookNodeRoomService.update(bookNode);
+                                    bookNodeRoomService.updateSync(bookNode);
                                 } else {
                                     Log.i(TAG, "[download]  nodeNo" + bookNode.getNodeNo() + "  not latter than local, no operation");
                                 }
@@ -153,7 +153,7 @@ public class BookNodeHttpService {
     public Observable<BookNode> uploadBookNodes() {
 
         Observable<BookNode> postBookNodesObservable = Observable.create((ObservableOnSubscribe<List<BookNode>>) emitter -> {
-            List<BookNode> insertBookNodes = bookNodeRoomService.selectToBePosted();
+            List<BookNode> insertBookNodes = bookNodeRoomService.selectToBePostedSync();
             emitter.onNext(insertBookNodes);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
@@ -166,7 +166,7 @@ public class BookNodeHttpService {
                                 Log.i(TAG, "[post]  " + "nodeId" + bookNode.getId() + " get right response statusCode");
                                 bookNode.setNodeNo(integerResponse.body());
                                 bookNode.setSyncStatus(0);
-                                bookNodeRoomService.update(bookNode);
+                                bookNodeRoomService.updateSync(bookNode);
                                 Log.i(TAG, "[post]  " + "post nodeId" + bookNode.getId() + "  finished, get no" + integerResponse.body());
 
                             } else {
@@ -184,7 +184,7 @@ public class BookNodeHttpService {
                 });
 
         Observable<BookNode> patchBookNodesObservable = Observable.create((ObservableOnSubscribe<List<BookNode>>) emitter -> {
-            List<BookNode> patchedBookNode = bookNodeRoomService.selectToBePatched();
+            List<BookNode> patchedBookNode = bookNodeRoomService.selectToBePatchedSync();
             emitter.onNext(patchedBookNode);
             emitter.onComplete();
         }).observeOn(Schedulers.io())
@@ -199,7 +199,7 @@ public class BookNodeHttpService {
                                     bookNode.setNodeNo(integerResponse.body());
                                 }
                                 bookNode.setSyncStatus(0);
-                                bookNodeRoomService.update(bookNode);
+                                bookNodeRoomService.updateSync(bookNode);
 
                             } else {
                                 Log.e(TAG, "[patch]  " + "nodeNo" + bookNode.getNodeNo() + " get error response statusCode"

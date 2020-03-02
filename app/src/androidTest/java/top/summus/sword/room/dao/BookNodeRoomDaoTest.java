@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import top.summus.sword.SWordDatabase;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.SWordDatabase;
+import top.summus.sword.room.entity.BookNode;
 
 @RunWith(AndroidJUnit4.class)
 public class BookNodeRoomDaoTest {

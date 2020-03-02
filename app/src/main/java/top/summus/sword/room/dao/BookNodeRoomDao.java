@@ -1,6 +1,5 @@
 package top.summus.sword.room.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -9,11 +8,9 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.entity.BookNode;
 
 @Dao
 public interface BookNodeRoomDao {
@@ -50,7 +47,7 @@ public interface BookNodeRoomDao {
     BookNode selectByPrimary(long id);
 
     @Query("UPDATE book_node SET node_no=:no WHERE id=:primaryKey")
-    void setNodeNoByPrimary(long primaryKey,long no);
+    void setNodeNoByPrimary(long primaryKey, long no);
 
 
     @Query("SELECT * FROM book_node WHERE node_no=:no ")
@@ -64,5 +61,8 @@ public interface BookNodeRoomDao {
 
     @Query("SELECT * FROM book_node WHERE node_no=-1")
     List<BookNode> selectToBePostedSynced();
+
+    @Query("SELECT * FROM book_node WHERE node_path LIKE :path")
+    Single<List<BookNode>> selectPathLike(String path);
 
 }

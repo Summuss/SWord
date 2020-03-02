@@ -4,81 +4,114 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.functions.BiConsumer;
-import lombok.NoArgsConstructor;
-import top.summus.sword.SWordApplication;
-import top.summus.sword.entity.BookNode;
-import top.summus.sword.exception.MethodNotImplementedException;
+import lombok.AllArgsConstructor;
+import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.room.dao.BookNodeRoomDao;
 
+import static top.summus.sword.room.dao.DeleteRecordDao.Table.BOOK_NODE;
+
 @SuppressLint("CheckResult")
+@AllArgsConstructor
 public class BookNodeRoomService {
     private static final String TAG = "BookNodeRoomService";
 
 
     BookNodeRoomDao bookNodeRoomDao;
 
-    public BookNodeRoomService(BookNodeRoomDao bookNodeRoomDao) {
-        this.bookNodeRoomDao = bookNodeRoomDao;
-    }
+    DeleteRecordRoomService deleteRecordRoomService;
 
 
     public Single<Long> insert(BookNode bookNode) {
-        return bookNodeRoomDao.insert(bookNode).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return bookNodeRoomDao.insert(bookNode);
     }
 
-    public long insertSync(BookNode bookNode){
+    public long insertSync(BookNode bookNode) {
         return bookNodeRoomDao.insertSync(bookNode);
     }
 
-    public Completable delete(BookNode bookNode) {
-        return bookNodeRoomDao.delete(bookNode).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                ;
+    public Observable<BookNode> delete(BookNode bookNode) {
+        if (bookNode.getNodeTag() == 0) {
+            return selectChildNodes(bookNode).subscribeOn(Schedulers.io())
+                    .toObservable()
+                    .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
+                    .doOnNext(bookNode1 -> {
+                        Log.i(TAG, "delete: " + bookNode1.getNodeName() + "  " + bookNode1.getNodeNo());
+                        deleteRecordRoomService.insert(BOOK_NODE, bookNode1.getNodeNo())
+                                .subscribe((aLong, throwable) -> {
+                                    if (throwable != null) {
+                                        Log.e(TAG, "delete: ", throwable);
+                                    }
+                                });
+                        bookNodeRoomDao.delete(bookNode1).subscribe();
+                    })
+                    .doOnError(throwable -> {
+                        Log.e(TAG, "delete: ", throwable);
+                    })
+                    .doOnComplete(() -> {
+                        deleteRecordRoomService.insert(BOOK_NODE, bookNode.getNodeNo())
+                                .subscribe((aLong, throwable) -> {
+                                    if (throwable != null) {
+                                        Log.e(TAG, "delete: ", throwable);
+                                    }
+                                });
+                        bookNodeRoomDao.delete(bookNode).subscribe();
+                    });
+        } else {
+            return deleteRecordRoomService.insert(BOOK_NODE, bookNode.getNodeNo())
+                    .toObservable()
+                    .subscribeOn(Schedulers.io())
+                    .map(aLong -> bookNode)
+                    .doOnComplete(() -> {
+                        bookNodeRoomDao.delete(bookNode);
+                    })
+                    .doOnError(throwable -> Log.e(TAG, "delete: ", throwable));
+        }
+
     }
 
     public Single<List<BookNode>> selectByPath(String path) {
 
         return bookNodeRoomDao.selectByPath(path)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                ;
     }
 
 
-    public List<BookNode> selectByNo(long no) {
+    public List<BookNode> selectByNoSync(long no) {
         return bookNodeRoomDao.selectByNoSync(no);
     }
 
-    public void update(BookNode bookNode) {
+    public void updateSync(BookNode bookNode) {
         bookNodeRoomDao.updateSync(bookNode);
     }
 
-    public List<BookNode> selectToBePatched() {
+    public List<BookNode> selectToBePatchedSync() {
         return bookNodeRoomDao.selectToBePatchedSynced();
     }
 
-    public List<BookNode> selectToBePosted() {
+    public List<BookNode> selectToBePostedSync() {
         return bookNodeRoomDao.selectToBePostedSynced();
     }
 
-    public BookNode selectByPrimary(long id) {
+    public BookNode selectByPrimarySync(long id) {
         return bookNodeRoomDao.selectByPrimary(id);
     }
 
-    public void updateNodeNoByPrimary(long primary, long no) {
+    public void updateNodeNoByPrimarySync(long primary, long no) {
         bookNodeRoomDao.setNodeNoByPrimary(primary, no);
     }
 
+    public Single<List<BookNode>> selectChildNodes(BookNode bookNode) {
+        String path = bookNode.getNodePath() + bookNode.getNodeName() + "%";
+        return bookNodeRoomDao.selectPathLike(path)
+                ;
+    }
 
 }

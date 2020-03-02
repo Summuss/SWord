@@ -5,7 +5,7 @@ import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.*;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.entity.BookNode;
 
 import java.util.List;
 

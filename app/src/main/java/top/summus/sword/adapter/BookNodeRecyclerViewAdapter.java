@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 
 import lombok.Getter;
 import top.summus.sword.R;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.entity.BookNode;
 
 import java.util.List;
 

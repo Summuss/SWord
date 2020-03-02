@@ -8,9 +8,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import top.summus.sword.SWordDatabase;
 import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.room.service.DeleteRecordRoomService;
 
 @Module
 public class RoomModule {
@@ -30,7 +31,19 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    public BookNodeRoomService provideBookNodeRoomService(BookNodeRoomDao bookNodeRoomDao) {
-        return new BookNodeRoomService(bookNodeRoomDao);
+    public BookNodeRoomService provideBookNodeRoomService(BookNodeRoomDao bookNodeRoomDao,DeleteRecordRoomService recordRoomService) {
+        return new BookNodeRoomService(bookNodeRoomDao,recordRoomService);
+    }
+
+    @Singleton
+    @Provides
+    public DeleteRecordDao provideDeleteReocrdDao(SWordDatabase sWordDatabase){
+        return sWordDatabase.getDeleteRecordDao();
+    }
+
+    @Singleton
+    @Provides
+    public DeleteRecordRoomService provideDeleteRecordRoomService(DeleteRecordDao deleteRecordDao){
+        return new DeleteRecordRoomService(deleteRecordDao);
     }
 }

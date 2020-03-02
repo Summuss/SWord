@@ -16,9 +16,8 @@ public class RxJavaUtil {
 //        )
 //    }
 
-    public static SingleTransformer singleTransformer() {
-        return upstream ->
-                upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                ;
-    }
+//    public static SingleTransformer<V,T> singleTransformer() {
+//        return upstream ->
+//                ;
+//    }
 }

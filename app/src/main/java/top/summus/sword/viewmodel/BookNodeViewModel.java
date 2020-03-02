@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
@@ -21,13 +19,13 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.Setter;
 import top.summus.sword.SWordApplication;
-import top.summus.sword.network.api.BookNodeApi;
-import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.room.dao.BookNodeRoomDao;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.dao.DeleteRecordDao;
+import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.room.service.DeleteRecordRoomService;
 
 @SuppressLint("CheckResult")
 
@@ -44,6 +42,10 @@ public class BookNodeViewModel extends ViewModel {
 
     @Inject
     TimeHttpService timeHttpService;
+
+    @Inject
+    DeleteRecordRoomService deleteRecordRoomService;
+
 
     private DataChangedListener callback;
 
@@ -66,7 +68,9 @@ public class BookNodeViewModel extends ViewModel {
     public void sync(Action callback) throws Exception {
 
         Observable.concat(bookNodeHttpService.downloadBookNodes(), bookNodeHttpService.uploadBookNodes())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
+                    Log.i(TAG, "sync: on finally" + Thread.currentThread());
                     switchPath(currentPath);
                     callback.run();
                 })
@@ -79,16 +83,17 @@ public class BookNodeViewModel extends ViewModel {
     public void switchPath(String path) {
         Log.i(TAG, "switchPath: " + path);
         currentPath = path;
-        bookNodeRoomService.selectByPath(path).subscribe((bookNodeList, throwable) -> {
-            if (bookNodeList != null) {
-                bookNodesShowed.clear();
-                bookNodesShowed.addAll(bookNodeList);
-                callback.onPathSwished(path);
-            }
-            if (throwable != null) {
-                Log.e(TAG, "switchPath", throwable);
-            }
-        });
+        bookNodeRoomService.selectByPath(path).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe((bookNodeList, throwable) -> {
+                    if (bookNodeList != null) {
+                        bookNodesShowed.clear();
+                        bookNodesShowed.addAll(bookNodeList);
+                        callback.onPathSwished(path);
+                    }
+                    if (throwable != null) {
+                        Log.e(TAG, "switchPath", throwable);
+                    }
+                });
     }
 
 
@@ -125,26 +130,30 @@ public class BookNodeViewModel extends ViewModel {
 
 
     public void insert(BookNode target) {
-        bookNodeRoomService.insert(target).subscribe((aLong, throwable) -> {
-            if (aLong != null) {
-                Log.i(TAG, "onInsertFinishedSuccess: " + target);
-                int positionInBookNodes = findPositionInBookNodes(target, bookNodesShowed);
-                bookNodesShowed.add(positionInBookNodes, target);
-                callback.onInsertFinished(positionInBookNodes);
-            }
-            if (throwable != null) {
-                Log.e(TAG, "onInsertFinishedError: " + target, throwable);
+        bookNodeRoomService.insert(target).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe((aLong, throwable) -> {
+                    if (aLong != null) {
+                        Log.i(TAG, "onInsertFinishedSuccess: " + target);
+                        int positionInBookNodes = findPositionInBookNodes(target, bookNodesShowed);
+                        bookNodesShowed.add(positionInBookNodes, target);
+                        callback.onInsertFinished(positionInBookNodes);
+                    }
+                    if (throwable != null) {
+                        Log.e(TAG, "onInsertFinishedError: " + target, throwable);
 
-            }
-        });
+                    }
+                });
     }
 
     public void delete(BookNode target, int position) {
-        bookNodeRoomService.delete(target).subscribe(() -> {
-            Log.i(TAG, "delete: successfully  position=" + position + "  " + target);
-            bookNodesShowed.remove(position);
-            callback.onDeleteFinished(position);
-        });
+        bookNodeRoomService.delete(target)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    bookNodesShowed.remove(position);
+                    callback.onDeleteFinished(position);
+                })
+                .subscribe(bookNode -> {
+                }, throwable -> Log.e(TAG, "delete: ", throwable));
     }
 
 

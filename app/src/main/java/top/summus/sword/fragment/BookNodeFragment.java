@@ -21,30 +21,22 @@ import android.view.ViewGroup;
 
 import android.view.animation.OvershootInterpolator;
 
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 
 import java.util.Date;
-import java.util.Objects;
 
-
-import javax.inject.Inject;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import top.summus.sword.R;
-import top.summus.sword.SWordApplication;
-import top.summus.sword.SWordDatabase;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
 import top.summus.sword.component.InputPopupWindow;
 import top.summus.sword.databinding.FragmentBooknodeBinding;
-import top.summus.sword.entity.BookNode;
+import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.util.BackPressedHandle;
 import top.summus.sword.viewmodel.BookNodeViewModel;
 

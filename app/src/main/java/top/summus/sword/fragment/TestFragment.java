@@ -14,13 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
+import top.summus.sword.SWordApplication;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
 import top.summus.sword.databinding.FragmentTestBinding;
+import top.summus.sword.room.dao.DeleteRecordDao;
+import top.summus.sword.room.entity.DeleteRecord;
+import top.summus.sword.room.service.DeleteRecordRoomService;
+
+import static top.summus.sword.room.dao.DeleteRecordDao.Table.BOOK_NODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,13 +42,13 @@ public class TestFragment extends Fragment {
     int count = 5;
     BookNodeRecyclerViewAdapter adapter;
 
-    public TestFragment() {
-        // Required empty public constructor
-    }
+    @Inject
+    DeleteRecordRoomService deleteRecordRoomService;
 
-    public Observable<Integer> func(){
 
-        return Observable.just(1,2,3)
+    public Observable<Integer> func() {
+
+        return Observable.just(1, 2, 3)
                 .doOnNext(integer -> {
                     Log.i(TAG, "func: 1");
                 });
@@ -50,28 +58,26 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
-        Observable<Integer> integerObservable = Observable.just(1).subscribeOn(Schedulers.io())
-                .doOnNext(integer -> {
-                    Log.i(TAG, "doOnNext1 " + Thread.currentThread().getId());
-                }).observeOn(AndroidSchedulers.mainThread());
+        SWordApplication.getAppComponent().inject(this);
 
- Observable.just(1).subscribeOn(Schedulers.io())
+        Observable.just(1, 2, 3).observeOn(Schedulers.io())
                 .doOnNext(integer -> {
-                    Log.i(TAG, "doOnNext2 "  + Thread.currentThread().getId());
-                    integerObservable.subscribe(integer1 -> {
-                        Log.i(TAG, "in subscribe "+Thread.currentThread().getId());
+                    Observable.just(1).subscribe(integer1 -> {
+                        throw  new RuntimeException();
                     });
-                }).observeOn(AndroidSchedulers.mainThread())
+                })
+                .doFinally(() -> {
+//                    throw new RuntimeException();
+
+                })
+
+
                 .subscribe(integer -> {
-                    Log.i(TAG, "onCreateV"+Thread.currentThread().getId());
+                }, throwable -> {
+                    Log.i(TAG, "onCreateView: sdfsdfsdfdsfsdfs");
+                    Log.e(TAG, "onCreateView: ", throwable);
                 });
 
-//        Observable.concat(integerObservable1,integerObservable).subscribeOn(Schedulers.io())
-//                .doFinally(() -> Log.i(TAG, "onCreateView: finally"+ Thread.currentThread().getId()))
-//                .subscribe(integer -> {
-//                    Log.i(TAG, "OnNext3 "  + Thread.currentThread().getId());
-//
-//                });
 
         return binding.getRoot();
 
