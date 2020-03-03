@@ -22,6 +22,8 @@ public interface DeleteRecordDao {
     @Query("SELECT * FROM delete_record WHERE table_no=:table")
     List<DeleteRecord> selectByTable(int table);
 
+    @Query("SELECT * FROM delete_record")
+    Single<List<DeleteRecord>> selectAll();
 
     enum Table {
         /**

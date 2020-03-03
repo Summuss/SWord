@@ -20,6 +20,7 @@ public class RoomModule {
     public SWordDatabase provideDatabase(Context context) {
         return Room.databaseBuilder(context, SWordDatabase.class, "sword")
                 .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
                 .build();
     }
 

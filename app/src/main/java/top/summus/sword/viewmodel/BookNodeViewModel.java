@@ -66,15 +66,25 @@ public class BookNodeViewModel extends ViewModel {
 
     public void sync(Action callback) throws Exception {
 
-        Observable.concat(bookNodeHttpService.downloadBookNodes(), bookNodeHttpService.uploadBookNodes())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally(() -> {
+//        Observable.concat(bookNodeHttpService.downloadBookNodes(), bookNodeHttpService.uploadBookNodes())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doFinally(() -> {
+//                    Log.i(TAG, "sync: on finally" + Thread.currentThread());
+//                    switchPath(currentPath);
+//                    callback.run();
+//                })
+//                .subscribe(bookNode -> {
+//                }, throwable -> Log.e(TAG, "sync: ", throwable));
+        bookNodeHttpService.syncBookNodes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
                     Log.i(TAG, "sync: on finally" + Thread.currentThread());
                     switchPath(currentPath);
                     callback.run();
-                })
-                .subscribe(bookNode -> {
-                }, throwable -> Log.e(TAG, "sync: ", throwable));
+                },throwable -> {
+                    callback.run();
+                    switchPath(currentPath);
+                    Log.e(TAG, "sync: ",throwable );
+                });
 
 
     }

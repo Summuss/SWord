@@ -25,6 +25,10 @@ public class DeleteRecordRoomService {
 
     }
 
+    public Single<List<DeleteRecord>> selectAll(){
+        return deleteRecordDao.selectAll();
+    }
+
     public Completable delete(DeleteRecord record) {
         return deleteRecordDao.delete(record);
     }

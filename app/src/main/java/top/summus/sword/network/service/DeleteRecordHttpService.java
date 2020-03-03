@@ -38,38 +38,60 @@ public class DeleteRecordHttpService {
     public Observable<DeleteRecord> downloadDeleteRecord() {
 //        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
         Date deleteRecordLastSyncTime = new Date(1583147873000L);
-        Log.i(TAG, "downloadDeleteRecord: deleteRecordLastSyncTime "+deleteRecordLastSyncTime);
-        Box<Date> responseDate=new Box<>();
-      return  deleteRecordApi.getAll(DateFormatUtil.parseDateToString(deleteRecordLastSyncTime))
+        Log.i(TAG, "downloadDeleteRecord: deleteRecordLastSyncTime " + deleteRecordLastSyncTime);
+        Box<Date> responseDate = new Box<>();
+        return deleteRecordApi.getAll(DateFormatUtil.parseDateToString(deleteRecordLastSyncTime))
                 .flatMap((Function<Response<List<DeleteRecord>>, ObservableSource<DeleteRecord>>) listResponse -> {
-                    if (listResponse.isSuccessful()){
+                    if (listResponse.isSuccessful()) {
                         Log.i(TAG, "downloadDeleteRecord get right status code");
-                        Log.i(TAG, "downloadDeleteRecord: "+listResponse.body());
+                        Log.i(TAG, "downloadDeleteRecord: " + listResponse.body());
                         responseDate.setValue(listResponse.headers().getDate("Date"));
                         return Observable.fromIterable(listResponse.body());
-                    }else {
-                        Log.e(TAG, "downloadDeleteRecord: worng status code:"+listResponse.code() );
-                        throw new WrongStatusCodeException(listResponse.code()+"");
+                    } else {
+                        Log.e(TAG, "downloadDeleteRecord: worng status code:" + listResponse.code());
+                        throw new WrongStatusCodeException(listResponse.code() + "");
                     }
                 })
                 .doOnNext(record -> {
-                    Log.i(TAG, "downloadDeleteRecord:  deal record "+record);
-                    if(record.getTableNo()== BOOK_NODE.value()){
+                    Log.i(TAG, "downloadDeleteRecord:  deal record " + record);
+                    if (record.getTableNo() == BOOK_NODE.value()) {
                         List<BookNode> bookNodes = bookNodeRoomService.selectByNoSync(record.getItemNo());
-                        if (!bookNodes.isEmpty() ) {
-                            Log.i(TAG, "downloadDeleteRecord: delete "+bookNodes.get(0) +" form local");
-                            bookNodeRoomService.delete(bookNodes.get(0)).subscribe(bookNode1 -> {},throwable -> Log.e(TAG, "downloadDeleteRecord: ",throwable ));
+                        if (!bookNodes.isEmpty()) {
+                            Log.i(TAG, "downloadDeleteRecord: delete " + bookNodes.get(0) + " form local");
+                            bookNodeRoomService.delete(bookNodes.get(0)).subscribe(bookNode1 -> {
+                            }, throwable -> Log.e(TAG, "downloadDeleteRecord: ", throwable));
                         }
                     }
 
                 })
                 .doOnComplete(() -> {
-                    Log.i(TAG, "downloadDeleteRecord: write "+responseDate.getValue()+" into sharePreference");
+                    Log.i(TAG, "downloadDeleteRecord: write " + responseDate.getValue() + " into sharePreference");
                     sharedPreferences.setDeleteRecordLastSyncTime(responseDate.getValue());
                 });
 
 
-
     }
+
+    public Observable<DeleteRecord> uploadDeleteRecords() {
+        return deleteRecordRoomService.selectAll()
+                .toObservable()
+                .flatMap((Function<List<DeleteRecord>, ObservableSource<DeleteRecord>>) Observable::fromIterable)
+                .doOnNext(record -> {
+                    deleteRecordApi.post(record)
+                            .doOnComplete(() -> {
+                                deleteRecordRoomService.delete(record).subscribe();
+                                Log.i(TAG, "uploadDeleteRecords: delete local record" + record);
+                            })
+                            .subscribe(voidResponse -> {
+                                if (voidResponse.isSuccessful()) {
+                                    Log.i(TAG, "uploadDeleteRecords: upload record " + record + "  get right status code");
+                                } else {
+                                    Log.i(TAG, "uploadDeleteRecords: upload record " + record + " get wrong status code " + voidResponse.code());
+                                    throw new WrongStatusCodeException();
+                                }
+                            }, throwable -> Log.e(TAG, "uploadDeleteRecords: ", throwable));
+                });
+    }
+
 
 }

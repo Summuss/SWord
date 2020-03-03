@@ -28,4 +28,6 @@ public interface AppComponent {
     void inject(BookNodeRoomService bookNodeRoomService);
 
     void inject(TestFragment testFragment);
+
+    void inject(DaggerContainer daggerContainer);
 }

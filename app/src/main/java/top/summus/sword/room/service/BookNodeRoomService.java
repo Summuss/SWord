@@ -104,6 +104,13 @@ public class BookNodeRoomService {
                 ;
     }
 
+    public List<Long> selectAllNodeNoSync(){
+        return bookNodeRoomDao.selectAllNodeNoSync();
+    }
+
+    public void deleteByNodeNo(long nodeNo){
+        bookNodeRoomDao.deleteByNodeNo(nodeNo);
+    }
 
     public List<BookNode> selectByNoSync(long no) {
         return bookNodeRoomDao.selectByNoSync(no);

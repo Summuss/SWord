@@ -6,6 +6,7 @@ import android.content.Context;
 
 import top.summus.sword.dagger.AppComponent;
 import top.summus.sword.dagger.DaggerAppComponent;
+import top.summus.sword.dagger.DaggerContainer;
 
 
 public class SWordApplication extends Application {
@@ -13,6 +14,7 @@ public class SWordApplication extends Application {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     private static AppComponent appComponent;
+    public static DaggerContainer daggerContainer;
 
 
 
@@ -21,6 +23,7 @@ public class SWordApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         appComponent = DaggerAppComponent.create();
+        daggerContainer=new DaggerContainer();
 
     }
 

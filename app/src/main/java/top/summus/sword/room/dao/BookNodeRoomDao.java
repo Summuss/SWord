@@ -29,8 +29,14 @@ public interface BookNodeRoomDao {
     @Update
     void updateSync(BookNode... bookNodes);
 
+    @Query("SELECT node_no FROM book_node")
+    List<Long>  selectAllNodeNoSync();
+
     @Delete
     Completable delete(BookNode... bookNodes);
+
+    @Query("DELETE FROM book_node WHERE node_no=:nodeNO")
+    void deleteByNodeNo(long nodeNO);
 
 
     @Query("SELECT * FROM book_node WHERE node_path = :path ORDER BY node_tag,node_name")

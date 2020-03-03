@@ -40,7 +40,8 @@ public class BookNode implements Serializable {
     private int nodeTag;
 
     @ColumnInfo(name = "node_changed_date")
-    private Date nodeChangedDate;
+    @Builder.Default
+    private Date nodeChangedDate=new Date();
 
     @ColumnInfo(name = "sync_status", defaultValue = "1")
     @Builder.Default

@@ -26,6 +26,7 @@ import top.summus.sword.R;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
 import top.summus.sword.databinding.FragmentTestBinding;
+import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.entity.DeleteRecord;
@@ -51,6 +52,9 @@ public class TestFragment extends Fragment {
     @Inject
     DeleteRecordHttpService deleteRecordHttpService;
 
+    @Inject
+    BookNodeHttpService bookNodeHttpService;
+
 
     public Observable<Integer> func() {
 
@@ -73,11 +77,14 @@ public class TestFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
         SWordApplication.getAppComponent().inject(this);
 
-        deleteRecordHttpService.downloadDeleteRecord().subscribeOn(Schedulers.io())
-                .subscribe(record -> {},throwable -> {
-                    Log.e(TAG, "onCreateView: ",throwable );
-                });
+//        deleteRecordHttpService.downloadDeleteRecord().subscribeOn(Schedulers.io())
+//                .subscribe(record -> {},throwable -> {
+//                    Log.e(TAG, "onCreateView: ",throwable );
+//                });
 
+
+        deleteRecordHttpService.uploadDeleteRecords().subscribeOn(Schedulers.io())
+                .subscribe(record -> {},throwable -> Log.e(TAG, "onCreateView: ",throwable ));
         return binding.getRoot();
 
 
