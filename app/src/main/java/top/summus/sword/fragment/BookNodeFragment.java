@@ -136,7 +136,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
                                     .setHeight(android.app.ActionBar.LayoutParams.MATCH_PARENT)
                                     .setWidth(150)
                                     .setBackgroundColor(Color.parseColor("#FF0000"))
-                                    .setText("delete");
+                                    .setText("deleteIntoDeleteRecord");
 
                     rightMenu.addMenuItem(deleteItem);
                 };
@@ -242,7 +242,7 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
      **/
     @Override
     public void onDeleteFinished(int position) {
-        Log.i(TAG, "onDeleteFinished: delete position " + position);
+        Log.i(TAG, "onDeleteFinished: deleteIntoDeleteRecord position " + position);
         adapter.notifyItemRemoved(position);
     }
 

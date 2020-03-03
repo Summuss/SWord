@@ -1,0 +1,75 @@
+package top.summus.sword.network.service;
+
+import android.annotation.SuppressLint;
+import android.util.Log;
+
+import java.util.Date;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
+import lombok.AllArgsConstructor;
+import retrofit2.Response;
+import top.summus.sword.SWordSharedPreferences;
+import top.summus.sword.exception.WrongStatusCodeException;
+import top.summus.sword.network.api.DeleteRecordApi;
+import top.summus.sword.room.entity.BookNode;
+import top.summus.sword.room.entity.DeleteRecord;
+import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.room.service.DeleteRecordRoomService;
+import top.summus.sword.util.Box;
+import top.summus.sword.util.DateFormatUtil;
+
+import static top.summus.sword.room.dao.DeleteRecordDao.Table.BOOK_NODE;
+
+@SuppressLint("CheckResult")
+
+@AllArgsConstructor
+public class DeleteRecordHttpService {
+    private static final String TAG = "DeleteRecordHttpService";
+
+    DeleteRecordRoomService deleteRecordRoomService;
+    BookNodeRoomService bookNodeRoomService;
+    SWordSharedPreferences sharedPreferences;
+    TimeHttpService timeHttpService;
+    DeleteRecordApi deleteRecordApi;
+
+    public Observable<DeleteRecord> downloadDeleteRecord() {
+//        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
+        Date deleteRecordLastSyncTime = new Date(1583147873000L);
+        Log.i(TAG, "downloadDeleteRecord: deleteRecordLastSyncTime "+deleteRecordLastSyncTime);
+        Box<Date> responseDate=new Box<>();
+      return  deleteRecordApi.getAll(DateFormatUtil.parseDateToString(deleteRecordLastSyncTime))
+                .flatMap((Function<Response<List<DeleteRecord>>, ObservableSource<DeleteRecord>>) listResponse -> {
+                    if (listResponse.isSuccessful()){
+                        Log.i(TAG, "downloadDeleteRecord get right status code");
+                        Log.i(TAG, "downloadDeleteRecord: "+listResponse.body());
+                        responseDate.setValue(listResponse.headers().getDate("Date"));
+                        return Observable.fromIterable(listResponse.body());
+                    }else {
+                        Log.e(TAG, "downloadDeleteRecord: worng status code:"+listResponse.code() );
+                        throw new WrongStatusCodeException(listResponse.code()+"");
+                    }
+                })
+                .doOnNext(record -> {
+                    Log.i(TAG, "downloadDeleteRecord:  deal record "+record);
+                    if(record.getTableNo()== BOOK_NODE.value()){
+                        List<BookNode> bookNodes = bookNodeRoomService.selectByNoSync(record.getItemNo());
+                        if (!bookNodes.isEmpty() ) {
+                            Log.i(TAG, "downloadDeleteRecord: delete "+bookNodes.get(0) +" form local");
+                            bookNodeRoomService.delete(bookNodes.get(0)).subscribe(bookNode1 -> {},throwable -> Log.e(TAG, "downloadDeleteRecord: ",throwable ));
+                        }
+                    }
+
+                })
+                .doOnComplete(() -> {
+                    Log.i(TAG, "downloadDeleteRecord: write "+responseDate.getValue()+" into sharePreference");
+                    sharedPreferences.setDeleteRecordLastSyncTime(responseDate.getValue());
+                });
+
+
+
+    }
+
+}

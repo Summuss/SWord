@@ -19,6 +19,9 @@ public class SWordSharedPreferences {
     @Getter
     private long timeGap;
 
+    @Getter
+    private Date deleteRecordLastSyncTime;
+
     public SWordSharedPreferences(Context context) {
         sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
         if (sharedPreferences.contains("bookNodeLastPullTime")) {
@@ -34,6 +37,13 @@ public class SWordSharedPreferences {
         } else {
             Log.i(TAG, "SWordSharedPreferences: load time gap ,not exist");
 
+        }
+        if(sharedPreferences.contains("deleteRecordLastSyncTime")){
+            deleteRecordLastSyncTime=new Date(sharedPreferences.getLong("deleteRecordLastSyncTime",0));
+
+        }else {
+            deleteRecordLastSyncTime=new Date();
+            setDeleteRecordLastSyncTime(deleteRecordLastSyncTime);
 
         }
     }
@@ -53,5 +63,12 @@ public class SWordSharedPreferences {
         editor.apply();
     }
 
+    public void setDeleteRecordLastSyncTime(Date date){
+
+        deleteRecordLastSyncTime = date;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("deleteRecordLastSyncTime", date.getTime());
+        editor.apply();
+    }
 
 }

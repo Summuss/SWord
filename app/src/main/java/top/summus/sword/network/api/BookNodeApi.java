@@ -22,6 +22,9 @@ public interface BookNodeApi {
     @GET("bookNodes")
     Observable<Response<List<BookNode>>> getAll();
 
+    @GET("bookNodes/allNodeNo")
+    Observable<Response<List<Integer>>> getNodeNo(@Query("lastDeleteSyncDate") String date);
+
     @POST("bookNodes")
     Single<Response<Integer>> postBookNode(@Body BookNode bookNode);
 

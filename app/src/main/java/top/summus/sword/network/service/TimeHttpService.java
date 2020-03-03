@@ -3,14 +3,18 @@ package top.summus.sword.network.service;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import java.util.Date;
 import java.util.concurrent.Semaphore;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 
 import top.summus.sword.SWordSharedPreferences;
+import top.summus.sword.exception.WrongStatusCodeException;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.util.DateFormatUtil;
 
@@ -122,6 +126,29 @@ public class TimeHttpService {
 
     }
 
+    public Observable<Boolean> isNeedPullDeleteRecord() {
+        return timeApi.getTime().subscribeOn(Schedulers.io())
+                .map(voidResponse -> {
+
+                    if (voidResponse.isSuccessful()) {
+                        Log.i(TAG, "getEarliestDateOfDeleteRecord: get right status code");
+                        Date earliestDateOfDeleteRecord = voidResponse.headers().getDate("earliestDateOfDeleteRecord");
+                        Log.i(TAG, "getEarliestDateOfDeleteRecord: get earliestDateOfDeleteRecord is " + earliestDateOfDeleteRecord);
+                        return earliestDateOfDeleteRecord;
+                    } else {
+                        Log.e(TAG, "getEarliestDateOfDeleteRecord: get wrong status code " + voidResponse.code(), new WrongStatusCodeException(voidResponse.code() + ""));
+                        throw new WrongStatusCodeException();
+                    }
+                })
+                .map((Function<Date, Boolean>) date -> {
+                    if(date.getTime()<=sharedPreferences.getDeleteRecordLastSyncTime().getTime()){
+                        return true;
+                    }else {
+                        return false;
+                    }
+                });
+
+    }
 
 }
 

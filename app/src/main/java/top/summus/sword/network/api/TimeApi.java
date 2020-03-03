@@ -7,4 +7,7 @@ import retrofit2.http.GET;
 public interface TimeApi {
     @GET("time")
     Observable<Response<Void>> getTime();
+
+    @GET("earliestDateOfDeleteRecord")
+    Observable<Response<Void>> getEarliestDateOfDeleteRecord();
 }

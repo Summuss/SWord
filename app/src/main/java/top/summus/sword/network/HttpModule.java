@@ -17,10 +17,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import top.summus.sword.SWordSharedPreferences;
 import top.summus.sword.network.api.BookNodeApi;
+import top.summus.sword.network.api.DeleteRecordApi;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.network.service.BookNodeHttpService;
+import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.room.service.DeleteRecordRoomService;
 
 @Module
 public class HttpModule {
@@ -71,6 +74,18 @@ public class HttpModule {
     @Provides
     public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences, TimeHttpService timeHttpService) {
         return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences, timeHttpService);
+    }
+
+    @Singleton
+    @Provides
+    public DeleteRecordApi provideDeleteRecordApi(Retrofit retrofit){
+        return retrofit.create(DeleteRecordApi.class) ;
+    }
+
+    @Singleton
+    @Provides
+    public DeleteRecordHttpService provideDeleteRecordHttpService(DeleteRecordRoomService deleteRecordRoomService,BookNodeRoomService bookNodeRoomService,SWordSharedPreferences sharedPreferences,TimeHttpService timeHttpService,DeleteRecordApi deleteRecordApi){
+        return new DeleteRecordHttpService(deleteRecordRoomService, bookNodeRoomService,sharedPreferences,timeHttpService,deleteRecordApi);
     }
 
 }

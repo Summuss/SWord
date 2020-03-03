@@ -37,29 +37,29 @@ public class BookNodeRoomService {
         return bookNodeRoomDao.insertSync(bookNode);
     }
 
-    public Observable<BookNode> delete(BookNode bookNode) {
+    public Observable<BookNode> deleteIntoDeleteRecord(BookNode bookNode) {
         if (bookNode.getNodeTag() == 0) {
             return selectChildNodes(bookNode).subscribeOn(Schedulers.io())
                     .toObservable()
                     .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
                     .doOnNext(bookNode1 -> {
-                        Log.i(TAG, "delete: " + bookNode1.getNodeName() + "  " + bookNode1.getNodeNo());
+                        Log.i(TAG, "deleteIntoDeleteRecord: " + bookNode1.getNodeName() + "  " + bookNode1.getNodeNo());
                         deleteRecordRoomService.insert(BOOK_NODE, bookNode1.getNodeNo())
                                 .subscribe((aLong, throwable) -> {
                                     if (throwable != null) {
-                                        Log.e(TAG, "delete: ", throwable);
+                                        Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                                     }
                                 });
                         bookNodeRoomDao.delete(bookNode1).subscribe();
                     })
                     .doOnError(throwable -> {
-                        Log.e(TAG, "delete: ", throwable);
+                        Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                     })
                     .doOnComplete(() -> {
                         deleteRecordRoomService.insert(BOOK_NODE, bookNode.getNodeNo())
                                 .subscribe((aLong, throwable) -> {
                                     if (throwable != null) {
-                                        Log.e(TAG, "delete: ", throwable);
+                                        Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                                     }
                                 });
                         bookNodeRoomDao.delete(bookNode).subscribe();
@@ -72,10 +72,31 @@ public class BookNodeRoomService {
                     .doOnComplete(() -> {
                         bookNodeRoomDao.delete(bookNode);
                     })
-                    .doOnError(throwable -> Log.e(TAG, "delete: ", throwable));
+                    .doOnError(throwable -> Log.e(TAG, "deleteIntoDeleteRecord: ", throwable));
         }
 
     }
+
+    public Observable<BookNode> delete(BookNode bookNode) {
+        if (bookNode.getNodeTag() == 0) {
+            return selectChildNodes(bookNode)
+                    .toObservable()
+                    .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
+                    .doOnNext(bookNode1 -> {
+                        bookNodeRoomDao.delete(bookNode1).subscribe();
+                    })
+                    .doOnError(throwable -> {
+                        Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
+                    })
+                    .doOnComplete(() -> {
+                        bookNodeRoomDao.delete(bookNode).subscribe();
+                    });
+        } else {
+            return bookNodeRoomDao.delete(bookNode).toObservable();
+        }
+
+    }
+
 
     public Single<List<BookNode>> selectByPath(String path) {
 

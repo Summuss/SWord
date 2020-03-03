@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.room.dao.DeleteRecordDao;
+import top.summus.sword.util.Box;
 
 import static org.junit.Assert.*;
 import static top.summus.sword.room.dao.DeleteRecordDao.*;

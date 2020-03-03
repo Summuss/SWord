@@ -21,7 +21,6 @@ import lombok.Setter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.room.dao.BookNodeRoomDao;
-import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
@@ -146,14 +145,14 @@ public class BookNodeViewModel extends ViewModel {
     }
 
     public void delete(BookNode target, int position) {
-        bookNodeRoomService.delete(target)
+        bookNodeRoomService.deleteIntoDeleteRecord(target)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
                     bookNodesShowed.remove(position);
                     callback.onDeleteFinished(position);
                 })
                 .subscribe(bookNode -> {
-                }, throwable -> Log.e(TAG, "delete: ", throwable));
+                }, throwable -> Log.e(TAG, "deleteIntoDeleteRecord: ", throwable));
     }
 
 
