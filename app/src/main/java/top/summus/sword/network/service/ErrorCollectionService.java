@@ -19,7 +19,7 @@ public class ErrorCollectionService {
 
     public void addThrowable(Throwable throwable, String process, String message) {
         ErrorItem errorItem = ErrorItem.builder().throwable(throwable).process(process).message(message).build();
-        if (!(throwable instanceof WrongStatusCodeException) && ((WrongStatusCodeException) throwable).getCode() != 406) {
+        if (!(throwable instanceof WrongStatusCodeException) || ((WrongStatusCodeException) throwable).getCode() != 406) {
             add(errorItem);
 
         }
