@@ -13,8 +13,8 @@ import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
+import es.dmoral.toasty.Toasty;
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
@@ -23,6 +23,7 @@ import lombok.Setter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
+import top.summus.sword.network.service.ErrorCollectionService;
 import top.summus.sword.room.dao.BookNodeRoomDao;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.network.service.TimeHttpService;
@@ -50,6 +51,9 @@ public class BookNodeViewModel extends ViewModel {
 
     @Inject
     DeleteRecordHttpService deleteRecordHttpService;
+
+    @Inject
+    ErrorCollectionService errorCollectionService;
 
     private DataChangedListener callback;
 
@@ -86,6 +90,14 @@ public class BookNodeViewModel extends ViewModel {
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
+                   errorCollectionService.printAll();
+                   if(errorCollectionService.hasConnectOut()){
+                       Toasty.error(SWordApplication.getContext(),"connect out",Toasty.LENGTH_SHORT).show();
+                   }
+                   if(errorCollectionService.isNoError()){
+                       Toasty.success(SWordApplication.getContext(),"sync success",Toasty.LENGTH_SHORT).show();
+                   }
+                   errorCollectionService.clear();
                     switchPath(currentPath);
                     callback.run();
                 })

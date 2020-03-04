@@ -15,6 +15,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 import retrofit2.Response;
 import top.summus.sword.SWordSharedPreferences;
+import top.summus.sword.exception.ErrorItem;
 import top.summus.sword.exception.WrongStatusCodeException;
 import top.summus.sword.network.api.DeleteRecordApi;
 import top.summus.sword.room.entity.BookNode;
@@ -37,6 +38,7 @@ public class DeleteRecordHttpService {
     SWordSharedPreferences sharedPreferences;
     TimeHttpService timeHttpService;
     DeleteRecordApi deleteRecordApi;
+    ErrorCollectionService errorCollectionService;
 
     public Observable<DeleteRecord> downloadDeleteRecord() {
         Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
@@ -52,7 +54,8 @@ public class DeleteRecordHttpService {
                         return Observable.fromIterable(listResponse.body());
                     } else {
                         Log.e(TAG, "downloadDeleteRecord: worng status code:" + listResponse.code());
-                        throw new WrongStatusCodeException(listResponse.code() + "");
+                        throw errorCollectionService.addWrongStatusCodeError(listResponse.code(), "download DeleteRecord: deleteRecordApi");
+
                     }
                 })
                 .doOnNext(record -> {
@@ -62,7 +65,10 @@ public class DeleteRecordHttpService {
                         if (!bookNodes.isEmpty()) {
                             Log.i(TAG, "downloadDeleteRecord: delete " + bookNodes.get(0) + " form local");
                             bookNodeRoomService.delete(bookNodes.get(0)).subscribe(bookNode1 -> {
-                            }, throwable -> Log.e(TAG, "downloadDeleteRecord: ", throwable));
+                            }, throwable -> {
+                                errorCollectionService.addThrowable(throwable, "download DeleteRecord: bookNodeRoomService.delete", "bookNode:" + bookNodes.get(0));
+                                Log.e(TAG, "downloadDeleteRecord: ", throwable);
+                            });
                         }
                     }
 
@@ -70,6 +76,10 @@ public class DeleteRecordHttpService {
                 .doOnComplete(() -> {
                     Log.i(TAG, "downloadDeleteRecord: write " + responseDate.getValue() + " into sharePreference");
                     sharedPreferences.setDeleteRecordLastSyncTime(responseDate.getValue());
+                })
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "download deleteRecords:  deleteRecordApi.getAll", null);
+
                 });
 
 
@@ -90,9 +100,16 @@ public class DeleteRecordHttpService {
                                     Log.i(TAG, "uploadDeleteRecords: upload record " + record + "  get right status code");
                                 } else {
                                     Log.i(TAG, "uploadDeleteRecords: upload record " + record + " get wrong status code " + voidResponse.code());
-                                    throw new WrongStatusCodeException();
+                                    throw errorCollectionService.addWrongStatusCodeError(voidResponse.code(), "upload deleteRecords: deleteRecordApi.post");
                                 }
-                            }, throwable -> Log.e(TAG, "uploadDeleteRecords: ", throwable));
+                            }, throwable -> {
+
+                                errorCollectionService.addThrowable(throwable, "upload deleteRecords: deleteRecordApi.post", "deleteRecord :" + record);
+                                Log.e(TAG, "uploadDeleteRecords: ", throwable);
+                            });
+                })
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "upload deleteRecords: deleteRecordRoomService.selectAll()", null);
                 });
     }
 

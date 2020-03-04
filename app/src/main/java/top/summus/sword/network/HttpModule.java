@@ -21,6 +21,7 @@ import top.summus.sword.network.api.DeleteRecordApi;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
+import top.summus.sword.network.service.ErrorCollectionService;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
 import top.summus.sword.room.service.DeleteRecordRoomService;
@@ -43,6 +44,13 @@ public class HttpModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+    }
+
+
+    @Singleton
+    @Provides
+    public ErrorCollectionService provideErrorCollectionService() {
+        return new ErrorCollectionService();
     }
 
     @Singleton
@@ -72,20 +80,30 @@ public class HttpModule {
 
     @Singleton
     @Provides
-    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi, BookNodeRoomService bookNodeRoomService, SWordSharedPreferences sWordSharedPreferences, TimeHttpService timeHttpService) {
-        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences, timeHttpService);
+    public BookNodeHttpService provideBookNodeHttpServicee(BookNodeApi bookNodeApi,
+                                                           BookNodeRoomService bookNodeRoomService,
+                                                           SWordSharedPreferences sWordSharedPreferences,
+                                                           TimeHttpService timeHttpService,
+                                                           ErrorCollectionService errorCollectionService) {
+        return new BookNodeHttpService(bookNodeApi, bookNodeRoomService, sWordSharedPreferences, timeHttpService,errorCollectionService);
     }
 
     @Singleton
     @Provides
-    public DeleteRecordApi provideDeleteRecordApi(Retrofit retrofit){
-        return retrofit.create(DeleteRecordApi.class) ;
+    public DeleteRecordApi provideDeleteRecordApi(Retrofit retrofit) {
+        return retrofit.create(DeleteRecordApi.class);
     }
 
     @Singleton
     @Provides
-    public DeleteRecordHttpService provideDeleteRecordHttpService(DeleteRecordRoomService deleteRecordRoomService,BookNodeRoomService bookNodeRoomService,SWordSharedPreferences sharedPreferences,TimeHttpService timeHttpService,DeleteRecordApi deleteRecordApi){
-        return new DeleteRecordHttpService(deleteRecordRoomService, bookNodeRoomService,sharedPreferences,timeHttpService,deleteRecordApi);
+    public DeleteRecordHttpService provideDeleteRecordHttpService(DeleteRecordRoomService deleteRecordRoomService,
+                                                                  BookNodeRoomService bookNodeRoomService,
+                                                                  SWordSharedPreferences sharedPreferences,
+                                                                  TimeHttpService timeHttpService,
+                                                                  DeleteRecordApi deleteRecordApi,
+                                                                  ErrorCollectionService errorCollectionService) {
+        return new DeleteRecordHttpService(deleteRecordRoomService, bookNodeRoomService,
+                sharedPreferences, timeHttpService, deleteRecordApi, errorCollectionService);
     }
 
 }

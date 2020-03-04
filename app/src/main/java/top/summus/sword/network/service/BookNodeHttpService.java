@@ -49,6 +49,9 @@ public class BookNodeHttpService {
     @Inject
     TimeHttpService timeHttpService;
 
+    @Inject
+    ErrorCollectionService errorCollectionService;
+
 
     public Observable<BookNode> downloadBookNodes() {
 
@@ -63,7 +66,7 @@ public class BookNodeHttpService {
                         return Observable.fromIterable(listResponse.body());
                     } else {
                         Log.e(TAG, "[download]  " + "response statusCode is error,statusCode=" + listResponse.code());
-                        throw new WrongStatusCodeException("wrong status code " + listResponse.code());
+                        throw errorCollectionService.addWrongStatusCodeError(listResponse.code(), "download bookNodes: bookNodeApi.downLoadUnSynced");
                     }
                 })
                 .doOnNext(bookNode -> {
@@ -87,7 +90,10 @@ public class BookNodeHttpService {
                     }
 
                 })
-                .doOnError(throwable -> Log.e(TAG, "downloadBookNodes: ", throwable))
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "download bookNodes: bookNodeApi.downLoadUnSynced", null);
+                    Log.e(TAG, "downloadBookNodes: ", throwable);
+                })
                 ;
     }
 
@@ -104,8 +110,7 @@ public class BookNodeHttpService {
                         responseDate.setValue(listResponse.headers().getDate("Date"));
                         return listResponse.body();
                     } else {
-                        Log.e(TAG, "downloadAllNodeNo get wrong status code");
-                        throw new WrongStatusCodeException(listResponse.code() + "");
+                        throw errorCollectionService.addWrongStatusCodeError(listResponse.code(), "download allNodeNo: bookNodeApi.getNodeNo");
                     }
                 })
                 .doOnNext(integers -> {
@@ -119,6 +124,9 @@ public class BookNodeHttpService {
                 })
                 .doOnComplete(() -> {
                     sharedPreferences.setDeleteRecordLastSyncTime(responseDate.getValue());
+                })
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "download allNodeNo: bookNodeApi.getNodeNo", null);
                 });
     }
 
@@ -143,6 +151,7 @@ public class BookNodeHttpService {
                                 Log.i(TAG, "[post]  " + "post nodeId" + bookNode.getId() + "  finished, get no" + integerResponse.body());
 
                             } else {
+                                errorCollectionService.addWrongStatusCodeError(integerResponse.code(), "upload bookNodes: bookNodeApi.postBookNode");
                                 Log.e(TAG, "[post]  " + "nodeId" + bookNode.getId() + " get error response statusCode"
                                         , new WrongStatusCodeException(integerResponse.code() + ""));
 
@@ -150,10 +159,14 @@ public class BookNodeHttpService {
 
                         }
                         if (throwable != null) {
+                            errorCollectionService.addThrowable(throwable, "upload bookNodes: bookNodeApi.postBookNode", "bookNode: " + bookNode);
                             Log.e(TAG, "[post]  ", throwable);
                         }
 
                     });
+                })
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "upload bookNodes: bookNodeRoomService.selectToBePostedSync", null);
                 });
 
         Observable<BookNode> patchBookNodesObservable = Observable.create((ObservableOnSubscribe<List<BookNode>>) emitter -> {
@@ -175,15 +188,20 @@ public class BookNodeHttpService {
                                 bookNodeRoomService.updateSync(bookNode);
 
                             } else {
+                                errorCollectionService.addWrongStatusCodeError(integerResponse.code(), "upload bookNodes: bookNodeApi.patchBookNode");
                                 Log.e(TAG, "[patch]  " + "nodeNo" + bookNode.getNodeNo() + " get error response statusCode"
                                         , new WrongStatusCodeException(integerResponse.code() + ""));
                             }
                         }
                         if (throwable != null) {
+                            errorCollectionService.addThrowable(throwable, "upload bookNodes: bookNodeApi.patchBookNode", "bookNode: " + bookNode);
                             Log.e(TAG, "[patch]  ", throwable);
 
                         }
                     });
+                })
+                .doOnError(throwable -> {
+                    errorCollectionService.addThrowable(throwable, "upload bookNodes: bookNodeRoomService.selectToBePatchedSync", null);
                 });
 
         return Observable.concat(postBookNodesObservable, patchBookNodesObservable);
