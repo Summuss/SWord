@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
@@ -20,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.service.BookNodeHttpService;
+import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.room.dao.BookNodeRoomDao;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.network.service.TimeHttpService;
@@ -45,6 +48,8 @@ public class BookNodeViewModel extends ViewModel {
     @Inject
     DeleteRecordRoomService deleteRecordRoomService;
 
+    @Inject
+    DeleteRecordHttpService deleteRecordHttpService;
 
     private DataChangedListener callback;
 
@@ -66,25 +71,25 @@ public class BookNodeViewModel extends ViewModel {
 
     public void sync(Action callback) throws Exception {
 
-//        Observable.concat(bookNodeHttpService.downloadBookNodes(), bookNodeHttpService.uploadBookNodes())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doFinally(() -> {
-//                    Log.i(TAG, "sync: on finally" + Thread.currentThread());
-//                    switchPath(currentPath);
-//                    callback.run();
-//                })
-//                .subscribe(bookNode -> {
-//                }, throwable -> Log.e(TAG, "sync: ", throwable));
-        bookNodeHttpService.syncBookNodes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    Log.i(TAG, "sync: on finally" + Thread.currentThread());
+        Completable.create(emitter -> {
+            Semaphore semaphore = new Semaphore(0, true);
+
+            deleteRecordHttpService.syncDeleteRecord().subscribeOn(Schedulers.io())
+                    .doFinally(() -> {
+                        bookNodeHttpService.syncBookNodes()
+                                .doFinally(semaphore::release)
+                                .subscribe();
+                    })
+                    .subscribe();
+            semaphore.acquire();
+            emitter.onComplete();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
                     switchPath(currentPath);
                     callback.run();
-                },throwable -> {
-                    callback.run();
-                    switchPath(currentPath);
-                    Log.e(TAG, "sync: ",throwable );
-                });
+                })
+                .subscribe();
 
 
     }

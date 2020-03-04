@@ -5,10 +5,13 @@ import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 import retrofit2.Response;
 import top.summus.sword.SWordSharedPreferences;
@@ -36,8 +39,8 @@ public class DeleteRecordHttpService {
     DeleteRecordApi deleteRecordApi;
 
     public Observable<DeleteRecord> downloadDeleteRecord() {
-//        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
-        Date deleteRecordLastSyncTime = new Date(1583147873000L);
+        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
+//        Date deleteRecordLastSyncTime = new Date(1583147873000L);
         Log.i(TAG, "downloadDeleteRecord: deleteRecordLastSyncTime " + deleteRecordLastSyncTime);
         Box<Date> responseDate = new Box<>();
         return deleteRecordApi.getAll(DateFormatUtil.parseDateToString(deleteRecordLastSyncTime))
@@ -93,5 +96,24 @@ public class DeleteRecordHttpService {
                 });
     }
 
+    public Single<Object> syncDeleteRecord() {
+
+        return Single.create(emitter -> {
+            Semaphore semaphore = new Semaphore(-1, true);
+            downloadDeleteRecord().subscribeOn(Schedulers.io())
+                    .doFinally(semaphore::release)
+                    .subscribe(record -> {
+                    }, throwable -> Log.e(TAG, "syncDeleteRecord: ", throwable));
+
+            uploadDeleteRecords().subscribeOn(Schedulers.io())
+                    .doFinally(semaphore::release)
+                    .subscribe(record -> {
+                    }, throwable -> Log.e(TAG, "syncDeleteRecord: ", throwable));
+            semaphore.acquire();
+            emitter.onSuccess(new Object());
+        });
+
+
+    }
 
 }

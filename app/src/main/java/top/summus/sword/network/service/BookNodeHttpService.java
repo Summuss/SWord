@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 
@@ -14,6 +15,7 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -90,8 +92,8 @@ public class BookNodeHttpService {
     }
 
     public Observable<List<Integer>> downloadAllNodeNo() {
-//        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
-        Date deleteRecordLastSyncTime = new Date(1483147873000L);
+        Date deleteRecordLastSyncTime = sharedPreferences.getDeleteRecordLastSyncTime();
+//        Date deleteRecordLastSyncTime = new Date(1483147873000L);
 
         Box<Date> responseDate = new Box<>();
 
@@ -189,17 +191,30 @@ public class BookNodeHttpService {
 
     }
 
-    public Completable syncBookNodes() {
+    public Single syncBookNodes() {
 
-        return Completable.create(emitter ->
-                downloadBookNodes().doFinally(() -> {
-                    uploadBookNodes().doFinally(() -> {
-                        downloadAllNodeNo().doFinally(emitter::onComplete).subscribe(integers -> {
-                        }, throwable -> Log.e(TAG, "subscribe: ", throwable));
-                    }).subscribe(bookNode -> {
-                    }, throwable -> Log.e(TAG, "subscribe: ", throwable));
-                }).subscribe(bookNode -> {
-                }, throwable -> Log.e(TAG, "subscribe: ", throwable)));
+        return Single.create(emitter -> {
+            Semaphore semaphore = new Semaphore(-1, true);
+            downloadBookNodes().subscribeOn(Schedulers.io())
+                    .doFinally(semaphore::release)
+                    .subscribe(bookNode -> {
+                            },
+                            throwable -> Log.e(TAG, "syncBookNodes: ", throwable));
+
+            uploadBookNodes().subscribeOn(Schedulers.io())
+                    .doFinally(() -> {
+                        downloadAllNodeNo().doFinally(semaphore::release)
+                                .subscribe(integers -> {
+                                }, throwable -> Log.e(TAG, "syncBookNodes: ", throwable));
+                    })
+                    .subscribe(bookNode -> {
+                            },
+                            throwable -> Log.e(TAG, "syncBookNodes: ", throwable));
+
+
+            semaphore.acquire();
+            emitter.onSuccess(new Object());
+        });
 
 
     }
