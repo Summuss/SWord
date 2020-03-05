@@ -11,6 +11,7 @@ import org.robolectric.RobolectricTestRunner;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.dagger.DaggerContainer;
 import top.summus.sword.room.entity.BookNode;
+import top.summus.sword.room.entity.Word;
 
 @RunWith(RobolectricTestRunner.class)
 public class DeleteRecordHttpServiceTest {
@@ -28,9 +29,10 @@ public class DeleteRecordHttpServiceTest {
 
     @Test
     public void downloadDeleteRecord() {
-        BookNode build = BookNode.builder().nodeName("38234").nodePath("/").nodeTag(0).build();
-        daggerContainer.bookNodeRoomDao.insertSync(build);
-        System.out.println(daggerContainer.bookNodeRoomDao.getAllBySync());
+        daggerContainer.database.getWordDao().insert(Word.builder().build()).subscribe();
+        daggerContainer.database.getWordDao().selectByPrimary(5).subscribe((word, throwable) -> {
+            System.out.println(word);
+        });
 
 
     }

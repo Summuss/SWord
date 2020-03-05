@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "word_book_node_relation",
+@Entity(tableName = "word_book_node_join",
         indices = {@Index(value = {"word_id", "book_node_id"}, unique = true)},
         foreignKeys = {@ForeignKey(entity = Word.class, parentColumns = "id", childColumns = "word_id", onDelete = CASCADE),
                 @ForeignKey(entity = BookNode.class, parentColumns = "id", childColumns = "book_node_id", onDelete = CASCADE)}
@@ -23,7 +23,7 @@ import static androidx.room.ForeignKey.CASCADE;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WordBookNodeRelation {
+public class WordBookNodeJoin {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
