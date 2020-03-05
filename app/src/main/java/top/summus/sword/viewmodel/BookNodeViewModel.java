@@ -24,7 +24,7 @@ import top.summus.sword.SWordApplication;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.network.service.ErrorCollectionService;
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.BookNodeDao;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.service.BookNodeRoomService;
@@ -133,7 +133,7 @@ public class BookNodeViewModel extends ViewModel {
      *
      * <p>
      * <ol>
-     * <li> get primary key from {@link BookNodeRoomDao#insert(BookNode)}.</li>
+     * <li> get primary key from {@link BookNodeDao#insert(BookNode)}.</li>
      * <li> get list of bookNode whose path equal inserted items'.</li>
      * <li> find the position which inserted item at  from list.</li>
      * <li> return a @{List} which contains primary key and position of inserted item.</li>

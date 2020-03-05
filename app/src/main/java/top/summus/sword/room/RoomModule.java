@@ -8,10 +8,14 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.BookNodeDao;
 import top.summus.sword.room.dao.DeleteRecordDao;
+import top.summus.sword.room.dao.WordBookNodeJoinDao;
+import top.summus.sword.room.dao.WordDao;
 import top.summus.sword.room.service.BookNodeRoomService;
 import top.summus.sword.room.service.DeleteRecordRoomService;
+import top.summus.sword.room.service.WordBookNodeJoinRoomService;
+import top.summus.sword.room.service.WordRoomService;
 
 @Module
 public class RoomModule {
@@ -26,14 +30,14 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    public BookNodeRoomDao provideBookNodeDao(SWordDatabase database) {
+    public BookNodeDao provideBookNodeDao(SWordDatabase database) {
         return database.getBookNodeDao();
     }
 
     @Singleton
     @Provides
-    public BookNodeRoomService provideBookNodeRoomService(BookNodeRoomDao bookNodeRoomDao,DeleteRecordRoomService recordRoomService) {
-        return new BookNodeRoomService(bookNodeRoomDao,recordRoomService);
+    public BookNodeRoomService provideBookNodeRoomService(BookNodeDao bookNodeDao, DeleteRecordRoomService recordRoomService) {
+        return new BookNodeRoomService(bookNodeDao, recordRoomService);
     }
 
     @Singleton
@@ -46,5 +50,29 @@ public class RoomModule {
     @Provides
     public DeleteRecordRoomService provideDeleteRecordRoomService(DeleteRecordDao deleteRecordDao){
         return new DeleteRecordRoomService(deleteRecordDao);
+    }
+
+    @Singleton
+    @Provides
+    public WordDao providesWordDao(SWordDatabase database) {
+        return database.getWordDao();
+    }
+
+    @Singleton
+    @Provides
+    public WordRoomService providesWordRoomService(WordDao wordDao) {
+        return new WordRoomService(wordDao);
+    }
+
+    @Singleton
+    @Provides
+    public WordBookNodeJoinDao provideWordBookNodeJoinDao(SWordDatabase database) {
+        return database.getWordBookNodeRelationDao();
+    }
+
+    @Singleton
+    @Provides
+    public WordBookNodeJoinRoomService provideWordBookNodeJoinService(WordBookNodeJoinDao wordBookNodeJoinDao) {
+        return new WordBookNodeJoinRoomService(wordBookNodeJoinDao);
     }
 }

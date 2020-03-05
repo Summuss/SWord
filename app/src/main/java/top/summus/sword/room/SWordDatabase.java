@@ -4,7 +4,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.BookNodeDao;
 import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.dao.WordBookNodeJoinDao;
 import top.summus.sword.room.dao.WordDao;
@@ -18,7 +18,7 @@ import top.summus.sword.util.RoomConventer;
 @TypeConverters({RoomConventer.class})
 public abstract class SWordDatabase extends RoomDatabase {
 
-    public abstract BookNodeRoomDao getBookNodeDao();
+    public abstract BookNodeDao getBookNodeDao();
 
     public abstract DeleteRecordDao getDeleteRecordDao();
 

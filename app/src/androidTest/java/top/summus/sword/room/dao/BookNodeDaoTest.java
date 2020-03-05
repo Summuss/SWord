@@ -17,17 +17,17 @@ import top.summus.sword.room.SWordDatabase;
 import top.summus.sword.room.entity.BookNode;
 
 @RunWith(AndroidJUnit4.class)
-public class BookNodeRoomDaoTest {
+public class BookNodeDaoTest {
 
-    private static final String TAG = "BookNodeRoomDaoTest";
-    private BookNodeRoomDao bookNodeRoomDao;
+    private static final String TAG = "BookNodeDaoTest";
+    private BookNodeDao bookNodeDao;
     private SWordDatabase database;
 
     @Before
     public void setUp() throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         database = Room.inMemoryDatabaseBuilder(context, SWordDatabase.class).build();
-        bookNodeRoomDao = database.getBookNodeDao();
+        bookNodeDao = database.getBookNodeDao();
     }
 
     @After
@@ -42,12 +42,12 @@ public class BookNodeRoomDaoTest {
         BookNode bookNode1 = BookNode.builder().nodeName("test3").nodeNo(3).nodePath("/").nodeTag(1).nodeChangedDate(new Date())
 
                 .build();
-//        bookNodeRoomDao.insertSynced(bookNode, bookNode1);
+//        bookNodeDao.insertSynced(bookNode, bookNode1);
 
-        long num = bookNodeRoomDao.selectCountByNoSync(4);
+        long num = bookNodeDao.selectCountByNoSync(4);
 
 
-//        bookNodeRoomDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {
+//        bookNodeDao.insert1(bookNode, bookNode1).subscribe((longs, throwable) -> {
 //            System.out.println(longs);
 //            if (throwable!=null){
 //

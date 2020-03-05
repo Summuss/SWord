@@ -8,14 +8,14 @@ import top.summus.sword.network.api.DeleteRecordApi;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.room.SWordDatabase;
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.BookNodeDao;
 import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.service.BookNodeRoomService;
 import top.summus.sword.room.service.DeleteRecordRoomService;
 
 public class DaggerContainer {
     @Inject
-    public BookNodeRoomDao bookNodeRoomDao;
+    public BookNodeDao bookNodeDao;
     @Inject
     public BookNodeRoomService bookNodeRoomService;
     @Inject

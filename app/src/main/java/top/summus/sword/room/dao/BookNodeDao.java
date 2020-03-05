@@ -13,7 +13,7 @@ import io.reactivex.Single;
 import top.summus.sword.room.entity.BookNode;
 
 @Dao
-public interface BookNodeRoomDao {
+public interface BookNodeDao {
 
 
     @Insert

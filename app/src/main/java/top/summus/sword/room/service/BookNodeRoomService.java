@@ -9,12 +9,11 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 import top.summus.sword.room.entity.BookNode;
-import top.summus.sword.room.dao.BookNodeRoomDao;
+import top.summus.sword.room.dao.BookNodeDao;
 
 import static top.summus.sword.room.dao.DeleteRecordDao.Table.BOOK_NODE;
 
@@ -24,17 +23,17 @@ public class BookNodeRoomService {
     private static final String TAG = "BookNodeRoomService";
 
 
-    BookNodeRoomDao bookNodeRoomDao;
+    BookNodeDao bookNodeDao;
 
     DeleteRecordRoomService deleteRecordRoomService;
 
 
     public Single<Long> insert(BookNode bookNode) {
-        return bookNodeRoomDao.insert(bookNode);
+        return bookNodeDao.insert(bookNode);
     }
 
     public long insertSync(BookNode bookNode) {
-        return bookNodeRoomDao.insertSync(bookNode);
+        return bookNodeDao.insertSync(bookNode);
     }
 
     public Observable<BookNode> deleteIntoDeleteRecord(BookNode bookNode) {
@@ -50,7 +49,7 @@ public class BookNodeRoomService {
                                         Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                                     }
                                 });
-                        bookNodeRoomDao.delete(bookNode1).subscribe();
+                        bookNodeDao.delete(bookNode1).subscribe();
                     })
                     .doOnError(throwable -> {
                         Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
@@ -62,7 +61,7 @@ public class BookNodeRoomService {
                                         Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                                     }
                                 });
-                        bookNodeRoomDao.delete(bookNode).subscribe();
+                        bookNodeDao.delete(bookNode).subscribe();
                     });
         } else {
             return deleteRecordRoomService.insert(BOOK_NODE, bookNode.getNodeNo())
@@ -70,7 +69,7 @@ public class BookNodeRoomService {
                     .subscribeOn(Schedulers.io())
                     .map(aLong -> bookNode)
                     .doOnComplete(() -> {
-                        bookNodeRoomDao.delete(bookNode);
+                        bookNodeDao.delete(bookNode);
                     })
                     .doOnError(throwable -> Log.e(TAG, "deleteIntoDeleteRecord: ", throwable));
         }
@@ -83,16 +82,16 @@ public class BookNodeRoomService {
                     .toObservable()
                     .flatMap((Function<List<BookNode>, ObservableSource<BookNode>>) Observable::fromIterable)
                     .doOnNext(bookNode1 -> {
-                        bookNodeRoomDao.delete(bookNode1).subscribe();
+                        bookNodeDao.delete(bookNode1).subscribe();
                     })
                     .doOnError(throwable -> {
                         Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
                     })
                     .doOnComplete(() -> {
-                        bookNodeRoomDao.delete(bookNode).subscribe();
+                        bookNodeDao.delete(bookNode).subscribe();
                     });
         } else {
-            return bookNodeRoomDao.delete(bookNode).toObservable();
+            return bookNodeDao.delete(bookNode).toObservable();
         }
 
     }
@@ -100,45 +99,45 @@ public class BookNodeRoomService {
 
     public Single<List<BookNode>> selectByPath(String path) {
 
-        return bookNodeRoomDao.selectByPath(path)
+        return bookNodeDao.selectByPath(path)
                 ;
     }
 
     public List<Long> selectAllNodeNoSync(){
-        return bookNodeRoomDao.selectAllNodeNoSync();
+        return bookNodeDao.selectAllNodeNoSync();
     }
 
     public void deleteByNodeNo(long nodeNo){
-        bookNodeRoomDao.deleteByNodeNo(nodeNo);
+        bookNodeDao.deleteByNodeNo(nodeNo);
     }
 
     public List<BookNode> selectByNoSync(long no) {
-        return bookNodeRoomDao.selectByNoSync(no);
+        return bookNodeDao.selectByNoSync(no);
     }
 
     public void updateSync(BookNode bookNode) {
-        bookNodeRoomDao.updateSync(bookNode);
+        bookNodeDao.updateSync(bookNode);
     }
 
     public List<BookNode> selectToBePatchedSync() {
-        return bookNodeRoomDao.selectToBePatchedSynced();
+        return bookNodeDao.selectToBePatchedSynced();
     }
 
     public List<BookNode> selectToBePostedSync() {
-        return bookNodeRoomDao.selectToBePostedSynced();
+        return bookNodeDao.selectToBePostedSynced();
     }
 
     public BookNode selectByPrimarySync(long id) {
-        return bookNodeRoomDao.selectByPrimary(id);
+        return bookNodeDao.selectByPrimary(id);
     }
 
     public void updateNodeNoByPrimarySync(long primary, long no) {
-        bookNodeRoomDao.setNodeNoByPrimary(primary, no);
+        bookNodeDao.setNodeNoByPrimary(primary, no);
     }
 
     public Single<List<BookNode>> selectChildNodes(BookNode bookNode) {
         String path = bookNode.getNodePath() + bookNode.getNodeName() + "%";
-        return bookNodeRoomDao.selectPathLike(path)
+        return bookNodeDao.selectPathLike(path)
                 ;
     }
 
