@@ -53,7 +53,6 @@ dependencies {
     testImplementation 'org.powermock:powermock-classloading-xstream:1.6.5'
 
 
-
     // lombok
     compileOnly "org.projectlombok:lombok:1.18.12"
     annotationProcessor 'org.projectlombok:lombok:1.18.12'

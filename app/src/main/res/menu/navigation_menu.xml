@@ -8,6 +8,9 @@
             android:id="@+id/testFragment"
             android:icon="@drawable/ic_test"
             android:title="@string/navigation_menu_test" />
+        <item
+            android:id="@+id/word_fragment_item"
+            android:title="单词" />
 
     </group>
     <group

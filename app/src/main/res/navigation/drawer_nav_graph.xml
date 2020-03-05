@@ -19,6 +19,9 @@
             app:destination="@+id/bookNodeFragment"
             app:enterAnim="@anim/fragment_enter_zoon"
             app:popExitAnim="@anim/fragment_exit_zoon" />
+        <action
+            android:id="@+id/action_baseWordListFragment_to_wordFragment"
+            app:destination="@id/wordFragment" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
@@ -34,4 +37,9 @@
         android:id="@+id/bookNodeFragment"
         android:name="top.summus.sword.fragment.BookNodeFragment"
         tools:layout="@layout/fragment_booknode" />
+    <fragment
+        android:id="@+id/wordFragment"
+        android:name="top.summus.sword.fragment.WordFragment"
+        android:label="fragment_word"
+        tools:layout="@layout/fragment_word" />
 </navigation>

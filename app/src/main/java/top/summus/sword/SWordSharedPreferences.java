@@ -28,7 +28,7 @@ public class SWordSharedPreferences {
             long mills = sharedPreferences.getLong("bookNodeLastPullTime", 0);
             bookNodeLastPullTime = new Date(mills);
         } else {
-            bookNodeLastPullTime = new Date();
+            bookNodeLastPullTime = new Date(100, 1, 1);
             setBookNodeLastPullTime(bookNodeLastPullTime);
         }
         if (sharedPreferences.contains("timeGap")) {
@@ -42,7 +42,7 @@ public class SWordSharedPreferences {
             deleteRecordLastSyncTime=new Date(sharedPreferences.getLong("deleteRecordLastSyncTime",0));
 
         }else {
-            deleteRecordLastSyncTime=new Date();
+            deleteRecordLastSyncTime = new Date(100, 1, 1);
             setDeleteRecordLastSyncTime(deleteRecordLastSyncTime);
 
         }

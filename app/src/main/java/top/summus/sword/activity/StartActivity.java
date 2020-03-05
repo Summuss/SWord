@@ -159,6 +159,8 @@ public class StartActivity extends AppCompatActivity
             navController.navigate(R.id.action_baseWordListFragment_to_bookNodeFragment);
         } else if (item.getItemId() == R.id.testFragment) {
             navController.navigate(R.id.action_baseWordListFragment_to_testFragment);
+        } else if (item.getItemId() == R.id.word_fragment_item) {
+            navController.navigate(R.id.action_baseWordListFragment_to_wordFragment);
         }
         return true;
 
