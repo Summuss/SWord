@@ -34,7 +34,9 @@ public class HttpModule {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(200, TimeUnit.MILLISECONDS)
                 .build();
-        String baseUrl = "http://192.168.1.13:8080/SwordBackend_war/";
+//        String baseUrl = "http://192.168.1.13:8080/SwordBackend_war/";
+        String baseUrl = "http://summus.top:8080/SwordBackend/";
+
         Gson gson = new GsonBuilder().setLenient()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
