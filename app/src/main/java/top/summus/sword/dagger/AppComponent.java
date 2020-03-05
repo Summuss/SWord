@@ -12,6 +12,7 @@ import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.RoomModule;
 import top.summus.sword.room.service.BookNodeRoomService;
 import top.summus.sword.viewmodel.BookNodeViewModel;
+import top.summus.sword.viewmodel.WordViewModel;
 
 @Component(modules = {SingletonModule.class, HttpModule.class, RoomModule.class})
 @Singleton
@@ -30,4 +31,6 @@ public interface AppComponent {
     void inject(TestFragment testFragment);
 
     void inject(DaggerContainer daggerContainer);
+
+    void inject(WordViewModel wordViewModel);
 }
