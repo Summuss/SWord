@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:gravity="start"
             android:text="確かめる"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -31,14 +31,17 @@
             android:layout_weight="1"
             android:gravity="end"
             android:text="たしかめる"
-            android:textSize="24sp" />
+            android:textAlignment="viewEnd"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <com.white.progressview.HorizontalProgressView
         app:progressTextVisible="false"
+        app:progressReachSize="2dp"
         android:progress="70"
         app:progressReachColor="@color/colorPrimary"
+        app:progressNormalColor="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="5dp" />
+        android:layout_height="2dp" />
 </LinearLayout>
 
