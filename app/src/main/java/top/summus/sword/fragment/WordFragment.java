@@ -27,6 +27,7 @@ import top.summus.sword.adapter.WordRecyclerViewAdapter;
 import top.summus.sword.databinding.FragmentWordBinding;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.room.entity.Word;
+import top.summus.sword.viewmodel.WordViewModel;
 
 
 /**
@@ -34,13 +35,15 @@ import top.summus.sword.room.entity.Word;
  * <p/>
  * interface.
  */
-public class WordFragment extends Fragment {
+public class WordFragment extends Fragment implements WordViewModel.WordViewModelCallback {
     private static final String TAG = "WordFragment";
 
     private FragmentWordBinding binding;
     private AppCompatActivity parentActivity;
     private NavController navController;
     private BookNode bookNode;
+    private WordViewModel wordViewModel;
+    private WordRecyclerViewAdapter adapter;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class WordFragment extends Fragment {
         if (getArguments().containsKey("bookNode")) {
             Log.i(TAG, "onActivityCreated: bookNode is passed");
             bookNode = (BookNode) getArguments().getSerializable("bookNode");
+            wordViewModel.setWordBook(bookNode);
         }
 
     }
@@ -59,16 +63,13 @@ public class WordFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false);
         navController = NavHostFragment.findNavController(this);
         parentActivity = (AppCompatActivity) getActivity();
+        wordViewModel = WordViewModel.getInstance(this);
         initTopBar();
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
         binding.list.setLayoutManager(layoutManager);
-        List<Word> words = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            words.add(new Word());
-        }
-        WordRecyclerViewAdapter adapter = new WordRecyclerViewAdapter(words);
+        adapter = new WordRecyclerViewAdapter(wordViewModel.getWordsToBeShowed());
         binding.list.setAdapter(adapter);
         parentActivity = (AppCompatActivity) getActivity();
 
@@ -100,4 +101,8 @@ public class WordFragment extends Fragment {
 
     }
 
+    @Override
+    public void onLoadWordsFinished() {
+        adapter.notifyDataSetChanged();
+    }
 }

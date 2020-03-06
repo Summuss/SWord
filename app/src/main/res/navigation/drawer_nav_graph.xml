@@ -36,6 +36,7 @@
     <fragment
         android:id="@+id/bookNodeFragment"
         android:name="top.summus.sword.fragment.BookNodeFragment"
+        android:label="词库"
         tools:layout="@layout/fragment_booknode">
         <action
             android:id="@+id/action_bookNodeFragment_to_wordFragment2"
@@ -44,7 +45,6 @@
     <fragment
         android:id="@+id/wordFragment"
         android:name="top.summus.sword.fragment.WordFragment"
-        android:label="fragment_word"
         tools:layout="@layout/fragment_word">
         <action
             android:id="@+id/action_wordFragment_to_addWordFragment"

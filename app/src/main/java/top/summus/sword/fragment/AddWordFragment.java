@@ -76,6 +76,18 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
         List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
         binding.toneSpinner.attachDataSource(strings);
 
+        binding.confirmFbt.setOnClickListener(view -> {
+            String content = binding.contentTv.getText().toString();
+            String pronun = binding.pronumTv.getText().toString();
+            int tone = binding.toneSpinner.getSelectedIndex();
+            int priority = (int) binding.priorityRating.getRating();
+            int difficulty = binding.diffultyRating.getRating();
+            Word word = Word.builder().
+                    content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
+                    .build();
+            addWordViewModel.add(word);
+        });
+
         return binding.getRoot();
     }
 
@@ -100,17 +112,7 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.confirm_button) {
-            String content = binding.contentTv.getText().toString();
-            String pronun = binding.pronumTv.getText().toString();
-            int tone = binding.toneSpinner.getSelectedIndex();
-            int priority = (int) binding.priorityRating.getRating();
-            int difficulty = binding.diffultyRating.getRating();
-            Word word = Word.builder().
-                    content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
-                    .build();
-            addWordViewModel.add(word);
-        }
+
         return true;
     }
 

@@ -165,6 +165,7 @@
                             android:id="@+id/tone_spinner"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
                             android:alpha="1"
                             android:background="@android:color/transparent"
                             android:backgroundTint="@android:color/transparent"
@@ -172,8 +173,8 @@
                             android:textColor="@color/white"
                             android:textSize="24sp"
                             app:arrowTint="@color/colorAccent"
-                            app:drawableTint="@android:color/black"
-                            app:textTint="@android:color/black" />
+                            app:drawableTint="@color/colorAccent"
+                            app:textTint="@color/colorAccent" />
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -200,6 +201,19 @@
 
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/confirm_fbt"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/white"
+            android:clickable="true"
+            app:fab_icon="@drawable/ic_done_black_24dp"
+            app:layout_behavior=".component.UpHideBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

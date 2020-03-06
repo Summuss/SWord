@@ -56,24 +56,32 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <org.angmarch.views.NiceSpinner
-
-                        android:id="@+id/tone_spinner"
+                    <androidx.appcompat.widget.AppCompatSpinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="24dp"
-                        android:alpha="1"
-                        android:background="@android:color/transparent"
-                        android:backgroundTint="@android:color/transparent"
                         android:text="音调"
-                        android:textColor="@color/white"
-                        android:textSize="24sp"
-                        app:arrowTint="@color/colorAccent"
-                        app:drawableTint="@android:color/black"
                         app:layout_constraintBottom_toBottomOf="@+id/pronum_tv"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/pronum_tv"
-                        app:textTint="@android:color/black" />
+                        app:layout_constraintTop_toTopOf="@+id/pronum_tv" />
+
+                    <!--                    <org.angmarch.views.NiceSpinner-->
+
+                    <!--                        android:id="@+id/tone_spinner"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginEnd="24dp"-->
+                    <!--                        android:alpha="1"-->
+                    <!--                        android:background="@android:color/transparent"-->
+                    <!--                        android:backgroundTint="@android:color/transparent"-->
+                    <!--                        android:text="音调"-->
+                    <!--                        android:textColor="@color/white"-->
+                    <!--                        android:textSize="24sp"-->
+                    <!--                        app:arrowTint="@color/colorAccent"-->
+                    <!--                        app:drawableTint="@android:color/black"-->
+                    <!--                        app:layout_constraintBottom_toBottomOf="@+id/pronum_tv"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintTop_toTopOf="@+id/pronum_tv"-->
+                    <!--                        app:textTint="@android:color/black" />-->
 
                     <EditText
                         android:id="@+id/pronum_tv"
@@ -127,6 +135,13 @@
 
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_add" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

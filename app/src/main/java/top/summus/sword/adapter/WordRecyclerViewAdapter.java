@@ -35,7 +35,7 @@ public class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerVi
         Word word = mValues.get(position);
         holder.contentTV.setText(word.getContent());
         holder.prounTV.setText(word.getPronunciation());
-        holder.proficiencyProgress.setProgress(word.getPriority());
+        holder.proficiencyProgress.setProgress(word.getProficiency());
     }
 
     @Override
