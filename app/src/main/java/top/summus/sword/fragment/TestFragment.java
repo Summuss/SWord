@@ -91,7 +91,7 @@ public class TestFragment extends Fragment {
         parentActivity.setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle("");
         List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
-        binding.niceSpinner.attachDataSource(strings);
+//        binding.niceSpinner.attachDataSource(strings);
 //        binding.niceSpinner.setItems(strings);
 
 

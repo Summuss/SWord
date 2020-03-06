@@ -51,11 +51,10 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
     private BookNodeRecyclerViewAdapter adapter;
 
 
-
     private void initMember() {
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
-        bookNodeViewModel = BookNodeViewModel.getInstance(parentActivity, this);
+        bookNodeViewModel = BookNodeViewModel.getInstance(this);
 
     }
 
@@ -205,7 +204,9 @@ public class BookNodeFragment extends Fragment implements BookNodeRecyclerViewAd
         if (target.getNodeTag() == 0) {
             bookNodeViewModel.switchPath(target.getNodePath() + target.getNodeName() + "/");
         } else {
-
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("bookNode", target);
+            navController.navigate(R.id.action_bookNodeFragment_to_wordFragment2, bundle);
         }
 
     }

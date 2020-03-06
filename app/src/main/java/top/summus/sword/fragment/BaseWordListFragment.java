@@ -85,9 +85,6 @@ public class BaseWordListFragment extends Fragment {
         initRecyclerView();
 
         initTopBar();
-        binding.addWordFbt.setOnClickListener(v -> {
-            navController.navigate(R.id.action_baseWordListFragment_to_addWordFragment);
-        });
 
 
         return binding.getRoot();

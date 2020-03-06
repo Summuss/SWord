@@ -2,6 +2,7 @@ package top.summus.sword.room.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -11,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(indices = {@Index(value = "content", unique = true)})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

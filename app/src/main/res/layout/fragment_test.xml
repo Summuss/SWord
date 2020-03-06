@@ -37,7 +37,7 @@
                     android:layout_height="match_parent">
 
                     <EditText
-                        android:id="@+id/editText2"
+                        android:id="@+id/content_tv"
                         style="@style/Widget.Design.TextInputEditText"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
@@ -58,7 +58,7 @@
 
                     <org.angmarch.views.NiceSpinner
 
-                        android:id="@+id/niceSpinner"
+                        android:id="@+id/tone_spinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
@@ -70,13 +70,13 @@
                         android:textSize="24sp"
                         app:arrowTint="@color/colorAccent"
                         app:drawableTint="@android:color/black"
-                        app:layout_constraintBottom_toBottomOf="@+id/editText3"
+                        app:layout_constraintBottom_toBottomOf="@+id/pronum_tv"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/editText3"
+                        app:layout_constraintTop_toTopOf="@+id/pronum_tv"
                         app:textTint="@android:color/black" />
 
                     <EditText
-                        android:id="@+id/editText3"
+                        android:id="@+id/pronum_tv"
                         style="@style/Widget.Design.TextInputEditText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -91,9 +91,9 @@
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline"
-                        app:layout_constraintEnd_toStartOf="@+id/niceSpinner"
+                        app:layout_constraintEnd_toStartOf="@+id/tone_spinner"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/editText2"
+                        app:layout_constraintTop_toBottomOf="@+id/content_tv"
                         app:layout_constraintVertical_bias="0.58000004" />
 
                     <androidx.constraintlayout.widget.Guideline

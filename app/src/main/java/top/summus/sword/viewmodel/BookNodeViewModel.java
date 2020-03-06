@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.Setter;
 import top.summus.sword.SWordApplication;
+import top.summus.sword.fragment.BookNodeFragment;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
 import top.summus.sword.network.service.ErrorCollectionService;
@@ -64,10 +66,17 @@ public class BookNodeViewModel extends ViewModel {
     @Getter
     private List<BookNode> bookNodesShowed = new ArrayList<>();
 
-    public static BookNodeViewModel getInstance(AppCompatActivity activity, DataChangedListener callback) {
-        BookNodeViewModel bookNodeViewModel = new ViewModelProvider(activity).get(BookNodeViewModel.class);
+
+    public static BookNodeViewModel getInstance(Fragment fragment) {
+        BookNodeViewModel bookNodeViewModel = new ViewModelProvider(fragment).get(BookNodeViewModel.class);
         bookNodeViewModel.dependencyInject();
-        bookNodeViewModel.callback = callback;
+        if (fragment instanceof DataChangedListener) {
+            bookNodeViewModel.callback = (DataChangedListener) fragment;
+
+        } else {
+            throw new UnsupportedOperationException("not implement DataChangedListen");
+        }
+        Log.i(TAG, "getInstance: " + bookNodeViewModel.currentPath);
         bookNodeViewModel.switchPath("/");
         return bookNodeViewModel;
     }
@@ -90,14 +99,14 @@ public class BookNodeViewModel extends ViewModel {
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
-                   errorCollectionService.printAll();
-                   if(errorCollectionService.hasConnectOut()){
-                       Toasty.error(SWordApplication.getContext(),"connect out",Toasty.LENGTH_SHORT).show();
-                   }
-                   if(errorCollectionService.isNoError()){
-                       Toasty.success(SWordApplication.getContext(),"sync success",Toasty.LENGTH_SHORT).show();
-                   }
-                   errorCollectionService.clear();
+                    errorCollectionService.printAll();
+                    if (errorCollectionService.hasConnectOut()) {
+                        Toasty.error(SWordApplication.getContext(), "connect out", Toasty.LENGTH_SHORT).show();
+                    }
+                    if (errorCollectionService.isNoError()) {
+                        Toasty.success(SWordApplication.getContext(), "sync success", Toasty.LENGTH_SHORT).show();
+                    }
+                    errorCollectionService.clear();
                     switchPath(currentPath);
                     callback.run();
                 })

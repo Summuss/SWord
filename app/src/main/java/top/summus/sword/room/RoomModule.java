@@ -60,8 +60,8 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    public WordRoomService providesWordRoomService(WordDao wordDao) {
-        return new WordRoomService(wordDao);
+    public WordRoomService providesWordRoomService(WordDao wordDao, WordBookNodeJoinRoomService wordBookNodeJoinRoomService) {
+        return new WordRoomService(wordDao, wordBookNodeJoinRoomService);
     }
 
     @Singleton

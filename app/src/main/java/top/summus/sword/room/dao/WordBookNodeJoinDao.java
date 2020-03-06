@@ -14,8 +14,12 @@ import top.summus.sword.room.entity.WordBookNodeJoin;
 @Dao
 public interface WordBookNodeJoinDao extends BaseDao<WordBookNodeJoin> {
 
+
     @Query("SELECT * FROM word_book_node_join WHERE id=:id")
     Single<WordBookNodeJoin> selectByPrimary(long id);
+
+    @Query("SELECT * FROM word_book_node_join WHERE word_id=:wordId AND book_node_id=:bookNodeId")
+    Single<List<WordBookNodeJoin>> selectByWordIdAndBookNodeId(long wordId, long bookNodeId);
 
     @Query("SELECT * FROM word INNER JOIN word_book_node_join ON  word_book_node_join.word_id =word.id " +
             "WHERE word_book_node_join.book_node_id=:bookNodeId")

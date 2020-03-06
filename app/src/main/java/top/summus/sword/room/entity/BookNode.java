@@ -12,7 +12,8 @@ import java.util.Date;
 
 @Entity(
         tableName = "book_node",
-        indices = {@Index(value = {"node_name", "node_path", "node_tag"}, unique = true)}
+        indices = {@Index(value = {"node_name", "node_path", "node_tag"}, unique = true),
+                @Index(value = "node_path")}
 )
 @Data
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class BookNode implements Serializable {
 
     @ColumnInfo(name = "node_changed_date")
     @Builder.Default
-    private Date nodeChangedDate=new Date();
+    private Date nodeChangedDate = new Date();
 
     @ColumnInfo(name = "sync_status", defaultValue = "1")
     @Builder.Default

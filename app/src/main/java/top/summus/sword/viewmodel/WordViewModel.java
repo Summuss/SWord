@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Insert;
@@ -45,10 +46,10 @@ public class WordViewModel extends ViewModel {
     @Inject
     DeleteRecordRoomService deleteRecordRoomService;
 
-    public static WordViewModel getInstance(@NonNull AppCompatActivity activity) {
-        WordViewModel wordViewModel = new ViewModelProvider(activity).get(WordViewModel.class);
-        if (activity instanceof WordViewModelCallback) {
-            wordViewModel.callback = (WordViewModelCallback) activity;
+    public static WordViewModel getInstance(@NonNull Fragment fragment) {
+        WordViewModel wordViewModel = new ViewModelProvider(fragment).get(WordViewModel.class);
+        if (fragment instanceof WordViewModelCallback) {
+            wordViewModel.callback = (WordViewModelCallback) fragment;
         } else {
             throw new UnsupportedOperationException("without implementing WordViewModelCallback");
         }

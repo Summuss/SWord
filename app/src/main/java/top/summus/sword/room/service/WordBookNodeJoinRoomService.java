@@ -18,6 +18,11 @@ public class WordBookNodeJoinRoomService {
         return wordBookNodeJoinDao.insert(entity);
     }
 
+    public Single<Long> insert(long wordId, long bookNodeId) {
+        WordBookNodeJoin wordBookNodeJoin = WordBookNodeJoin.builder().wordId(wordId).bookNodeId(bookNodeId).build();
+        return wordBookNodeJoinDao.insert(wordBookNodeJoin);
+    }
+
     public Completable update(WordBookNodeJoin entity) {
         return wordBookNodeJoinDao.update(entity);
     }
@@ -28,6 +33,10 @@ public class WordBookNodeJoinRoomService {
 
     public Single<WordBookNodeJoin> selectByPrimary(long id) {
         return wordBookNodeJoinDao.selectByPrimary(id);
+    }
+
+    public Single<List<WordBookNodeJoin>> selectByWordIdAndBookNodeId(long wordId, long bookNodeId) {
+        return wordBookNodeJoinDao.selectByWordIdAndBookNodeId(wordId, bookNodeId);
     }
 
     public Single<List<Word>> selectWordsByBookNodeId(long bookNodeId) {

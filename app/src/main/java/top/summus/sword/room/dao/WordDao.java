@@ -21,4 +21,7 @@ public interface WordDao extends BaseDao<Word> {
     @Query("SELECT * FROM word")
     Single<List<Word>> selectAll();
 
+    @Query("SELECT * FROM word WHERE content=:content")
+    Single<List<Word>> selectByContent(String content);
+
 }

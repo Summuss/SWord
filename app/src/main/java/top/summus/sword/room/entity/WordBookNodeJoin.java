@@ -41,6 +41,7 @@ public class WordBookNodeJoin {
     private long bookNodeId;
 
     @ColumnInfo(name = "sync_status")
+    @Builder.Default
     private int syncStatus = 1;
 
 

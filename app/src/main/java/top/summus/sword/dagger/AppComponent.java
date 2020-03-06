@@ -11,6 +11,7 @@ import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.TimeHttpService;
 import top.summus.sword.room.RoomModule;
 import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.viewmodel.AddWordViewModel;
 import top.summus.sword.viewmodel.BookNodeViewModel;
 import top.summus.sword.viewmodel.WordViewModel;
 
@@ -33,4 +34,6 @@ public interface AppComponent {
     void inject(DaggerContainer daggerContainer);
 
     void inject(WordViewModel wordViewModel);
+
+    void inject(AddWordViewModel addWordViewModel);
 }

@@ -38,7 +38,7 @@
                     android:layout_height="match_parent">
 
                     <com.willy.ratingbar.RotationRatingBar
-                        android:id="@+id/rotationRatingBar"
+                        android:id="@+id/priority_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -57,16 +57,16 @@
                         app:srb_stepSize="1" />
 
                     <com.eugeneek.smilebar.SmileBar
-                        android:id="@+id/smileBar"
+                        android:id="@+id/diffulty_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
                         android:layout_marginEnd="16dp"
                         app:enabled="true"
                         app:horizontalSpacing="4dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/rotationRatingBar"
+                        app:layout_constraintBottom_toBottomOf="@+id/priority_rating"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/rotationRatingBar"
+                        app:layout_constraintTop_toTopOf="@+id/priority_rating"
                         app:rating="1"
                         app:smileDefault="@drawable/ic_smile"
                         app:smileHeight="35dp"
@@ -78,7 +78,7 @@
                         app:smileWidth="35dp" />
 
                     <EditText
-                        android:id="@+id/editText2"
+                        android:id="@+id/content_tv"
                         style="@style/Widget.Design.TextInputEditText"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
@@ -118,9 +118,9 @@
                         android:text="优先级"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline"
-                        app:layout_constraintEnd_toEndOf="@+id/rotationRatingBar"
-                        app:layout_constraintStart_toStartOf="@+id/rotationRatingBar"
-                        app:layout_constraintTop_toBottomOf="@+id/rotationRatingBar"
+                        app:layout_constraintEnd_toEndOf="@+id/priority_rating"
+                        app:layout_constraintStart_toStartOf="@+id/priority_rating"
+                        app:layout_constraintTop_toBottomOf="@+id/priority_rating"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -130,10 +130,10 @@
                         android:text="难度"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@+id/guideline"
-                        app:layout_constraintEnd_toEndOf="@+id/smileBar"
+                        app:layout_constraintEnd_toEndOf="@+id/diffulty_rating"
                         app:layout_constraintHorizontal_bias="0.487"
-                        app:layout_constraintStart_toStartOf="@+id/smileBar"
-                        app:layout_constraintTop_toBottomOf="@+id/smileBar"
+                        app:layout_constraintStart_toStartOf="@+id/diffulty_rating"
+                        app:layout_constraintTop_toBottomOf="@+id/diffulty_rating"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <LinearLayout
@@ -141,13 +141,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintStart_toStartOf="@+id/editText2"
-                        app:layout_constraintEnd_toEndOf="@+id/editText2"
-                        app:layout_constraintTop_toBottomOf="@id/editText2"
+                        app:layout_constraintStart_toStartOf="@+id/content_tv"
+                        app:layout_constraintEnd_toEndOf="@+id/content_tv"
+                        app:layout_constraintTop_toBottomOf="@id/content_tv"
                         tools:layout_editor_absoluteY="98dp">
 
                         <EditText
-                            android:id="@+id/editText3"
+                            android:id="@+id/pronum_tv"
                             style="@style/Widget.Design.TextInputEditText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
 
                         <org.angmarch.views.NiceSpinner
 
-                            android:id="@+id/niceSpinner"
+                            android:id="@+id/tone_spinner"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:alpha="1"
