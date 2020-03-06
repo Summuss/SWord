@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_baseWordListFragment_to_wordFragment"
             app:destination="@id/wordFragment" />
+        <action
+            android:id="@+id/action_baseWordListFragment_to_addWordFragment"
+            app:destination="@id/addWordFragment" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
@@ -42,4 +45,8 @@
         android:name="top.summus.sword.fragment.WordFragment"
         android:label="fragment_word"
         tools:layout="@layout/fragment_word" />
+    <fragment
+        android:id="@+id/addWordFragment"
+        android:name="top.summus.sword.fragment.AddWordFragment"
+        tools:layout="@layout/fragment_add_word" />
 </navigation>

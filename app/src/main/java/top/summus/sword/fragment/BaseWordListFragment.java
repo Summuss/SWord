@@ -86,7 +86,7 @@ public class BaseWordListFragment extends Fragment {
 
         initTopBar();
         binding.addWordFbt.setOnClickListener(v -> {
-            navController.navigate(R.id.action_baseWordListFragment_to_bookNodeFragment);
+            navController.navigate(R.id.action_baseWordListFragment_to_addWordFragment);
         });
 
 

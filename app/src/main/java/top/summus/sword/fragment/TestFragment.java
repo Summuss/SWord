@@ -4,6 +4,7 @@ package top.summus.sword.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -13,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,6 +49,7 @@ public class TestFragment extends Fragment {
     private FragmentTestBinding binding;
     int count = 5;
     BookNodeRecyclerViewAdapter adapter;
+    private AppCompatActivity parentActivity;
 
     @Inject
     DeleteRecordRoomService deleteRecordRoomService;
@@ -81,6 +86,14 @@ public class TestFragment extends Fragment {
 //                .subscribe(record -> {},throwable -> {
 //                    Log.e(TAG, "onCreateView: ",throwable );
 //                });
+
+        parentActivity = (AppCompatActivity) getActivity();
+        parentActivity.setSupportActionBar(binding.toolbar);
+        binding.toolbar.setTitle("");
+        List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
+        binding.niceSpinner.attachDataSource(strings);
+//        binding.niceSpinner.setItems(strings);
+
 
 
         deleteRecordHttpService.uploadDeleteRecords().subscribeOn(Schedulers.io())

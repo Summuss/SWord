@@ -68,6 +68,17 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            style="@style/Theme.MaterialComponents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/white"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_behavior=".component.UpHideBehavior" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"

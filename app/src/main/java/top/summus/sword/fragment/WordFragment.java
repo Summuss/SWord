@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import top.summus.sword.R;
@@ -44,6 +45,7 @@ public class WordFragment extends Fragment {
         }
         WordRecyclerViewAdapter adapter = new WordRecyclerViewAdapter(words);
         binding.list.setAdapter(adapter);
+        parentActivity = (AppCompatActivity) getActivity();
 
 
         return binding.getRoot();

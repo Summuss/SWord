@@ -98,6 +98,9 @@ dependencies {
 //    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.white:progressview:1.0.1'
+    implementation 'com.github.florent37:materialtextfield:1.0.7'
 
-
+    implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+    implementation 'com.github.ome450901:SimpleRatingBar:1.5.0'
+    implementation 'com.github.eugeneek:smilebar:v1.0.0'
 }
