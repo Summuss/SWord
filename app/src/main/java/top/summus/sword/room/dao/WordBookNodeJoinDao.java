@@ -21,11 +21,11 @@ public interface WordBookNodeJoinDao extends BaseDao<WordBookNodeJoin> {
     @Query("SELECT * FROM word_book_node_join WHERE word_id=:wordId AND book_node_id=:bookNodeId")
     Single<List<WordBookNodeJoin>> selectByWordIdAndBookNodeId(long wordId, long bookNodeId);
 
-    @Query("SELECT * FROM word INNER JOIN word_book_node_join ON  word_book_node_join.word_id =word.id " +
+    @Query("SELECT word.* FROM word INNER JOIN word_book_node_join ON  word_book_node_join.word_id =word.id " +
             "WHERE word_book_node_join.book_node_id=:bookNodeId")
     Single<List<Word>> selectWordsByBookNodeId(long bookNodeId);
 
-    @Query("SELECT * FROM book_node INNER JOIN word_book_node_join ON word_book_node_join.book_node_id=book_node.id " +
+    @Query("SELECT book_node.* FROM book_node INNER JOIN word_book_node_join ON word_book_node_join.book_node_id=book_node.id " +
             "WHERE word_book_node_join.word_id=:wordId")
     Single<List<BookNode>> selectBookNodesByWordId(long wordId);
 

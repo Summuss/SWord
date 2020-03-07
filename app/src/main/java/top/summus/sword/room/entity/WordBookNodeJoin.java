@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "word_book_node_join",
-        indices = {@Index(value = {"word_id", "book_node_id"}, unique = true),
-                @Index(value = "word_id"),
-                @Index(value = "book_node_id")},
+        indices = {@Index(value = {"word_id", "book_node_id"}, unique = true)},
         foreignKeys = {@ForeignKey(entity = Word.class, parentColumns = "id", childColumns = "word_id", onDelete = CASCADE),
                 @ForeignKey(entity = BookNode.class, parentColumns = "id", childColumns = "book_node_id", onDelete = CASCADE)}
 
@@ -34,10 +32,10 @@ public class WordBookNodeJoin {
     @ColumnInfo(name = "no")
     private long no = -1;
 
-    @ColumnInfo(name = "word_id")
+    @ColumnInfo(name = "word_id", index = true)
     private long wordId;
 
-    @ColumnInfo(name = "book_node_id")
+    @ColumnInfo(name = "book_node_id", index = true)
     private long bookNodeId;
 
     @ColumnInfo(name = "sync_status")
