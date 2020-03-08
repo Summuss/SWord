@@ -1,7 +1,11 @@
 package top.summus.sword.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +105,18 @@ public class TestFragment extends Fragment {
 
 
         binding.treeViewContainer.addView(treeView.getView());
+
+        binding.helloView.setOnClickListener(view -> {
+//            Animator animator=AnimatorInflater.loadAnimator(getContext(),R.animator.set_animation );
+            float current = view.getTranslationX();
+            Animator animator = ObjectAnimator.ofFloat(view, "translationX", current, 200);
+//            animator.setTarget(view);
+            animator.setDuration(3000);
+            animator.start();
+
+
+        });
+
 
 
         return binding.getRoot();

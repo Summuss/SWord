@@ -11,25 +11,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/arrow_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout"
-            app:srcCompat="@drawable/ic_arrow_right" />
+            app:layout_constraintTop_toTopOf="@+id/textInputLayout">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+
+                app:srcCompat="@drawable/ic_arrow_right" />
+        </FrameLayout>
 
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/addImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout"
-            app:srcCompat="@drawable/ic_add_round" />
+            app:layout_constraintEnd_toStartOf="@id/remove_image"
+            app:layout_constraintTop_toTopOf="@+id/textInputLayout">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_marginEnd="5dp"
+
+                app:srcCompat="@drawable/ic_add_round" />
+        </FrameLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout"
@@ -46,6 +60,26 @@
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/remove_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/addImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addImage"
+            tools:layout_editor_absoluteX="67dp"
+            tools:layout_editor_absoluteY="228dp">
+
+            <ImageView
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -129,15 +129,23 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/tree_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <TextView
+                android:id="@+id/hello_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="hello"
+                android:textSize="40dp" />
 
-        </LinearLayout>
+
+        </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

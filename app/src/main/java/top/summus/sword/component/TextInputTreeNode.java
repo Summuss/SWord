@@ -1,22 +1,23 @@
 package top.summus.sword.component;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import top.summus.sword.R;
@@ -39,6 +40,7 @@ public class TextInputTreeNode extends TreeNode {
         this.treeView = treeView;
         this.viewHolder = new ViewHolder(context);
         setViewHolder(viewHolder);
+
     }
 
     private String getHint() {
@@ -54,83 +56,93 @@ public class TextInputTreeNode extends TreeNode {
         }
     }
 
-
     private int getMarginStart() {
         switch (type) {
             case MEANING:
                 return 32;
             case SENTENCE:
-            case SENTENCE_INTERPRETATION:
                 return 64;
+            case SENTENCE_INTERPRETATION:
+                return 96;
             default:
                 return 0;
         }
     }
+
+    private int getTextSize() {
+        switch (type) {
+            case MEANING:
+                return 19;
+            case SENTENCE:
+            case SENTENCE_INTERPRETATION:
+                return 14;
+            default:
+                return 0;
+        }
+    }
+
 
     @Setter
     @Getter
     public class ViewHolder extends TreeNode.BaseNodeViewHolder<Object> {
 
         private ConstraintLayout outLayout;
-        private ImageView arrowImage;
-        private ImageView addImage;
+        private FrameLayout arrowImage;
+        private FrameLayout addImage;
+        private FrameLayout removeImage;
         private TextInputLayout inputLayout;
         private TextInputEditText editText;
 
-        public ViewHolder(Context context) {
+        private ViewHolder(Context context) {
             super(context);
+            setClickListener((node, value) -> {
+                if (isExpanded()) {
+                    arrowRotateBack();
+                } else {
+                    arrowRotate();
+                }
+            });
         }
 
         @Override
         public View createNodeView(TreeNode node, Object value) {
             LayoutInflater inflater = LayoutInflater.from(context);
             View view = inflater.inflate(R.layout.tree_node_input, null, false);
-            arrowImage = view.findViewById(R.id.arrow_image);
-            addImage = view.findViewById(R.id.addImage);
-            inputLayout = view.findViewById(R.id.textInputLayout);
-            editText = view.findViewById(R.id.textInputEditText);
-            outLayout = view.findViewById(R.id.out_layout);
-
-
-            switch (type) {
-                case MEANING:
-                    inputLayout.setHint("解释");
-                    editText.setTextSize(19);
-                    break;
-                case SENTENCE:
-                    inputLayout.setHint("例句");
-                    editText.setTextSize(14);
-                    break;
-                case SENTENCE_INTERPRETATION:
-                    inputLayout.setHint("翻译");
-                    editText.setTextSize(14);
-                    addImage.setVisibility(View.INVISIBLE);
-                    arrowImage.setVisibility(View.INVISIBLE);
-                    break;
-                default:
-
-            }
-
-
+            findView(view);
+            initViewState();
             arrowImage.setOnClickListener(view1 -> {
                 if (isExpanded()) {
                     treeView.collapseNode(node);
+                    arrowRotateBack();
                 } else {
                     treeView.expandNode(node);
+                    arrowRotate();
                 }
             });
-
-            if (getChildren().isEmpty()) {
-                arrowImage.setVisibility(View.INVISIBLE);
-            } else {
-                arrowImage.setVisibility(View.VISIBLE);
-            }
+            removeImage.setOnClickListener(view1 -> {
+                TreeNode parent = node.getParent();
+                parent.deleteChild(node);
+                treeView.collapseNode(parent);
+                if (parent.getChildren().isEmpty()) {
+                    if (parent instanceof TextInputTreeNode) {
+                        TextInputTreeNode parent1 = (TextInputTreeNode) parent;
+                        parent1.viewHolder.arrowRotateBack();
+                        if (parent1.type == SENTENCE) {
+                            parent1.viewHolder.addImage.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    if (parent instanceof WordClassInputTreeNode) {
+                        ((WordClassInputTreeNode) parent).arrowRotateBack();
+                    }
+                } else {
+                    treeView.expandNode(parent);
+                }
+            });
 
             addImage.setOnClickListener(view1 -> {
                 if (type == SENTENCE) {
                     if (getChildren().isEmpty()) {
-                        addImage.setVisibility(View.INVISIBLE);
-                        Log.i("testtt", "createNodeView: ");
+                        addImage.setVisibility(View.GONE);
                     }
                 }
                 TextInputTreeNode treeNode = null;
@@ -148,20 +160,59 @@ public class TextInputTreeNode extends TreeNode {
                 if (arrowImage.getVisibility() == View.INVISIBLE) {
                     arrowImage.setVisibility(View.VISIBLE);
                 }
+                if (!isExpanded()) {
+                    arrowRotate();
+                }
+
                 treeView.expandNode(node);
             });
 
+            ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(rootParams);  ///////*********set layout params to your view
+
+            return view;
+        }
+
+        private void arrowRotate() {
+            Animator animator = ObjectAnimator.ofFloat(arrowImage, "rotation", 0, 90);
+            animator.setDuration(300);
+            animator.start();
+        }
+
+        private void arrowRotateBack() {
+            Animator animator = ObjectAnimator.ofFloat(arrowImage, "rotation", 90, 0);
+            animator.setDuration(300);
+            animator.start();
+        }
+
+        private void findView(View view) {
+            arrowImage = view.findViewById(R.id.arrow_image);
+            addImage = view.findViewById(R.id.addImage);
+            removeImage = view.findViewById(R.id.remove_image);
+            inputLayout = view.findViewById(R.id.textInputLayout);
+            editText = view.findViewById(R.id.textInputEditText);
+            outLayout = view.findViewById(R.id.out_layout);
+        }
+
+        private void initViewState() {
+            inputLayout.setHint(getHint());
+            editText.setTextSize(getTextSize());
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
             lp.setMarginStart(getMarginStart());
             outLayout.setLayoutParams(lp);
 
 
-            ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (getChildren().isEmpty()) {
+                arrowImage.setVisibility(View.INVISIBLE);
+            } else {
+                arrowImage.setVisibility(View.VISIBLE);
+            }
 
-            view.setLayoutParams(rootParams);  ///////*********set layout params to your view
-
-            return view;
+            if (type == SENTENCE_INTERPRETATION) {
+                addImage.setVisibility(View.GONE);
+                arrowImage.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
