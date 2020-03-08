@@ -8,15 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
-import java.util.Arrays;
-import java.util.List;
+import com.unnamed.b.atv.model.TreeNode;
+import com.unnamed.b.atv.view.AndroidTreeView;
 
 import javax.inject.Inject;
 
@@ -24,19 +23,15 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.adapter.BookNodeRecyclerViewAdapter;
+import top.summus.sword.component.TextInputTreeNode;
+import top.summus.sword.component.WordClassInputTreeNode;
 import top.summus.sword.databinding.FragmentTestBinding;
 import top.summus.sword.network.service.BookNodeHttpService;
 import top.summus.sword.network.service.DeleteRecordHttpService;
-import top.summus.sword.room.dao.DeleteRecordDao;
-import top.summus.sword.room.entity.DeleteRecord;
 import top.summus.sword.room.service.DeleteRecordRoomService;
-
-import static top.summus.sword.room.dao.DeleteRecordDao.Table.BOOK_NODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,12 +62,12 @@ public class TestFragment extends Fragment {
             @Override
             public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
                 emitter.onNext(1);
-                Log.i(TAG, "subscribe: "+Thread.currentThread());
+                Log.i(TAG, "subscribe: " + Thread.currentThread());
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .map(integer -> {
-                    Log.i(TAG, "func: in map "+Thread.currentThread());
-                    return integer+1;
+                    Log.i(TAG, "func: in map " + Thread.currentThread());
+                    return integer + 1;
                 });
     }
 
@@ -80,27 +75,37 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false);
+
         SWordApplication.getAppComponent().inject(this);
 
-//        deleteRecordHttpService.downloadDeleteRecord().subscribeOn(Schedulers.io())
-//                .subscribe(record -> {},throwable -> {
-//                    Log.e(TAG, "onCreateView: ",throwable );
-//                });
+        TreeNode root = TreeNode.root();
+        AndroidTreeView treeView = new AndroidTreeView(getContext(), root);
 
-        parentActivity = (AppCompatActivity) getActivity();
-        parentActivity.setSupportActionBar(binding.toolbar);
-        binding.toolbar.setTitle("");
-        List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
-//        binding.niceSpinner.attachDataSource(strings);
-//        binding.niceSpinner.setItems(strings);
+//        WordClassInputTreeNode wordClassInput = new WordClassInputTreeNode(treeView);
+        TextInputTreeNode meaningInputTreeNode = new TextInputTreeNode(TextInputTreeNode.MEANING, treeView, getContext());
+        TextInputTreeNode sentenceInputTreeNode = new TextInputTreeNode(TextInputTreeNode.SENTENCE, treeView, getContext());
+        TextInputTreeNode interpretationInputTreeNode = new TextInputTreeNode(TextInputTreeNode.SENTENCE_INTERPRETATION, treeView, getContext());
+
+//        TreeNode wordClassNode = new TreeNode(wordClassInput).setViewHolder(wordClassInput.new ViewHolder(getContext()));
+        WordClassInputTreeNode wordClassInputTreeNode = new WordClassInputTreeNode(getContext(), treeView);
+
+//
+//        sentenceInputTreeNode.addChild(interpretationInputTreeNode);
+//
+//        meaningInputTreeNode.addChild(sentenceInputTreeNode);
+////
+//        wordClassInputTreeNode.addChild(meaningInputTreeNode);
+        root.addChild(wordClassInputTreeNode);
+        treeView.setDefaultNodeClickListener(null);
 
 
+        binding.treeViewContainer.addView(treeView.getView());
 
-        deleteRecordHttpService.uploadDeleteRecords().subscribeOn(Schedulers.io())
-                .subscribe(record -> {},throwable -> Log.e(TAG, "onCreateView: ",throwable ));
+
         return binding.getRoot();
 
 
     }
+
 
 }

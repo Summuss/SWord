@@ -40,4 +40,11 @@
         <item name="android:textColor">#F30657</item>
     </style>
 
+    <style name="Custom.Widget.EditView" parent="Widget.AppCompat.EditText">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <!-- AppCompatEditText选择的底线颜色 -->
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
 </resources>
