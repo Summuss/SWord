@@ -29,7 +29,7 @@ public class TextInputTreeNode extends TreeNode {
     public static final int MEANING = 1;
     public static final int SENTENCE = 2;
     public static final int SENTENCE_INTERPRETATION = 3;
-
+    //
     private int type;
     private AndroidTreeView treeView;
     private ViewHolder viewHolder;
