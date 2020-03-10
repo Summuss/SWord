@@ -18,7 +18,7 @@ import top.summus.sword.room.entity.Word;
 import top.summus.sword.room.entity.WordBookNodeJoin;
 import top.summus.sword.util.RoomConventer;
 
-@Database(entities = {BookNode.class, DeleteRecord.class, Word.class, WordBookNodeJoin.class, Meaning.class, Sentence.class}, version = 9, exportSchema = false)
+@Database(entities = {BookNode.class, DeleteRecord.class, Word.class, WordBookNodeJoin.class, Meaning.class, Sentence.class}, version = 10, exportSchema = false)
 @TypeConverters({RoomConventer.class})
 public abstract class SWordDatabase extends RoomDatabase {
 

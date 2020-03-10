@@ -38,9 +38,5 @@ public class WordBookNodeJoin {
     @ColumnInfo(name = "book_node_id", index = true)
     private long bookNodeId;
 
-    @ColumnInfo(name = "sync_status")
-    @Builder.Default
-    private int syncStatus = 1;
-
 
 }

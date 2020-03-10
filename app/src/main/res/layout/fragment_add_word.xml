@@ -195,6 +195,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <com.yanzhenjie.recyclerview.SwipeRecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"

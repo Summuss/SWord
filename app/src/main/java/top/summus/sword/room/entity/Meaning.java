@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,5 +31,12 @@ public class Meaning {
 
     @ColumnInfo(name = "meaning")
     private String meaning;
+
+    @ColumnInfo(name = "changed_date")
+    private Date changedDate;
+
+    @ColumnInfo(name = "sync_status")
+    @Builder.Default
+    private int syncStatus = 1;
 
 }
