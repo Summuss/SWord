@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="viewModel"
+            type="top.summus.sword.viewmodel.WordDetailViewModel" />
 
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/overall_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical"
-
-        >
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -49,7 +47,6 @@
                         app:srb_isIndicator="false"
                         app:srb_minimumStars="1"
                         app:srb_numStars="5"
-                        app:srb_rating="2"
                         app:srb_scrollable="true"
                         app:srb_starHeight="25dp"
                         app:srb_starPadding="8dp"
@@ -67,7 +64,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/priority_rating"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/priority_rating"
-                        app:rating="1"
+                        app:rating="@{viewModel.word.difficulty}"
                         app:smileDefault="@drawable/ic_smile"
                         app:smileHeight="35dp"
                         app:smileRate1="@drawable/ic_happy"
@@ -85,11 +82,13 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:background="@android:color/transparent"
+                        android:editable="false"
                         android:ems="10"
-                        android:hint="请输入单词"
-
+                        android:focusable="false"
                         android:inputType="textPersonName"
+
                         android:singleLine="true"
+                        android:text="@{viewModel.word.content}"
                         android:textColor="@color/white"
                         android:textSize="36sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintGuide_begin="240dp" />
+                        app:layout_constraintGuide_begin="250dp" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline2"
@@ -141,40 +140,28 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintStart_toStartOf="@+id/content_tv"
                         app:layout_constraintEnd_toEndOf="@+id/content_tv"
+                        app:layout_constraintStart_toStartOf="@+id/content_tv"
                         app:layout_constraintTop_toBottomOf="@id/content_tv"
                         tools:layout_editor_absoluteY="98dp">
 
-                        <EditText
+                        <TextView
                             android:id="@+id/pronum_tv"
                             style="@style/Widget.Design.TextInputEditText"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:ems="10"
-                            android:hint="请输入发音"
-                            android:inputType="textPersonName"
-                            android:singleLine="true"
+                            android:text="@{viewModel.word.pronunciation}"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                        <org.angmarch.views.NiceSpinner
-
-                            android:id="@+id/tone_spinner"
+                        <TextView
+                            android:id="@+id/tone_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:alpha="1"
-                            android:background="@android:color/transparent"
-                            android:backgroundTint="@android:color/transparent"
-                            android:text="音调"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"
-                            app:arrowTint="@color/colorAccent"
-                            app:drawableTint="@color/colorAccent"
-                            app:textTint="@color/colorAccent" />
+                            android:layout_marginStart="10dp"
+                            android:text='@{viewModel.word.tone+""}'
+                            android:textSize="24sp" />
+
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -195,26 +182,33 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/tree_view_container" />
+            android:orientation="vertical"
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/confirm_fbt"
-            android:layout_gravity="end|bottom"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorAccent"
-            app:fab_colorPressed="@color/white"
-            android:clickable="true"
-            app:fab_icon="@drawable/ic_done_black_24dp"
-            app:layout_behavior=".component.UpHideBehavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.ogaclejapan.smarttablayout.SmartTabLayout
+                android:id="@+id/smarttablayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!--            <androidx.core.widget.NestedScrollView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="1">-->
+
+            <!--            </androidx.core.widget.NestedScrollView>-->
+        </LinearLayout>
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </layout>

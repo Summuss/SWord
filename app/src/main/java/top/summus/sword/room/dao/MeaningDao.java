@@ -14,5 +14,8 @@ public interface MeaningDao extends BaseDao<Meaning> {
     @Query("SELECT * FROM meaning WHERE id=:key")
     Single<List<Meaning>> selectByPrimary(long key);
 
+    @Query("SELECT * FROM meaning WHERE word_id=:wordId")
+    Single<List<Meaning>> selectByWordId(long wordId);
+
 
 }

@@ -33,10 +33,52 @@ public class Meaning {
     private String meaning;
 
     @ColumnInfo(name = "changed_date")
-    private Date changedDate;
+    @Builder.Default
+    private Date changedDate = new Date();
 
     @ColumnInfo(name = "sync_status")
     @Builder.Default
     private int syncStatus = 1;
+
+    public enum WordClass {
+        VERB(0), NOUN(1), ADJ(2);
+
+        private int value;
+
+        public int value() {
+            return value;
+        }
+
+        WordClass(int value) {
+            this.value = value;
+        }
+
+        public String getWordClass() {
+            switch (value) {
+                case 0:
+                    return "動";
+                case 1:
+                    return "名";
+                case 2:
+                    return "形";
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+
+        public static WordClass getEnum(int value) {
+            switch (value) {
+                case 0:
+                    return VERB;
+                case 1:
+                    return NOUN;
+                case 2:
+                    return ADJ;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+
+    }
 
 }

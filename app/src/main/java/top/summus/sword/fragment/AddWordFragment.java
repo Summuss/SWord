@@ -20,11 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.unnamed.b.atv.model.TreeNode;
+import com.unnamed.b.atv.view.AndroidTreeView;
+
 import java.util.Arrays;
 import java.util.List;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
+import top.summus.sword.component.WordClassInputTreeNode;
 import top.summus.sword.databinding.FragmentAddWordBinding;
 import top.summus.sword.room.entity.BookNode;
 import top.summus.sword.room.entity.Word;
@@ -76,6 +80,15 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
         List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
         binding.toneSpinner.attachDataSource(strings);
 
+
+        TreeNode root = TreeNode.root();
+        AndroidTreeView treeView = new AndroidTreeView(getContext(), root);
+        WordClassInputTreeNode wordClassInputTreeNode = new WordClassInputTreeNode(getContext(), treeView);
+        root.addChild(wordClassInputTreeNode);
+
+        binding.treeViewContainer.addView(treeView.getView());
+        treeView.setUseAutoToggle(false);
+
         binding.confirmFbt.setOnClickListener(view -> {
             String content = binding.contentTv.getText().toString();
             String pronun = binding.pronumTv.getText().toString();
@@ -85,8 +98,9 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
             Word word = Word.builder().
                     content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
                     .build();
-            addWordViewModel.add(word);
+            addWordViewModel.add(word, root);
         });
+
 
         return binding.getRoot();
     }

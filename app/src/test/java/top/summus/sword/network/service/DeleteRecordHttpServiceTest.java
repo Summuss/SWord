@@ -8,6 +8,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.dagger.DaggerContainer;
 import top.summus.sword.room.entity.BookNode;
@@ -29,10 +32,16 @@ public class DeleteRecordHttpServiceTest {
 
     @Test
     public void downloadDeleteRecord() {
-        daggerContainer.database.getWordDao().insert(Word.builder().build()).subscribe();
-        daggerContainer.database.getWordDao().selectByPrimary(5).subscribe((word, throwable) -> {
-            System.out.println(word);
-        });
+        System.out.println("hello");
+        Observable.just(1, 2, 3)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    System.out.println("in finally " + Thread.currentThread());
+                })
+                .subscribe(integer -> {
+                    System.out.println("in subscribe " + integer + "  " + Thread.currentThread());
+                });
 
 
     }

@@ -30,6 +30,7 @@ public class TextInputTreeNode extends TreeNode {
     public static final int SENTENCE = 2;
     public static final int SENTENCE_INTERPRETATION = 3;
     //
+    @Getter
     private int type;
     private AndroidTreeView treeView;
     private ViewHolder viewHolder;
@@ -41,6 +42,10 @@ public class TextInputTreeNode extends TreeNode {
         this.viewHolder = new ViewHolder(context);
         setViewHolder(viewHolder);
 
+    }
+
+    public String getInputContent() {
+        return viewHolder.editText.getText().toString();
     }
 
     private String getHint() {
@@ -95,13 +100,6 @@ public class TextInputTreeNode extends TreeNode {
 
         private ViewHolder(Context context) {
             super(context);
-            setClickListener((node, value) -> {
-                if (isExpanded()) {
-                    arrowRotateBack();
-                } else {
-                    arrowRotate();
-                }
-            });
         }
 
         @Override

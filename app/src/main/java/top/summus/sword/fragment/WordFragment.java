@@ -35,7 +35,7 @@ import top.summus.sword.viewmodel.WordViewModel;
  * <p/>
  * interface.
  */
-public class WordFragment extends Fragment implements WordViewModel.WordViewModelCallback {
+public class WordFragment extends Fragment implements WordViewModel.WordViewModelCallback, WordRecyclerViewAdapter.WordRecyclerViewAdapterCallback {
     private static final String TAG = "WordFragment";
 
     private FragmentWordBinding binding;
@@ -69,7 +69,7 @@ public class WordFragment extends Fragment implements WordViewModel.WordViewMode
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentActivity);
         binding.list.setLayoutManager(layoutManager);
-        adapter = new WordRecyclerViewAdapter(wordViewModel.getWordsToBeShowed());
+        adapter = new WordRecyclerViewAdapter(wordViewModel.getWordsToBeShowed(), this);
         binding.list.setAdapter(adapter);
         parentActivity = (AppCompatActivity) getActivity();
 
@@ -104,5 +104,12 @@ public class WordFragment extends Fragment implements WordViewModel.WordViewMode
     @Override
     public void onLoadWordsFinished() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onWordItemClick(Word word) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("word", word);
+        navController.navigate(R.id.action_wordFragment_to_wordDetailFragment, bundle);
     }
 }

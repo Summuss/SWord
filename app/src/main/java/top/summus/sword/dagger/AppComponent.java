@@ -13,6 +13,7 @@ import top.summus.sword.room.RoomModule;
 import top.summus.sword.room.service.BookNodeRoomService;
 import top.summus.sword.viewmodel.AddWordViewModel;
 import top.summus.sword.viewmodel.BookNodeViewModel;
+import top.summus.sword.viewmodel.WordDetailViewModel;
 import top.summus.sword.viewmodel.WordViewModel;
 
 @Component(modules = {SingletonModule.class, HttpModule.class, RoomModule.class})
@@ -36,4 +37,6 @@ public interface AppComponent {
     void inject(WordViewModel wordViewModel);
 
     void inject(AddWordViewModel addWordViewModel);
+
+    void inject(WordDetailViewModel wordDetailViewModel);
 }

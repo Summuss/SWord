@@ -43,7 +43,7 @@ public class TestActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.right_layout, fragment);
-//    transaction.add(R.id.right_layout,fragment);
+//    transaction.getMeaningNodes(R.id.right_layout,fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -31,6 +31,11 @@ public class WordClassInputTreeNode extends TreeNode {
     @Getter
     private ViewHolder viewHolder;
 
+    public int getWordClass() {
+        return viewHolder.niceSpinner.getSelectedIndex();
+    }
+
+
     public WordClassInputTreeNode(Context context, AndroidTreeView treeView) {
         super(new Object());
         this.treeView = treeView;
@@ -54,14 +59,7 @@ public class WordClassInputTreeNode extends TreeNode {
 
         public ViewHolder(Context context) {
             super(context);
-            setClickListener((node, value) -> {
-                if (isExpanded()) {
-                    arrowRotateBack();
-                } else {
-                    arrowRotate();
-                }
 
-            });
         }
 
 
@@ -72,7 +70,7 @@ public class WordClassInputTreeNode extends TreeNode {
             niceSpinner = view.findViewById(R.id.niceSpinner);
             addIamge = view.findViewById(R.id.add_image);
             arrowImage = view.findViewById(R.id.arrow_image);
-            niceSpinner.attachDataSource(WordClassInputTreeNode.this.items);
+            niceSpinner.attachDataSource(items);
 
             if (getChildren().isEmpty()) {
                 arrowImage.setVisibility(View.GONE);

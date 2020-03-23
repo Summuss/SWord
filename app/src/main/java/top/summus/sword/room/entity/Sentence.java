@@ -29,7 +29,8 @@ public class Sentence {
     private String interpretation;
 
     @ColumnInfo(name = "changed_date")
-    private Date changedDate;
+    @Builder.Default
+    private Date changedDate = new Date();
 
     @ColumnInfo(name = "sync_status")
     @Builder.Default

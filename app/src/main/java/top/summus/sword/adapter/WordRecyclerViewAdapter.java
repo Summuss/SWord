@@ -18,9 +18,11 @@ import java.util.List;
 public class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapter.ViewHolder> {
 
     private final List<Word> mValues;
+    private WordRecyclerViewAdapterCallback callback;
 
-    public WordRecyclerViewAdapter(List<Word> items) {
+    public WordRecyclerViewAdapter(List<Word> items, WordRecyclerViewAdapterCallback callback) {
         mValues = items;
+        this.callback = callback;
     }
 
     @Override
@@ -58,7 +60,16 @@ public class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerVi
             contentTV = view.findViewById(R.id.tv_word_content);
             prounTV = view.findViewById(R.id.tv_word_pronun);
             proficiencyProgress = view.findViewById(R.id.progress_proficiency);
+            view.findViewById(R.id.out_layout).setOnClickListener(view1 -> {
+                Word word = mValues.get(getAdapterPosition());
+                callback.onWordItemClick(word);
+            });
         }
 
+    }
+
+    public interface WordRecyclerViewAdapterCallback {
+
+        void onWordItemClick(Word word);
     }
 }

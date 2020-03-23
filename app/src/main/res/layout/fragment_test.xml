@@ -128,24 +128,29 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/tree_view_container"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <TextView
-                android:id="@+id/hello_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="hello"
-                android:textSize="40dp" />
+            <com.ogaclejapan.smarttablayout.SmartTabLayout
+                android:id="@+id/smarttablayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:stl_indicatorWithoutPadding="false"
+                app:stl_indicatorColor="@color/colorAccent"
+                app:stl_indicatorThickness="2dp"
+                app:stl_defaultTabTextHorizontalPadding="5dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
 
-        </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
