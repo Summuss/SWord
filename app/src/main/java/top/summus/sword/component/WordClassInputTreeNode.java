@@ -55,6 +55,7 @@ public class WordClassInputTreeNode extends TreeNode {
     public class ViewHolder extends TreeNode.BaseNodeViewHolder<Object> {
         private NiceSpinner niceSpinner;
         private FrameLayout addIamge;
+        private FrameLayout removeImage;
         private FrameLayout arrowImage;
 
         public ViewHolder(Context context) {
@@ -69,6 +70,7 @@ public class WordClassInputTreeNode extends TreeNode {
             View view = inflater.inflate(R.layout.tree_node_word_class, null, false);
             niceSpinner = view.findViewById(R.id.niceSpinner);
             addIamge = view.findViewById(R.id.add_image);
+            removeImage = view.findViewById(R.id.remove_image);
             arrowImage = view.findViewById(R.id.arrow_image);
             niceSpinner.attachDataSource(items);
 
@@ -98,6 +100,10 @@ public class WordClassInputTreeNode extends TreeNode {
                 treeView.expandNode(node);
 
             });
+            removeImage.setOnClickListener(view1 -> {
+                treeView.removeNode(node);
+                treeView.expandNode(getRoot());
+            });
 
             ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -105,6 +111,7 @@ public class WordClassInputTreeNode extends TreeNode {
 
             return view;
         }
+
 
         private void arrowRotate() {
             Animator animator = ObjectAnimator.ofFloat(arrowImage, "rotation", 0, 90);

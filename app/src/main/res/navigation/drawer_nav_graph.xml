@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/baseWordListFragment"
-        android:name="top.summus.sword.fragment.BaseWordListFragment"
+        android:name="top.summus.sword.fragment.CurrentStudyFragment"
         android:label="fragment_base_wordlist"
-        tools:layout="@layout/fragment_base_wordlist">
+        tools:layout="@layout/fragment_current_study">
         <action
             android:id="@+id/action_baseWordListFragment_to_testFragment"
             app:destination="@id/testFragment"

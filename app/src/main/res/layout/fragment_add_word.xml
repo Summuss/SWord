@@ -195,12 +195,38 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <LinearLayout
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/tree_view_container" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tree_view_container" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/dotted_line"
+                android:layerType="software" />
+
+            <TextView
+                android:id="@+id/add_word_class_bt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="添加词性"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/dotted_line"
+                android:layerType="software" />
+        </LinearLayout>
+
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/confirm_fbt"

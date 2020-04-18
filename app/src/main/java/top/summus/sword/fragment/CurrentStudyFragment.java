@@ -22,25 +22,25 @@ import android.view.ViewGroup;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
-import top.summus.sword.databinding.FragmentBaseWordlistBinding;
+import top.summus.sword.databinding.FragmentCurrentStudyBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BaseWordListFragment.OnFragmentInteractionListener} interface
+ * {@link CurrentStudyFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BaseWordListFragment#newInstance} factory method to
+ * Use the {@link CurrentStudyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BaseWordListFragment extends Fragment {
+public class CurrentStudyFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
-    private static final String TAG = "BaseWordListFragment";
+    private static final String TAG = "CurrentStudyFragment";
 
-    private FragmentBaseWordlistBinding binding;
+    private FragmentCurrentStudyBinding binding;
     private AppCompatActivity parentActivity;
     private NavController navController;
 
@@ -52,10 +52,10 @@ public class BaseWordListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BaseWordListFragment.
+     * @return A new instance of fragment CurrentStudyFragment.
      */
-    public static BaseWordListFragment newInstance(String param1, String param2) {
-        BaseWordListFragment fragment = new BaseWordListFragment();
+    public static CurrentStudyFragment newInstance(String param1, String param2) {
+        CurrentStudyFragment fragment = new CurrentStudyFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -78,7 +78,7 @@ public class BaseWordListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_base_wordlist, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_current_study, container, false);
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
 

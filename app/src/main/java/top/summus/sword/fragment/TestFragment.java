@@ -82,31 +82,10 @@ public class TestFragment extends Fragment {
 //                .create()
 //
 //        );
-        ViewPagerItems viewPagerItems = ViewPagerItems.with(parentActivity).create();
-        ViewPagerItemAdapter adapter = new ViewPagerItemAdapter(viewPagerItems);
-        viewPagerItems.add(ViewPagerItem.of("hello", R.layout.fragment_word_info));
-        viewPagerItems.add(ViewPagerItem.of("world", R.layout.fragment_word_info));
-        binding.viewpager.setAdapter(adapter);
-        binding.smarttablayout.setViewPager(binding.viewpager);
-        Log.i(TAG, "onCreateView: " + binding.viewpager.getCurrentItem());
-
-        binding.smarttablayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.i(TAG, "onPageScrolled: "+position+"  "+positionOffset+"  "+positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.i(TAG, "onPageSelected: " + position);
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.i(TAG, "onPageScrollStateChanged: " + state);
-
-            }
+        binding.testOuter.setOnClickListener(null);
+        binding.testOuter.setClickable(false);
+        binding.button.setOnClickListener(view -> {
+            Log.i(TAG, "onCreateView: button");
         });
 
         Log.i(TAG, "onCreateView: ddd");

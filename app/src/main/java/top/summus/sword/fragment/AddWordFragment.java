@@ -69,25 +69,22 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
         addWordViewModel = AddWordViewModel.getInstance(this);
-        if (bookNode == null) {
-            Log.i(TAG, "onCreateView: bookNode null");
-        } else {
-            Log.i(TAG, "onCreateView: bookNode not null");
-        }
         initTopBar();
 
 
         List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
         binding.toneSpinner.attachDataSource(strings);
 
-
         TreeNode root = TreeNode.root();
         AndroidTreeView treeView = new AndroidTreeView(getContext(), root);
-        WordClassInputTreeNode wordClassInputTreeNode = new WordClassInputTreeNode(getContext(), treeView);
-        root.addChild(wordClassInputTreeNode);
-
         binding.treeViewContainer.addView(treeView.getView());
         treeView.setUseAutoToggle(false);
+        binding.addWordClassBt.setOnClickListener(view -> {
+            WordClassInputTreeNode wordClassInputTreeNode = new WordClassInputTreeNode(getContext(), treeView);
+            root.addChild(wordClassInputTreeNode);
+            treeView.expandNode(root);
+        });
+
 
         binding.confirmFbt.setOnClickListener(view -> {
             String content = binding.contentTv.getText().toString();
@@ -138,6 +135,7 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
 
     @Override
     public void addWordFinished() {
-
+        Log.i(TAG, "addWordFinished: ");
+        parentActivity.onBackPressed();
     }
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.white.progressview.HorizontalProgressView;
 
+import lombok.Getter;
 import top.summus.sword.R;
 import top.summus.sword.room.entity.Word;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapter.ViewHolder> {
 
+    @Getter
     private final List<Word> mValues;
     private WordRecyclerViewAdapterCallback callback;
 

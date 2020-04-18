@@ -75,8 +75,13 @@ public class AddWordViewModel extends ViewModel {
                         }
 
                     });
+            emitter.onNext(new Object());
+            emitter.onComplete();
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    callback.addWordFinished();
+                })
                 .subscribe(
                         o -> {
                         },

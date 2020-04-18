@@ -26,15 +26,11 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.schedulers.Schedulers;
 import top.summus.sword.R;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.network.api.TimeApi;
 import top.summus.sword.databinding.ActivityStartBinding;
-import top.summus.sword.fragment.BaseWordListFragment;
+import top.summus.sword.fragment.CurrentStudyFragment;
 import top.summus.sword.util.BackPressedHandle;
 
 /**
@@ -51,7 +47,7 @@ import top.summus.sword.util.BackPressedHandle;
  */
 public class StartActivity extends AppCompatActivity
         implements
-        BaseWordListFragment.OnFragmentInteractionListener,
+        CurrentStudyFragment.OnFragmentInteractionListener,
         AppbarConfigurationSupplier,
         NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 

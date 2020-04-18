@@ -9,12 +9,14 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import top.summus.sword.room.dao.BookNodeDao;
+import top.summus.sword.room.dao.CurrentStudyWordDao;
 import top.summus.sword.room.dao.DeleteRecordDao;
 import top.summus.sword.room.dao.MeaningDao;
 import top.summus.sword.room.dao.SentenceDao;
 import top.summus.sword.room.dao.WordBookNodeJoinDao;
 import top.summus.sword.room.dao.WordDao;
 import top.summus.sword.room.service.BookNodeRoomService;
+import top.summus.sword.room.service.CurrentStudyWordRoomService;
 import top.summus.sword.room.service.DeleteRecordRoomService;
 import top.summus.sword.room.service.MeaningRoomService;
 import top.summus.sword.room.service.SentenceRoomService;
@@ -46,13 +48,13 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    public DeleteRecordDao provideDeleteReocrdDao(SWordDatabase sWordDatabase){
+    public DeleteRecordDao provideDeleteReocrdDao(SWordDatabase sWordDatabase) {
         return sWordDatabase.getDeleteRecordDao();
     }
 
     @Singleton
     @Provides
-    public DeleteRecordRoomService provideDeleteRecordRoomService(DeleteRecordDao deleteRecordDao){
+    public DeleteRecordRoomService provideDeleteRecordRoomService(DeleteRecordDao deleteRecordDao) {
         return new DeleteRecordRoomService(deleteRecordDao);
     }
 
@@ -102,6 +104,18 @@ public class RoomModule {
     @Provides
     public SentenceRoomService provideSentenceRoomService(SentenceDao sentenceDao) {
         return new SentenceRoomService(sentenceDao);
+    }
+
+    @Singleton
+    @Provides
+    public CurrentStudyWordDao providesCurrentStudyWordDao(SWordDatabase database) {
+        return database.getCurrentStudyWordDao();
+    }
+
+    @Singleton
+    @Provides
+    public CurrentStudyWordRoomService providesCurrentStudyWordService(CurrentStudyWordDao currentStudyWordDao) {
+        return new CurrentStudyWordRoomService(currentStudyWordDao);
     }
 
 }

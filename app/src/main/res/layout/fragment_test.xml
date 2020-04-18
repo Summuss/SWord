@@ -129,26 +129,18 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
+            android:id="@+id/test_outer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.ogaclejapan.smarttablayout.SmartTabLayout
-                android:id="@+id/smarttablayout"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                app:stl_indicatorWithoutPadding="false"
-                app:stl_indicatorColor="@color/colorAccent"
-                app:stl_indicatorThickness="2dp"
-                app:stl_defaultTabTextHorizontalPadding="5dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button" />
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+
         </LinearLayout>
 
 

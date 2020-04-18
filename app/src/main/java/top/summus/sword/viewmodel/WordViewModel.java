@@ -21,7 +21,9 @@ import lombok.NonNull;
 import lombok.Setter;
 import top.summus.sword.SWordApplication;
 import top.summus.sword.room.entity.BookNode;
+import top.summus.sword.room.entity.CurrentStudyWord;
 import top.summus.sword.room.entity.Word;
+import top.summus.sword.room.service.CurrentStudyWordRoomService;
 import top.summus.sword.room.service.DeleteRecordRoomService;
 import top.summus.sword.room.service.WordBookNodeJoinRoomService;
 import top.summus.sword.room.service.WordRoomService;
@@ -45,6 +47,9 @@ public class WordViewModel extends ViewModel {
 
     @Inject
     DeleteRecordRoomService deleteRecordRoomService;
+
+    @Inject
+    CurrentStudyWordRoomService currentStudyWordRoomService;
 
     public static WordViewModel getInstance(@NonNull Fragment fragment) {
         WordViewModel wordViewModel = new ViewModelProvider(fragment).get(WordViewModel.class);
@@ -73,10 +78,26 @@ public class WordViewModel extends ViewModel {
         wordsToBeShowed.clear();
     }
 
+    public void addToStudy(@NonNull Word word) {
+        CurrentStudyWord currentStudyWord = CurrentStudyWord.builder().wordId(word.getId()).build();
+        currentStudyWordRoomService.insert(currentStudyWord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(aLong -> {
+                    callback.addToStudyFinished(true);
+                })
+                .subscribe((aLong, throwable) -> {
+                    if (throwable != null) {
+                        Log.e(TAG, "addToStudy: ", throwable);
+                    }
+                });
+    }
 
     public interface WordViewModelCallback {
 
         void onLoadWordsFinished();
+
+        void addToStudyFinished(boolean successful);
     }
 
 }

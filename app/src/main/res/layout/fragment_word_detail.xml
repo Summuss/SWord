@@ -59,7 +59,7 @@
                         android:layout_height="wrap_content"
 
                         android:layout_marginEnd="16dp"
-                        app:enabled="true"
+                        app:enabled="false"
                         app:horizontalSpacing="4dp"
                         app:layout_constraintBottom_toBottomOf="@+id/priority_rating"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -154,13 +154,14 @@
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                        <TextView
+                        <com.matrixxun.starry.badgetextview.MaterialBadgeTextView
                             android:id="@+id/tone_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:text='@{viewModel.word.tone+""}'
-                            android:textSize="24sp" />
+                            android:background="@color/colorAccent"
+                            android:textColor="@color/white"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 

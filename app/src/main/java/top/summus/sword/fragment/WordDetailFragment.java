@@ -55,6 +55,9 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
         parentActivity = (AppCompatActivity) getActivity();
         wordDetailViewModel = WordDetailViewModel.getInstance(this);
         initTopBar();
+
+        binding.priorityRating.setClickable(false);
+
         viewPagerItems = ViewPagerItems.with(parentActivity).create();
         viewPagerItemAdapter = new ViewPagerItemAdapter(viewPagerItems);
 
@@ -88,6 +91,7 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
             wordDetailViewModel.setWord((Word) getArguments().get("word"));
             binding.setViewModel(wordDetailViewModel);
             binding.priorityRating.setRating(wordDetailViewModel.getWord().getPriority());
+            binding.toneTv.setBadgeCount(wordDetailViewModel.getWord().getTone(), false);
         }
     }
 
