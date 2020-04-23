@@ -47,7 +47,6 @@ import top.summus.sword.util.BackPressedHandle;
  */
 public class StartActivity extends AppCompatActivity
         implements
-        CurrentStudyFragment.OnFragmentInteractionListener,
         AppbarConfigurationSupplier,
         NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 

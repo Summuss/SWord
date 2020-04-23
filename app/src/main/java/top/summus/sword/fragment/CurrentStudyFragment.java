@@ -9,9 +9,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,61 +21,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
+import com.yuyakaido.android.cardstackview.CardStackListener;
+import com.yuyakaido.android.cardstackview.Direction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
+import top.summus.sword.adapter.CurrentStudyCardViewAdapter;
 import top.summus.sword.databinding.FragmentCurrentStudyBinding;
+import top.summus.sword.room.entity.Word;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CurrentStudyFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CurrentStudyFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CurrentStudyFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
     private static final String TAG = "CurrentStudyFragment";
 
     private FragmentCurrentStudyBinding binding;
     private AppCompatActivity parentActivity;
     private NavController navController;
 
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CurrentStudyFragment.
-     */
-    public static CurrentStudyFragment newInstance(String param1, String param2) {
-        CurrentStudyFragment fragment = new CurrentStudyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-
-
-        }
-        setHasOptionsMenu(true);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,51 +51,70 @@ public class CurrentStudyFragment extends Fragment {
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
 
-        initRecyclerView();
-
         initTopBar();
+        initCardView();
 
 
         return binding.getRoot();
     }
 
     private void initTopBar() {
+        NavController navController = NavHostFragment.findNavController(this);
         parentActivity.setSupportActionBar(binding.toolbar);
+
         NavigationUI.setupActionBarWithNavController(parentActivity, navController);
+        AppBarConfiguration appBarConfiguration =
+                new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupWithNavController(binding.toolbar, navController, ((AppbarConfigurationSupplier) parentActivity).getAppBarConfiguration());
+        binding.toolbar.setTitle("");
         setHasOptionsMenu(true);
-        if (parentActivity instanceof AppbarConfigurationSupplier) {
-            NavigationUI.setupWithNavController(binding.collapsingToolbar,
-                    binding.toolbar, navController,
-                    ((AppbarConfigurationSupplier) parentActivity).getAppBarConfiguration());
-
-        } else {
-            throw new RuntimeException("parentActivity not implement AppbarConfigurationSupplier");
-        }
 
     }
 
-    private void initRecyclerView() {
-        // swipe setting
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        binding.recyclerWordList.setLayoutManager(layoutManager);
-    }
+    private void initCardView() {
+        List<Word> words = new ArrayList<>();
+        words.add(Word.builder().content("word1").build());
+        words.add(Word.builder().content("word2").build());
+        words.add(Word.builder().content("word3").build());
+        words.add(Word.builder().content("word4").build());
+        CardStackLayoutManager cardStackLayoutManager = new CardStackLayoutManager(parentActivity, new CardStackListener() {
+            @Override
+            public void onCardDragging(Direction direction, float ratio) {
+                Log.i(TAG, "onCardDragging: " + direction + "   " + ratio);
+            }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+            @Override
+            public void onCardSwiped(Direction direction) {
+                Log.i(TAG, "onCardSwiped: " + direction);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+            }
+
+            @Override
+            public void onCardRewound() {
+
+            }
+
+            @Override
+            public void onCardCanceled() {
+
+            }
+
+            @Override
+            public void onCardAppeared(View view, int position) {
+
+            }
+
+            @Override
+            public void onCardDisappeared(View view, int position) {
+
+            }
+        });
+        cardStackLayoutManager.setVisibleCount(3);
+        cardStackLayoutManager.setDirections(Direction.FREEDOM);
+        binding.cardStackView.setLayoutManager(cardStackLayoutManager);
+        CurrentStudyCardViewAdapter currentStudyCardViewAdapter = new CurrentStudyCardViewAdapter(words);
+        binding.cardStackView.setAdapter(currentStudyCardViewAdapter);
     }
 
     @Override
@@ -135,16 +123,5 @@ public class CurrentStudyFragment extends Fragment {
         inflater.inflate(R.menu.base_word_list_fragment_menu, menu);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-    }
+
 }

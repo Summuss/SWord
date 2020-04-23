@@ -111,5 +111,8 @@ dependencies {
     implementation 'com.ogaclejapan.smarttablayout:utils-v4:2.0.0@aar'
 
     implementation 'com.github.matrixxun:MaterialBadgeTextView:master'
+    implementation "com.yuyakaido.android:card-stack-view:2.3.4"
+
+
 
 }
