@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import static androidx.room.ForeignKey.CASCADE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Meaning {
+public class Meaning implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private long id;
 

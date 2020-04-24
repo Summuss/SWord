@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_nav_graph"
-    app:startDestination="@id/baseWordListFragment">
+    app:startDestination="@id/CurrentStudyFragment">
 
     <fragment
-        android:id="@+id/baseWordListFragment"
+        android:id="@+id/CurrentStudyFragment"
         android:name="top.summus.sword.fragment.CurrentStudyFragment"
         android:label="fragment_base_wordlist"
         tools:layout="@layout/fragment_current_study">
@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_baseWordListFragment_to_wordFragment"
             app:destination="@id/wordFragment" />
+        <action
+            android:id="@+id/action_CurrentStudyFragment_to_wordDetailFragment"
+            app:destination="@id/wordDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
@@ -60,5 +63,12 @@
     <fragment
         android:id="@+id/wordDetailFragment"
         android:name="top.summus.sword.fragment.WordDetailFragment"
-        tools:layout="@layout/fragment_word_detail" />
+        tools:layout="@layout/fragment_word_detail">
+        <action
+            android:id="@+id/action_wordDetailFragment_to_editWordFragment"
+            app:destination="@id/editWordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editWordFragment"
+        android:name="top.summus.sword.fragment.EditWordFragment" />
 </navigation>

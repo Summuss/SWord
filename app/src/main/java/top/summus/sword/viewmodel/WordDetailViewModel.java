@@ -44,10 +44,10 @@ public class WordDetailViewModel extends ViewModel {
     private List<Meaning> meanings = new ArrayList<>();
 
     @Getter
-    private Map<Meaning.WordClass, List<Meaning>> wordClassMeaningsMap = new HashMap<>();
+    private HashMap<Meaning.WordClass, List<Meaning>> wordClassMeaningsMap = new HashMap<>();
 
     @Getter
-    private Map<Long, List<Sentence>> meaningSentenceMap = new HashMap<>();
+    private HashMap<Long, List<Sentence>> meaningSentenceMap = new HashMap<>();
     @Getter
     private Word word;
 

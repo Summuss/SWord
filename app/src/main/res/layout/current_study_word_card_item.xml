@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/out_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/white"
@@ -18,7 +19,7 @@
 
 
             <TextView
-                android:id="@+id/word_tx"
+                android:id="@+id/content_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
@@ -27,10 +28,10 @@
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintTop_toBottomOf="@+id/to_detail_bt" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/to_detail_bt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -40,26 +41,26 @@
                 app:srcCompat="@drawable/ic_detail" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/phonetic_tv"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
                 android:text="TextView"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/word_tx"
-                app:layout_constraintStart_toStartOf="@+id/word_tx"
-                app:layout_constraintTop_toBottomOf="@+id/word_tx" />
+                app:layout_constraintEnd_toEndOf="@+id/content_tv"
+                app:layout_constraintStart_toStartOf="@+id/content_tv"
+                app:layout_constraintTop_toBottomOf="@+id/content_tv" />
 
             <com.willy.ratingbar.RotationRatingBar
                 android:id="@+id/priority_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
+                android:layout_marginBottom="24dp"
                 app:layout_constraintBottom_toTopOf="@+id/diffulty_rating"
-                app:layout_constraintEnd_toEndOf="@+id/word_tx"
-                app:layout_constraintStart_toStartOf="@+id/word_tx"
-                app:layout_constraintTop_toBottomOf="@+id/textView5"
-                app:layout_constraintVertical_bias="0.45"
+                app:layout_constraintEnd_toEndOf="@+id/content_tv"
+                app:layout_constraintStart_toStartOf="@+id/content_tv"
                 app:srb_clearRatingEnabled="true"
                 app:srb_clickable="true"
                 app:srb_isIndicator="false"
@@ -81,8 +82,8 @@
                 app:enabled="false"
                 app:horizontalSpacing="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/word_tx"
-                app:layout_constraintStart_toStartOf="@+id/word_tx"
+                app:layout_constraintEnd_toEndOf="@+id/content_tv"
+                app:layout_constraintStart_toStartOf="@+id/content_tv"
                 app:rating="2"
                 app:smileDefault="@drawable/ic_smile"
                 app:smileHeight="35dp"

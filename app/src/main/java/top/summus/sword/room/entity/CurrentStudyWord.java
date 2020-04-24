@@ -19,7 +19,7 @@ import static androidx.room.ForeignKey.CASCADE;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrentStudyWord {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
     @ColumnInfo(name = "word_id", index = true)

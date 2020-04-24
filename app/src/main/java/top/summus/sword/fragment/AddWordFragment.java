@@ -43,9 +43,11 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
 
     private AppCompatActivity parentActivity;
     private NavController navController;
-    private AddWordViewModel addWordViewModel;
+    protected AddWordViewModel addWordViewModel;
+    protected AndroidTreeView treeView;
 
-    private BookNode bookNode;
+    protected BookNode bookNode;
+    protected TreeNode rootNode;
 
     public AddWordFragment() {
         // Required empty public constructor
@@ -75,14 +77,14 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
         List<String> strings = Arrays.asList(" ⓪", "①", " ②", "③");
         binding.toneSpinner.attachDataSource(strings);
 
-        TreeNode root = TreeNode.root();
-        AndroidTreeView treeView = new AndroidTreeView(getContext(), root);
+        rootNode = TreeNode.root();
+        treeView = new AndroidTreeView(getContext(), rootNode);
         binding.treeViewContainer.addView(treeView.getView());
         treeView.setUseAutoToggle(false);
         binding.addWordClassBt.setOnClickListener(view -> {
             WordClassInputTreeNode wordClassInputTreeNode = new WordClassInputTreeNode(getContext(), treeView);
-            root.addChild(wordClassInputTreeNode);
-            treeView.expandNode(root);
+            rootNode.addChild(wordClassInputTreeNode);
+            treeView.expandNode(rootNode);
         });
 
 
@@ -95,13 +97,17 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
             Word word = Word.builder().
                     content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
                     .build();
-            addWordViewModel.add(word, root);
+            addWordViewModel.add(word, rootNode);
         });
 
+        subInit();
 
         return binding.getRoot();
     }
 
+    protected void subInit() {
+
+    }
 
     private void initTopBar() {
         parentActivity.setSupportActionBar(binding.toolbar);

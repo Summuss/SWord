@@ -47,6 +47,17 @@ public class CurrentStudyWordRoomService {
                 });
     }
 
+    public Single<List<Word>> selectToBeLeaned() {
+        return currentStudyWordDao.selectToBeLeaned()
+                .doOnSuccess(words -> {
+                    Log.i(TAG, "selectToBeLeaned: " + words.toString());
+                })
+                .doOnError(throwable -> {
+                    Log.e(TAG, "selectToBeLeaned: ", throwable);
+                });
+    }
+
+
     public Single<List<CurrentStudyWord>> selectAll() {
         return currentStudyWordDao.selectAll();
     }

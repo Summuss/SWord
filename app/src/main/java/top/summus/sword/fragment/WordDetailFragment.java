@@ -55,11 +55,9 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
         parentActivity = (AppCompatActivity) getActivity();
         wordDetailViewModel = WordDetailViewModel.getInstance(this);
         initTopBar();
+        initListened();
 
         binding.priorityRating.setClickable(false);
-
-        viewPagerItems = ViewPagerItems.with(parentActivity).create();
-        viewPagerItemAdapter = new ViewPagerItemAdapter(viewPagerItems);
 
 
         binding.smarttablayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -113,8 +111,20 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 
     }
 
+    private void initListened() {
+        binding.editFbt.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("wordClassMeaningsMap", wordDetailViewModel.getWordClassMeaningsMap());
+            bundle.putSerializable("meaningSentenceMap", wordDetailViewModel.getMeaningSentenceMap());
+            navController.navigate(R.id.action_wordDetailFragment_to_editWordFragment, bundle);
+            ;
+        });
+    }
+
     private void loadWordInfoView(Meaning.WordClass wordClass, int position) {
+
         for (Meaning meaning : wordDetailViewModel.getWordClassMeaningsMap().get(wordClass)) {
+
             View view = viewPagerItemAdapter.getPage(position).findViewById(R.id.word_info_outer);
             View meaningView = getLayoutInflater().inflate(R.layout.word_detail_meaning_display_layout, (ViewGroup) view, false);
             MaterialBadgeTextView meaningTV = meaningView.findViewById(R.id.meaning_display);
@@ -140,6 +150,8 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 
     @Override
     public void onLoadWordInfoFinished() {
+        viewPagerItems = ViewPagerItems.with(parentActivity).create();
+        viewPagerItemAdapter = new ViewPagerItemAdapter(viewPagerItems);
         Log.i(TAG, "onLoadWordInfoFinished: " + wordDetailViewModel.getWordClassMeaningsMap().keySet().size());
         int i = 0;
         for (Meaning.WordClass wordClass : wordDetailViewModel.getWordClassMeaningsMap().keySet()) {
@@ -151,6 +163,11 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 //
         binding.viewpager.setAdapter(viewPagerItemAdapter);
         binding.smarttablayout.setViewPager(binding.viewpager);
+        if (viewPagerItemAdapter.getPage(0) == null) {
+            Log.i(TAG, "onLoadWordInfoFinished: null");
+        } else {
+            Log.i(TAG, "onLoadWordInfoFinished: not null");
+        }
         for (Meaning.WordClass wordClass : wordDetailViewModel.getWordClassMeaningsMap().keySet()) {
             loadWordInfoView(wordClass, i++);
         }

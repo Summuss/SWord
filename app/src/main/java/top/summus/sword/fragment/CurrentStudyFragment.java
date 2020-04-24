@@ -28,20 +28,23 @@ import com.yuyakaido.android.cardstackview.Direction;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
 import top.summus.sword.adapter.CurrentStudyCardViewAdapter;
 import top.summus.sword.databinding.FragmentCurrentStudyBinding;
 import top.summus.sword.room.entity.Word;
+import top.summus.sword.viewmodel.CurrentStudyViewModel;
 
 
-public class CurrentStudyFragment extends Fragment {
+public class CurrentStudyFragment extends Fragment implements CurrentStudyViewModel.CurrentStudyViewModelCallback {
 
     private static final String TAG = "CurrentStudyFragment";
 
     private FragmentCurrentStudyBinding binding;
     private AppCompatActivity parentActivity;
     private NavController navController;
+    private CurrentStudyViewModel viewModel;
 
 
     @Override
@@ -50,6 +53,8 @@ public class CurrentStudyFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_current_study, container, false);
         parentActivity = (AppCompatActivity) getActivity();
         navController = NavHostFragment.findNavController(this);
+        viewModel = CurrentStudyViewModel.getInstance(this);
+
 
         initTopBar();
         initCardView();
@@ -73,15 +78,9 @@ public class CurrentStudyFragment extends Fragment {
 
 
     private void initCardView() {
-        List<Word> words = new ArrayList<>();
-        words.add(Word.builder().content("word1").build());
-        words.add(Word.builder().content("word2").build());
-        words.add(Word.builder().content("word3").build());
-        words.add(Word.builder().content("word4").build());
         CardStackLayoutManager cardStackLayoutManager = new CardStackLayoutManager(parentActivity, new CardStackListener() {
             @Override
             public void onCardDragging(Direction direction, float ratio) {
-                Log.i(TAG, "onCardDragging: " + direction + "   " + ratio);
             }
 
             @Override
@@ -107,13 +106,22 @@ public class CurrentStudyFragment extends Fragment {
 
             @Override
             public void onCardDisappeared(View view, int position) {
+                Log.i(TAG, "onCardDisappeared: position:" + position);
+                if (position == binding.cardStackView.getAdapter().getItemCount() - 1) {
+                    Toasty.info(parentActivity, "none", Toasty.LENGTH_SHORT).show();
+                }
 
             }
         });
         cardStackLayoutManager.setVisibleCount(3);
         cardStackLayoutManager.setDirections(Direction.FREEDOM);
         binding.cardStackView.setLayoutManager(cardStackLayoutManager);
-        CurrentStudyCardViewAdapter currentStudyCardViewAdapter = new CurrentStudyCardViewAdapter(words);
+        CurrentStudyCardViewAdapter currentStudyCardViewAdapter = new CurrentStudyCardViewAdapter(viewModel.getWordsNeedToLearn());
+        currentStudyCardViewAdapter.setCallback(word -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("word", word);
+            navController.navigate(R.id.action_CurrentStudyFragment_to_wordDetailFragment, bundle);
+        });
         binding.cardStackView.setAdapter(currentStudyCardViewAdapter);
     }
 

@@ -175,6 +175,11 @@ public class WordFragment extends Fragment implements WordViewModel.WordViewMode
     }
 
     @Override
+    public void onDeleteWordFinished() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onWordItemClick(Word word) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("word", word);
@@ -192,6 +197,11 @@ public class WordFragment extends Fragment implements WordViewModel.WordViewMode
         if (direction == -1) {
             if (menuPosition == 0) {
                 Log.i(TAG, "onItemClick: add to study");
+                wordViewModel.addToStudy(word);
+            } else if (menuPosition == 1) {
+
+            } else if (menuPosition == 2) {
+                wordViewModel.deleteWord(i);
             }
         }
         binding.wordListRecycler.smoothCloseMenu();

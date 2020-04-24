@@ -93,11 +93,23 @@ public class WordViewModel extends ViewModel {
                 });
     }
 
+    public void deleteWord(@NonNull int position) {
+        wordRoomService.delete(wordsToBeShowed.get(position)).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    wordsToBeShowed.remove(position);
+                    callback.onDeleteWordFinished();
+                });
+
+    }
+
     public interface WordViewModelCallback {
 
         void onLoadWordsFinished();
 
         void addToStudyFinished(boolean successful);
+
+        void onDeleteWordFinished();
     }
 
 }

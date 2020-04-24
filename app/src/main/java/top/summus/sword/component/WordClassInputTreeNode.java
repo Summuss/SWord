@@ -30,6 +30,7 @@ public class WordClassInputTreeNode extends TreeNode {
     private AndroidTreeView treeView;
     @Getter
     private ViewHolder viewHolder;
+    private int type;
 
     public int getWordClass() {
         return viewHolder.niceSpinner.getSelectedIndex();
@@ -43,6 +44,12 @@ public class WordClassInputTreeNode extends TreeNode {
         setViewHolder(viewHolder);
 
     }
+
+    public WordClassInputTreeNode(Context context, AndroidTreeView treeView, int type) {
+        this(context, treeView);
+        this.type = type;
+    }
+
 
     public int spinerSelectedIndex() {
         return viewHolder.niceSpinner.getSelectedIndex();
@@ -73,6 +80,8 @@ public class WordClassInputTreeNode extends TreeNode {
             removeImage = view.findViewById(R.id.remove_image);
             arrowImage = view.findViewById(R.id.arrow_image);
             niceSpinner.attachDataSource(items);
+
+            niceSpinner.setSelectedIndex(type);
 
             if (getChildren().isEmpty()) {
                 arrowImage.setVisibility(View.GONE);
