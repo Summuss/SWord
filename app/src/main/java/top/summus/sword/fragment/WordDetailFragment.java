@@ -22,8 +22,13 @@ import android.widget.TextView;
 import com.google.android.material.tabs.TabLayout;
 import com.matrixxun.starry.badgetextview.MaterialBadgeTextView;
 import com.ogaclejapan.smarttablayout.utils.ViewPagerItem;
-import com.ogaclejapan.smarttablayout.utils.ViewPagerItemAdapter;
+
+import top.summus.sword.component.ViewPagerItemAdapter;
+
 import com.ogaclejapan.smarttablayout.utils.ViewPagerItems;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 import top.summus.sword.R;
 import top.summus.sword.activity.AppbarConfigurationSupplier;
@@ -42,20 +47,34 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
     private AppCompatActivity parentActivity;
     private NavController navController;
     private WordDetailViewModel wordDetailViewModel;
-    ViewPagerItems viewPagerItems;
-    ViewPagerItemAdapter viewPagerItemAdapter;
+    private ViewPagerItems viewPagerItems;
+    private ViewPagerItemAdapter viewPagerItemAdapter;
+    private HashMap<Integer, View> holder;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate: ");
+        super.onCreate(savedInstanceState);
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(TAG, "onCreateView: ");
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word_detail, container, false);
         navController = NavHostFragment.findNavController(this);
         parentActivity = (AppCompatActivity) getActivity();
         wordDetailViewModel = WordDetailViewModel.getInstance(this);
+
         initTopBar();
         initListened();
+
+        viewPagerItems = ViewPagerItems.with(Objects.requireNonNull(getActivity())).create();
+        viewPagerItemAdapter = new ViewPagerItemAdapter(viewPagerItems);
 
         binding.priorityRating.setClickable(false);
 
@@ -123,9 +142,10 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 
     private void loadWordInfoView(Meaning.WordClass wordClass, int position) {
 
+        View view = Objects.requireNonNull(viewPagerItemAdapter.getPage(position)).findViewById(R.id.word_info_outer);
+
         for (Meaning meaning : wordDetailViewModel.getWordClassMeaningsMap().get(wordClass)) {
 
-            View view = viewPagerItemAdapter.getPage(position).findViewById(R.id.word_info_outer);
             View meaningView = getLayoutInflater().inflate(R.layout.word_detail_meaning_display_layout, (ViewGroup) view, false);
             MaterialBadgeTextView meaningTV = meaningView.findViewById(R.id.meaning_display);
             meaningTV.setText(meaning.getMeaning());
@@ -150,9 +170,6 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 
     @Override
     public void onLoadWordInfoFinished() {
-        viewPagerItems = ViewPagerItems.with(parentActivity).create();
-        viewPagerItemAdapter = new ViewPagerItemAdapter(viewPagerItems);
-        Log.i(TAG, "onLoadWordInfoFinished: " + wordDetailViewModel.getWordClassMeaningsMap().keySet().size());
         int i = 0;
         for (Meaning.WordClass wordClass : wordDetailViewModel.getWordClassMeaningsMap().keySet()) {
             ViewPagerItem item = ViewPagerItem.of(wordClass.getWordClass(), R.layout.fragment_word_info);
@@ -163,14 +180,25 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
 //
         binding.viewpager.setAdapter(viewPagerItemAdapter);
         binding.smarttablayout.setViewPager(binding.viewpager);
-        if (viewPagerItemAdapter.getPage(0) == null) {
-            Log.i(TAG, "onLoadWordInfoFinished: null");
-        } else {
-            Log.i(TAG, "onLoadWordInfoFinished: not null");
-        }
+
         for (Meaning.WordClass wordClass : wordDetailViewModel.getWordClassMeaningsMap().keySet()) {
             loadWordInfoView(wordClass, i++);
         }
 
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        holder = viewPagerItemAdapter.getHolder();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (holder != null) {
+            viewPagerItemAdapter.setHolder(holder);
+        }
+    }
+
 }
