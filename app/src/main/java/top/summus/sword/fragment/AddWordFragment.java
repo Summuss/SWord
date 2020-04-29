@@ -39,7 +39,7 @@ import top.summus.sword.viewmodel.AddWordViewModel;
  */
 public class AddWordFragment extends Fragment implements AddWordViewModel.AddWordViewModelCallback {
     private static final String TAG = "AddWordFragment";
-    private FragmentAddWordBinding binding;
+    protected FragmentAddWordBinding binding;
 
     private AppCompatActivity parentActivity;
     private NavController navController;
@@ -89,15 +89,7 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
 
 
         binding.confirmFbt.setOnClickListener(view -> {
-            String content = binding.contentTv.getText().toString();
-            String pronun = binding.pronumTv.getText().toString();
-            int tone = binding.toneSpinner.getSelectedIndex();
-            int priority = (int) binding.priorityRating.getRating();
-            int difficulty = binding.diffultyRating.getRating();
-            Word word = Word.builder().
-                    content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
-                    .build();
-            addWordViewModel.add(word, rootNode);
+            confirm();
         });
 
         subInit();
@@ -107,6 +99,18 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
 
     protected void subInit() {
 
+    }
+
+    protected void confirm() {
+        String content = binding.contentTv.getText().toString();
+        String pronun = binding.pronumTv.getText().toString();
+        int tone = binding.toneSpinner.getSelectedIndex();
+        int priority = (int) binding.priorityRating.getRating();
+        int difficulty = binding.diffultyRating.getRating();
+        Word word = Word.builder().
+                content(content).pronunciation(pronun).tone(tone).priority(priority).difficulty(difficulty)
+                .build();
+        addWordViewModel.add(word, rootNode);
     }
 
     private void initTopBar() {
@@ -143,5 +147,10 @@ public class AddWordFragment extends Fragment implements AddWordViewModel.AddWor
     public void addWordFinished() {
         Log.i(TAG, "addWordFinished: ");
         parentActivity.onBackPressed();
+    }
+
+    @Override
+    public void onUpdateFinished() {
+
     }
 }

@@ -59,4 +59,8 @@ public class MeaningRoomService {
                 .doOnError(throwable -> Log.e(TAG, "selectByWordId: ", throwable));
     }
 
+    public Completable deleteByWordId(long wordId) {
+        return meaningDao.deleteByWordId(wordId);
+    }
+
 }

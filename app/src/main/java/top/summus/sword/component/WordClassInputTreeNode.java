@@ -20,6 +20,7 @@ import org.angmarch.views.NiceSpinner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import lombok.Getter;
@@ -59,7 +60,22 @@ public class WordClassInputTreeNode extends TreeNode {
         viewHolder.arrowRotateBack();
     }
 
+    public TextInputTreeNode createAndInsertMeaning() {
+        TextInputTreeNode treeNode = new TextInputTreeNode(TextInputTreeNode.MEANING, treeView, viewHolder.context);
+        this.addChild(treeNode);
+
+//        if (viewHolder.arrowImage.getVisibility() != View.VISIBLE) {
+//            viewHolder.arrowImage.setVisibility(View.VISIBLE);
+//        }
+        if (!isExpanded()) {
+            viewHolder.arrowRotate();
+        }
+        treeView.expandNode(this);
+        return treeNode;
+    }
+
     public class ViewHolder extends TreeNode.BaseNodeViewHolder<Object> {
+        private Context context;
         private NiceSpinner niceSpinner;
         private FrameLayout addIamge;
         private FrameLayout removeImage;
@@ -67,6 +83,7 @@ public class WordClassInputTreeNode extends TreeNode {
 
         public ViewHolder(Context context) {
             super(context);
+            this.context = context;
 
         }
 
@@ -98,15 +115,16 @@ public class WordClassInputTreeNode extends TreeNode {
             });
 
             addIamge.setOnClickListener(view1 -> {
-                TextInputTreeNode treeNode = new TextInputTreeNode(TextInputTreeNode.MEANING, treeView, context);
-                node.addChild(treeNode);
-                if (arrowImage.getVisibility() != View.VISIBLE) {
-                    arrowImage.setVisibility(View.VISIBLE);
-                }
-                if (!isExpanded()) {
-                    arrowRotate();
-                }
-                treeView.expandNode(node);
+//                TextInputTreeNode treeNode = new TextInputTreeNode(TextInputTreeNode.MEANING, treeView, context);
+//                node.addChild(treeNode);
+//                if (arrowImage.getVisibility() != View.VISIBLE) {
+//                    arrowImage.setVisibility(View.VISIBLE);
+//                }
+//                if (!isExpanded()) {
+//                    arrowRotate();
+//                }
+//                treeView.expandNode(node);
+                createAndInsertMeaning();
 
             });
             removeImage.setOnClickListener(view1 -> {

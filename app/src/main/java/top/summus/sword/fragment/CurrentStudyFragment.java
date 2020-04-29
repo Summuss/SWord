@@ -1,6 +1,5 @@
 package top.summus.sword.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +22,6 @@ import android.view.ViewGroup;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.Direction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import top.summus.sword.R;
@@ -45,6 +40,7 @@ public class CurrentStudyFragment extends Fragment implements CurrentStudyViewMo
     private AppCompatActivity parentActivity;
     private NavController navController;
     private CurrentStudyViewModel viewModel;
+    private CardStackLayoutManager cardStackLayoutManager;
 
 
     @Override
@@ -58,6 +54,7 @@ public class CurrentStudyFragment extends Fragment implements CurrentStudyViewMo
 
         initTopBar();
         initCardView();
+        initListener();
 
 
         return binding.getRoot();
@@ -78,7 +75,7 @@ public class CurrentStudyFragment extends Fragment implements CurrentStudyViewMo
 
 
     private void initCardView() {
-        CardStackLayoutManager cardStackLayoutManager = new CardStackLayoutManager(parentActivity, new CardStackListener() {
+        cardStackLayoutManager = new CardStackLayoutManager(parentActivity, new CardStackListener() {
             @Override
             public void onCardDragging(Direction direction, float ratio) {
             }
@@ -86,6 +83,9 @@ public class CurrentStudyFragment extends Fragment implements CurrentStudyViewMo
             @Override
             public void onCardSwiped(Direction direction) {
                 Log.i(TAG, "onCardSwiped: " + direction);
+//                Word word = viewModel.getWordsNeedToLearn().get(cardStackLayoutManager.getTopPosition());
+//                Log.i(TAG, "onCardSwiped: " + word);
+
 
             }
 
@@ -123,6 +123,27 @@ public class CurrentStudyFragment extends Fragment implements CurrentStudyViewMo
             navController.navigate(R.id.action_CurrentStudyFragment_to_wordDetailFragment, bundle);
         });
         binding.cardStackView.setAdapter(currentStudyCardViewAdapter);
+    }
+
+    private void initListener() {
+        binding.knowBt.setOnClickListener(view -> {
+            Word word = viewModel.getWordsNeedToLearn().get(cardStackLayoutManager.getTopPosition());
+            word.know();
+            viewModel.updateWord(word);
+            binding.cardStackView.swipe();
+        });
+        binding.ambiguousBt.setOnClickListener(view -> {
+            Word word = viewModel.getWordsNeedToLearn().get(cardStackLayoutManager.getTopPosition());
+            word.ambiguous();
+            viewModel.updateWord(word);
+            binding.cardStackView.swipe();
+        });
+        binding.forgetBt.setOnClickListener(view -> {
+            Word word = viewModel.getWordsNeedToLearn().get(cardStackLayoutManager.getTopPosition());
+            word.forget();
+            viewModel.updateWord(word);
+            binding.cardStackView.swipe();
+        });
     }
 
     @Override

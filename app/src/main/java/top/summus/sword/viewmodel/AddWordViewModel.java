@@ -89,6 +89,20 @@ public class AddWordViewModel extends ViewModel {
 
     }
 
+    public void updateWord(Word word, TreeNode treeNode) {
+        wordRoomService.update(word).subscribeOn(Schedulers.io()).doFinally(() -> {
+            meaningRoomService.deleteByWordId(word.getId())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally(() -> {
+                        callback.onUpdateFinished();
+                    })
+                    .observeOn(Schedulers.io())
+                    .subscribe(() -> {
+                        addInformation(treeNode, word.getId());
+                    });
+        }).subscribe();
+    }
+
     private void addInformation(TreeNode root, long wordId) {
 
         List<TextInputTreeNode> meaningNodes = new ArrayList<>();
@@ -130,5 +144,7 @@ public class AddWordViewModel extends ViewModel {
     public interface AddWordViewModelCallback {
 
         void addWordFinished();
+
+        void onUpdateFinished();
     }
 }

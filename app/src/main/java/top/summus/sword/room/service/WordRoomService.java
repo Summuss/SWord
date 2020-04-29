@@ -6,7 +6,11 @@ import android.util.Log;
 import java.util.List;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 import top.summus.sword.room.dao.WordDao;
 import top.summus.sword.room.entity.Word;
@@ -85,7 +89,11 @@ public class WordRoomService {
                                 .doFinally(() -> {
                                     wordBookNodeJoinRoomService.insert(word.getId(), bookNodeId).doOnSuccess(aLong -> {
                                         Log.i(TAG, "getMeaningNodes: insert wordBookNodeJoin successfully,get id" + aLong);
-                                    }).subscribe();
+                                    }).subscribe((aLong, throwable) -> {
+                                        if (throwable != null) {
+                                            Log.e(TAG, "add: ", throwable);
+                                        }
+                                    });
                                 })
                                 .subscribe((aLong, throwable1) -> {
                                     if (aLong != null) {
@@ -100,4 +108,5 @@ public class WordRoomService {
                 });
 
     }
+
 }

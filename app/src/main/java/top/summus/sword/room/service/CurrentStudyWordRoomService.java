@@ -2,6 +2,8 @@ package top.summus.sword.room.service;
 
 import android.util.Log;
 
+import androidx.room.Query;
+
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -60,6 +62,10 @@ public class CurrentStudyWordRoomService {
 
     public Single<List<CurrentStudyWord>> selectAll() {
         return currentStudyWordDao.selectAll();
+    }
+
+    public Completable deleteByWordId(long wordId) {
+        return currentStudyWordDao.deleteByWordId(wordId);
     }
 
 }

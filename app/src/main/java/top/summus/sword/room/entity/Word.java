@@ -56,5 +56,23 @@ public class Word implements Serializable {
     @Builder.Default
     private int syncStatus = 1;
 
+    public boolean know() {
+        proficiency += 2 * (12 - difficulty - priority);
+        if (proficiency >= 100) {
+            proficiency = 100;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void forget() {
+        proficiency = (int) (0.3 * proficiency);
+    }
+
+    public void ambiguous() {
+        proficiency = (int) (0.6 * proficiency);
+    }
+
 
 }

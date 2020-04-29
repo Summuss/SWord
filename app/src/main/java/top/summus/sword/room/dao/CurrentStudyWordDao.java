@@ -5,6 +5,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import top.summus.sword.room.entity.CurrentStudyWord;
 import top.summus.sword.room.entity.Word;
@@ -19,4 +20,8 @@ public interface CurrentStudyWordDao extends BaseDao<CurrentStudyWord> {
 
     @Query("SELECT * FROM current_study_word")
     Single<List<CurrentStudyWord>> selectAll();
+
+    @Query("DELETE FROM current_study_word WHERE word_id=:wordId")
+    Completable deleteByWordId(long wordId);
+
 }

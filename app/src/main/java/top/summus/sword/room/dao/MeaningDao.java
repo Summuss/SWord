@@ -5,6 +5,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import top.summus.sword.room.entity.Meaning;
 
@@ -16,6 +17,9 @@ public interface MeaningDao extends BaseDao<Meaning> {
 
     @Query("SELECT * FROM meaning WHERE word_id=:wordId")
     Single<List<Meaning>> selectByWordId(long wordId);
+
+    @Query("DELETE FROM meaning WHERE word_id=:wordId")
+    Completable deleteByWordId(long wordId);
 
 
 }

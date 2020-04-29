@@ -87,10 +87,44 @@ public class TextInputTreeNode extends TreeNode {
     }
 
 
+    public TextInputTreeNode creatAndInsert() {
+//        if (type == SENTENCE) {
+//            if (getChildren().isEmpty()) {
+//                viewHolder.addImage.setVisibility(View.GONE);
+//            }
+//        }
+        TextInputTreeNode treeNode = null;
+        switch (type) {
+            case MEANING:
+                treeNode = new TextInputTreeNode(SENTENCE, treeView, viewHolder.context);
+                break;
+            case SENTENCE:
+                treeNode = new TextInputTreeNode(SENTENCE_INTERPRETATION, treeView, viewHolder.context);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        this.addChild(treeNode);
+//        if (viewHolder.arrowImage.getVisibility() == View.INVISIBLE) {
+//            viewHolder.arrowImage.setVisibility(View.VISIBLE);
+//        }
+//        if (!isExpanded()) {
+//            viewHolder.arrowRotate();
+//        }
+
+        treeView.expandNode(this);
+        return treeNode;
+    }
+
+    public void setText(String s) {
+        viewHolder.editText.setText(s);
+    }
+
     @Setter
     @Getter
     public class ViewHolder extends TreeNode.BaseNodeViewHolder<Object> {
 
+        private Context context;
         private ConstraintLayout outLayout;
         private FrameLayout arrowImage;
         private FrameLayout addImage;
@@ -100,6 +134,7 @@ public class TextInputTreeNode extends TreeNode {
 
         private ViewHolder(Context context) {
             super(context);
+            this.context = context;
         }
 
         @Override
@@ -138,31 +173,32 @@ public class TextInputTreeNode extends TreeNode {
             });
 
             addImage.setOnClickListener(view1 -> {
-                if (type == SENTENCE) {
-                    if (getChildren().isEmpty()) {
-                        addImage.setVisibility(View.GONE);
-                    }
-                }
-                TextInputTreeNode treeNode = null;
-                switch (type) {
-                    case MEANING:
-                        treeNode = new TextInputTreeNode(SENTENCE, treeView, context);
-                        break;
-                    case SENTENCE:
-                        treeNode = new TextInputTreeNode(SENTENCE_INTERPRETATION, treeView, context);
-                        break;
-                    default:
-                        throw new UnsupportedOperationException();
-                }
-                node.addChild(treeNode);
-                if (arrowImage.getVisibility() == View.INVISIBLE) {
-                    arrowImage.setVisibility(View.VISIBLE);
-                }
-                if (!isExpanded()) {
-                    arrowRotate();
-                }
-
-                treeView.expandNode(node);
+//                if (type == SENTENCE) {
+//                    if (getChildren().isEmpty()) {
+//                        addImage.setVisibility(View.GONE);
+//                    }
+//                }
+//                TextInputTreeNode treeNode = null;
+//                switch (type) {
+//                    case MEANING:
+//                        treeNode = new TextInputTreeNode(SENTENCE, treeView, context);
+//                        break;
+//                    case SENTENCE:
+//                        treeNode = new TextInputTreeNode(SENTENCE_INTERPRETATION, treeView, context);
+//                        break;
+//                    default:
+//                        throw new UnsupportedOperationException();
+//                }
+//                node.addChild(treeNode);
+//                if (arrowImage.getVisibility() == View.INVISIBLE) {
+//                    arrowImage.setVisibility(View.VISIBLE);
+//                }
+//                if (!isExpanded()) {
+//                    arrowRotate();
+//                }
+//
+//                treeView.expandNode(node);
+                creatAndInsert();
             });
 
             ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

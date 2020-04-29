@@ -13,7 +13,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(foreignKeys = {@ForeignKey(entity = Meaning.class, parentColumns = "id", childColumns = "meaning_id")})
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = {@ForeignKey(entity = Meaning.class, parentColumns = "id", childColumns = "meaning_id", onDelete = CASCADE)})
 @Data
 @Builder
 @NoArgsConstructor

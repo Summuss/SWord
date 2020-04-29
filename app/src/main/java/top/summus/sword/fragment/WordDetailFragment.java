@@ -135,6 +135,7 @@ public class WordDetailFragment extends Fragment implements WordDetailViewModel.
             Bundle bundle = new Bundle();
             bundle.putSerializable("wordClassMeaningsMap", wordDetailViewModel.getWordClassMeaningsMap());
             bundle.putSerializable("meaningSentenceMap", wordDetailViewModel.getMeaningSentenceMap());
+            bundle.putSerializable("word", wordDetailViewModel.getWord());
             navController.navigate(R.id.action_wordDetailFragment_to_editWordFragment, bundle);
             ;
         });
