@@ -169,6 +169,7 @@ public class BookNodeViewModel extends ViewModel {
                 .subscribe((aLong, throwable) -> {
                     if (aLong != null) {
                         Log.i(TAG, "onInsertFinishedSuccess: " + target);
+                        target.setId(aLong);
                         int positionInBookNodes = findPositionInBookNodes(target, bookNodesShowed);
                         bookNodesShowed.add(positionInBookNodes, target);
                         callback.onInsertFinished(positionInBookNodes);

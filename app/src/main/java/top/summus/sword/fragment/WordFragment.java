@@ -62,6 +62,8 @@ public class WordFragment extends Fragment implements WordViewModel.WordViewMode
             bookNode = (BookNode) getArguments().getSerializable("bookNode");
             wordViewModel.setWordBook(bookNode);
         }
+        Log.i(TAG, "onActivityCreated: " + bookNode);
+        binding.toolbar.setTitle(bookNode.getNodeName());
 
     }
 

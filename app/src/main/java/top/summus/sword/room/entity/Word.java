@@ -6,6 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -51,6 +52,9 @@ public class Word implements Serializable {
     @Builder.Default
     private Date changedDate = new Date();
 
+    @ColumnInfo(name = "review_date")
+    private Date reviewDate;
+
 
     @ColumnInfo(name = "sync_status")
     @Builder.Default
@@ -62,6 +66,7 @@ public class Word implements Serializable {
             proficiency = 100;
             return true;
         } else {
+            updateReviewDate();
             return false;
         }
     }
@@ -74,5 +79,31 @@ public class Word implements Serializable {
         proficiency = (int) (0.6 * proficiency);
     }
 
+
+    private void updateReviewDate() {
+        int interval = fibonacciSqe(proficiency / 10);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(reviewDate);
+        calendar.add(Calendar.DAY_OF_YEAR, interval);
+        reviewDate = calendar.getTime();
+
+    }
+
+    private int fibonacciSqe(int n) {
+        if (n < 1) {
+            return 0;
+        } else if (n == 1 || n == 2) {
+            return 1;
+        }
+        int res = 1;
+        int pre = 1;
+        int temp = 0;
+        for (int i = 3; i < n; i++) {
+            temp = res;
+            res = pre + res;
+            pre = temp;
+        }
+        return res;
+    }
 
 }

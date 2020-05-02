@@ -1,6 +1,7 @@
 package top.summus.sword.room.service;
 
 import android.annotation.SuppressLint;
+import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 
@@ -64,14 +65,21 @@ public class BookNodeRoomService {
                         bookNodeDao.delete(bookNode).subscribe();
                     });
         } else {
+
+            Log.i(TAG, "deleteIntoDeleteRecord: d");
             return deleteRecordRoomService.insert(BOOK_NODE, bookNode.getNodeNo())
                     .toObservable()
                     .subscribeOn(Schedulers.io())
                     .map(aLong -> bookNode)
                     .doOnComplete(() -> {
-                        bookNodeDao.delete(bookNode);
+                        bookNodeDao.delete(bookNode).subscribe();
                     })
-                    .doOnError(throwable -> Log.e(TAG, "deleteIntoDeleteRecord: ", throwable));
+                    .doOnError(throwable -> {
+                        Log.e(TAG, "deleteIntoDeleteRecord: ", throwable);
+                        if (throwable instanceof SQLiteConstraintException) {
+                            bookNodeDao.delete(bookNode).subscribe();
+                        }
+                    });
         }
 
     }
@@ -103,11 +111,11 @@ public class BookNodeRoomService {
                 ;
     }
 
-    public List<Long> selectAllNodeNoSync(){
+    public List<Long> selectAllNodeNoSync() {
         return bookNodeDao.selectAllNodeNoSync();
     }
 
-    public void deleteByNodeNo(long nodeNo){
+    public void deleteByNodeNo(long nodeNo) {
         bookNodeDao.deleteByNodeNo(nodeNo);
     }
 
